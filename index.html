@@ -567,7 +567,7 @@
 
   /* 第二页终点区（站牌） */
   .p2-route { position: absolute; inset: 0; pointer-events: none; z-index: 9; }
-  .p2-route .station-sign { left: 50%; top: 215px; }
+  .p2-route .station-sign { left: 90.5%; top: 40%; }
 
   .station-sign {
     position: absolute;
@@ -647,6 +647,7 @@
     font-family: var(--mono); font-size: 8px; letter-spacing: .14em; color: var(--ink-soft);
   }
   .p2-slot figcaption b { color: var(--ink); }
+
   .p2-sw {
     position: absolute; width: 34px; height: 34px;
     transform: rotate(var(--rot, 0deg));
@@ -656,14 +657,6 @@
     position: absolute; writing-mode: vertical-rl;
     font-family: var(--mono); font-size: 9px; letter-spacing: .3em; color: var(--ink-soft);
   }
-  .p2-back {
-    position: absolute; right: 40px; bottom: 24px;
-    font-family: var(--mono); font-weight: 700; font-size: 11px; letter-spacing: .14em;
-    background: var(--black-tag); color: #fff;
-    border: none; padding: 12px 26px; border-radius: 999px;
-    cursor: pointer; transition: transform .2s, background .2s;
-  }
-  .p2-back:hover { background: #000; transform: translateY(-2px); }
 
   /* ========== 弹窗 ========== */
   .modal {
@@ -1747,7 +1740,7 @@
 
     <!-- 色块装饰 -->
     <div class="p2-sw" style="left:7%;top:2%;background:#4a4a42;--rot:-8deg"></div>
-    <div class="p2-sw" style="left:86%;top:6%;background:#8a9178;--rot:6deg;width:30px;height:30px"></div>
+    <div class="p2-sw" style="left:76%;top:6%;background:#8a9178;--rot:6deg;width:30px;height:30px"></div>
     <div class="p2-sw" style="left:15%;top:76%;background:#d98e5f;--rot:5deg;width:30px;height:30px"></div>
     <div class="p2-sw" style="left:55%;top:84%;background:#f6b91d;--rot:-6deg;width:26px;height:26px"></div>
 
@@ -1808,7 +1801,6 @@
     </div>
   </div>
 
-  <button class="p2-back" id="p2-back">← TICKET BACK · 返回洞洞板</button>
 </section>
 </div>
 
@@ -1822,116 +1814,130 @@
   const wps = document.querySelectorAll(".route-wp");
   const sign = document.getElementById("station-sign");
   const world = document.getElementById("world");
-  const back = document.getElementById("p2-back");
-  let active = false;
-  let camY = 0;
+
+  let state = "idle";   // idle | forward | arrived | reverse
+  let len = 0, pA = 0.25, pB = 0.6;
 
   const easeInOut = p => p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
   const clamp01 = v => Math.max(0, Math.min(1, v));
+
   function setCam(y) {
-    camY = y;
     world.style.transform = y > 0 ? `translate3d(0, ${(-y).toFixed(1)}px, 0)` : "";
   }
 
-  function startRoute() {
-    if (active) return;
-    active = true;
-    window.__routeActive = true;
-    world.classList.add("routing");
+  // e: 路线进度 0(票根) → 1(目的地)，虚线、圆点、镜头、途经点全部由它驱动
+  function setE(e) {
+    solid.style.strokeDashoffset = len * (1 - e);
+    const pt = solid.getPointAtLength(len * e);
+    dot.setAttribute("cx", pt.x);
+    dot.setAttribute("cy", pt.y);
+    const cam = easeInOut(clamp01((e - pA) / (pB - pA))) * window.innerHeight;
+    setCam(cam);
+    wps.forEach((el, i) => el.style.opacity = e >= 0.55 + i * 0.2 ? 1 : 0);
+  }
 
+  function buildRoute() {
     const H = window.innerHeight, W = window.innerWidth;
     const r = ticket.getBoundingClientRect();
     const sx = r.left + r.width * 0.38;
     const sy = r.top + r.height * 0.45;
-
-    // 一条贯穿两屏的路线（世界坐标）：票根 → 向下冲出屏幕 → 俯冲进第二屏深处 → 回升到终点站牌
+    // 路线沿右侧边缘下行，绕开作品卡片；终点落在作品墙右侧
     solid.setAttribute("d",
       `M ${sx} ${sy} ` +
-      `C ${sx + 50} ${sy + 160}, ${W * 0.74} ${H * 0.88}, ${W * 0.62} ${H * 1.06} ` +
-      `C ${W * 0.50} ${H * 1.24}, ${W * 0.70} ${H * 1.44}, ${W * 0.62} ${H * 1.44} ` +
-      `C ${W * 0.55} ${H * 1.44}, ${W * 0.52} ${H * 1.30}, ${W * 0.50} ${H + 215}`
+      `C ${sx + 70} ${sy + 180}, ${W * 0.84} ${H * 0.92}, ${W * 0.86} ${H * 1.10} ` +
+      `C ${W * 0.88} ${H * 1.28}, ${W * 0.93} ${H * 1.34}, ${W * 0.905} ${H * 1.40}`
     );
     dashed.setAttribute("d", solid.getAttribute("d"));
-    const len = solid.getTotalLength();
+    len = solid.getTotalLength();
     solid.style.strokeDasharray = len;
     solid.style.strokeDashoffset = len;
-    dot.style.opacity = "";
 
-    // 采样路径：定位相机起飞点（线头接近屏底）与降落点（线头冲入第二屏深处）
+    // 采样：相机起飞点（线头近屏底）与降落点（线头入第二屏深处），y 单调递增
     const N = 400;
     const ys = [];
     for (let i = 0; i <= N; i++) ys.push(solid.getPointAtLength(len * i / N).y);
-    let apex = 0;
-    for (let i = 0; i <= N; i++) if (ys[i] > ys[apex]) apex = i;
-    let pA = 0, pB = 0;
-    for (let i = 0; i <= apex; i++) {
+    pA = 0; pB = 0;
+    for (let i = 0; i <= N; i++) {
       if (!pA && ys[i] >= H * 0.86) pA = i / N;
-      if (ys[i] >= H * 1.34) pB = i / N;
+      if (ys[i] >= H * 1.34) { pB = i / N; break; }
     }
     if (!pA) pA = 0.25;
-    if (!pB || pB <= pA) pB = Math.min(1, pA + 0.35);
+    if (!pB || pB <= pA) pB = 1;
 
-    // 途经点：放在第二屏回升段上
+    // 途经点：第二屏右侧下行段
     wps.forEach((el, i) => {
-      const pt = solid.getPointAtLength(len * (0.86 + i * 0.05));
+      const pt = solid.getPointAtLength(len * (0.55 + i * 0.2));
       el.setAttribute("cx", pt.x);
       el.setAttribute("cy", pt.y);
       el.style.opacity = 0;
     });
-    sign.classList.remove("pop");
+    dot.style.opacity = "";
+  }
 
-    // 1. 撕票
-    ticket.classList.add("torn");
-    svg.classList.add("on");
-
-    // 2. 虚线延伸，镜头跟随线头同步下移，直到降落在第二屏
+  function animate(fromE, toE, dur, done) {
     const t0 = performance.now();
-    const DUR = 3200;
     (function frame(t) {
-      const p = Math.min(1, (t - t0) / DUR);
-      const e = easeInOut(p);
-      solid.style.strokeDashoffset = len * (1 - e);
-      const pt = solid.getPointAtLength(len * e);
-      dot.setAttribute("cx", pt.x);
-      dot.setAttribute("cy", pt.y);
-      const cam = easeInOut(clamp01((e - pA) / (pB - pA))) * H;
-      setCam(cam);
-      wps.forEach((el, i) => { if (e >= 0.86 + i * 0.05) el.style.opacity = 1; });
-      if (p < 1) requestAnimationFrame(frame);
-      else {
-        world.classList.remove("routing");
-        sign.classList.add("pop");
-      }
+      const p = Math.min(1, (t - t0) / dur);
+      setE(fromE + (toE - fromE) * easeInOut(p));
+      if (p < 1) requestAnimationFrame(frame); else done && done();
     })(t0);
   }
 
-  back.addEventListener("click", () => {
-    if (!active || camY <= 0) return;
-    sign.classList.remove("pop");
-    wps.forEach(el => el.style.opacity = 0);
+  ticket.addEventListener("click", () => {
+    if (state !== "idle") return;
+    state = "forward";
+    window.__routeActive = true;
     world.classList.add("routing");
-
-    // 镜头倒带回洞洞板，然后复位一切
-    const t0 = performance.now();
-    const from = camY;
-    const DUR = 950;
-    (function f(t) {
-      const p = Math.min(1, (t - t0) / DUR);
-      setCam(from * (1 - easeInOut(p)));
-      if (p < 1) requestAnimationFrame(f);
-      else {
-        svg.classList.remove("on");
-        ticket.classList.remove("torn");
-        dot.style.opacity = "";
-        solid.style.strokeDashoffset = solid.getTotalLength();
-        active = false;
-        window.__routeActive = false;
-        world.classList.remove("routing");
-      }
-    })(t0);
+    buildRoute();
+    sign.classList.remove("pop");
+    ticket.classList.add("torn");
+    svg.classList.add("on");
+    animate(0, 1, 3200, () => {
+      world.classList.remove("routing");
+      sign.classList.add("pop");
+      state = "arrived";
+    });
   });
 
-  ticket.addEventListener("click", startRoute);
+  // 到达后向上滚动 = 原路返回：虚线从下往上收回，镜头跟随升回洞洞板
+  function tryReverse() {
+    if (state !== "arrived") return;
+    state = "reverse";
+    world.classList.add("routing");
+    sign.classList.remove("pop");
+    animate(1, 0, 2600, () => {
+      svg.classList.remove("on");
+      ticket.classList.remove("torn");
+      setE(0);
+      setCam(0);
+      dot.style.opacity = "";
+      state = "idle";
+      window.__routeActive = false;
+      world.classList.remove("routing");
+    });
+  }
+
+  let wheelAcc = 0, touchAcc = 0, lastTY = null;
+  window.addEventListener("wheel", e => {
+    if (state !== "arrived") { wheelAcc = 0; return; }
+    if (e.deltaY < 0) {
+      wheelAcc += Math.abs(e.deltaY);
+      if (wheelAcc > 140) { wheelAcc = 0; tryReverse(); }
+    } else wheelAcc = 0;
+  }, { passive: true });
+  window.addEventListener("touchstart", e => { lastTY = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener("touchmove", e => {
+    if (lastTY === null) return;
+    const y = e.touches[0].clientY;
+    if (state === "arrived") {
+      touchAcc += lastTY - y;
+      if (touchAcc > 60) { touchAcc = 0; tryReverse(); }
+    }
+    lastTY = y;
+  }, { passive: true });
+  window.addEventListener("keydown", e => {
+    if ((e.key === "ArrowUp" || e.key === "PageUp") && state === "arrived") tryReverse();
+  });
 })();
 </script>
 </body>
