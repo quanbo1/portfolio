@@ -245,23 +245,13 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   }
 
-  /* 头像占位框（等图片插入后替换） */
-  .avatar-slot {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 4px;
-    background:
-      linear-gradient(45deg, transparent 48%, rgba(29,24,18,0.12) 49%, rgba(29,24,18,0.12) 51%, transparent 52%),
-      repeating-linear-gradient(45deg, rgba(29,24,18,0.05) 0 8px, transparent 8px 16px),
-      #fbf8f1;
-    border: 1.5px dashed rgba(29,24,18,0.4);
-    color: var(--ink-soft);
-    font-family: var(--mono);
-    text-align: center;
+  /* 头像图片（像素风，保持锐利） */
+  .avatar-img {
+    display: block;
+    object-fit: contain;
+    background: #ffffff;
+    image-rendering: pixelated;
   }
-  .avatar-slot .cam { font-size: 14px; }
-  .avatar-slot .t1 { font-size: 8px; font-weight: 700; letter-spacing: 0.15em; }
-  .avatar-slot .t2 { font-size: 7px; letter-spacing: 0.1em; opacity: 0.8; }
 
   /* 03 织物工牌 */
   .id-badge { left: 968px; top: 88px; width: 190px; transform: rotate(4deg); }
@@ -959,11 +949,7 @@
     <div class="ring"></div>
     <div class="body">
       <div class="head"><span class="en">03 ABOUT ME</span><span class="cn">简介</span></div>
-      <div class="avatar-slot" id="avatar-badge" style="width:56px;height:62px;border-radius:6px;margin-top:12px;">
-        <span class="cam">📷</span>
-        <span class="t1">HEADSHOT</span>
-        <span class="t2">头像位 · 待插入</span>
-      </div>
+      <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:56px;height:62px;border-radius:6px;margin-top:12px;border:1.5px solid rgba(29,24,18,0.35);" />
       <div class="rows">刘芸熙 · 艺术与科技<br />湖北美术学院 在读</div>
       <button class="view">VIEW CV →</button>
     </div>
@@ -1061,11 +1047,7 @@
     <div class="modal-title">ABOUT ME<span class="cn">个 人 履 历</span></div>
     <div class="cv">
       <div class="photo-box">
-        <div class="avatar-slot" id="avatar-cv" style="width:100%;height:250px;border-radius:10px;">
-          <span class="cam" style="font-size:26px;">📷</span>
-          <span class="t1" style="font-size:11px;">HEADSHOT</span>
-          <span class="t2" style="font-size:9px;">头像位 · 待插入</span>
-        </div>
+        <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:100%;height:250px;border-radius:10px;border:1.5px solid rgba(29,24,18,0.35);" />
         <div style="margin-top:14px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:0.08em;">刘芸熙</div>
         <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:#8f8676;margin-top:4px;">LIU YUNXI · ART &amp; TECH</div>
       </div>
