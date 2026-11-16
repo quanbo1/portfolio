@@ -1161,15 +1161,15 @@
   src.querySelectorAll(".flyer").forEach(f => flyLayer.appendChild(f));
   cover.appendChild(flyLayer);
 
-  // 把整张封面切成 24 条细页带：折痕扫过时按弧线卷曲，模拟真实翻书
-  const N = 24;
+  // 把整张封面切成 6 条竖向页带，每条带自己的正/背面与折角光影
+  const N = 6;
   const W = 100 / N;
   const leaves = [];
   for (let i = 0; i < N; i++) {
     const leaf = document.createElement("div");
     leaf.className = "leaf";
     leaf.style.left = (i * W) + "vw";
-    leaf.style.width = (W + 0.22) + "vw";
+    leaf.style.width = (W + 0.3) + "vw";
     leaf.style.zIndex = 10 + i;
 
     const front = src.cloneNode(true);
@@ -1242,33 +1242,24 @@
     tilt.style.transform =
       `scale(${(1 + 0.07 * pre).toFixed(4)}) rotateX(${(-my * 6 * (1 - pre)).toFixed(2)}deg) rotateY(${(mx * 11 * (1 - pre)).toFixed(2)}deg)`;
 
-    // 弧形卷页：折痕从右向左扫过，折痕附近的页带绕圆柱面卷起
-    // F = 折痕位置(vw)，弯折区宽 BEND；页带角度随其相对折痕的距离沿弧线变化
-    const BEND = 26;
-    const fp = smooth(clamp01((cur - 0.15) / 0.66));
-    const F = 118 - 158 * fp;
+    // 级联翻页：6 条页带连续波浪折落
     let flipSum = 0;
     leaves.forEach((L, i) => {
-      const c = i * W + W / 2;
-      const d = smooth(clamp01((F - c) / BEND));
-      flipSum += d;
-      const deg = -168 * d;
-      const lift = Math.sin(d * Math.PI) * 60;
-      const bendX = Math.sin(d * Math.PI) * 1.6;
+      const p = smooth(clamp01((cur - (0.06 + i * 0.042)) / 0.56));
+      flipSum += p;
       L.leaf.style.transform =
-        `translate3d(0,0,${lift.toFixed(1)}px) rotateY(${deg.toFixed(2)}deg) rotateX(${bendX.toFixed(2)}deg)`;
-      const shade = Math.sin(d * Math.PI) * 0.45;
-      L.shade.style.opacity = shade.toFixed(3);
+        `rotateY(${(-172 * p).toFixed(2)}deg) rotateX(${(Math.sin(p * Math.PI) * 3).toFixed(2)}deg)`;
+      L.shade.style.opacity = (Math.sin(p * Math.PI) * 0.38).toFixed(3);
     });
     const flip = flipSum / N;
 
-    // 收尾退场：全部卷完之后，整叠纸页向后沉降、左移并淡出
-    const out = smooth(clamp01((cur - 0.82) / 0.18));
+    // 收尾退场：折叠完成后，整叠纸页向后沉降、左移并淡出，自然过渡到洞洞板
+    const out = smooth(clamp01((cur - 0.86) / 0.14));
     if (out > 0) {
       leaves.forEach(L => {
         L.leaf.style.opacity = (1 - out).toFixed(3);
         L.leaf.style.transform =
-          `translate3d(${(-out * 16).toFixed(2)}vw, ${(out * 5).toFixed(2)}vh, ${(-out * 240).toFixed(1)}px) rotateY(-168deg)`;
+          `translate3d(${(-out * 16).toFixed(2)}vw, ${(out * 5).toFixed(2)}vh, ${(-out * 240).toFixed(1)}px) rotateY(-172deg)`;
       });
     }
 
@@ -1313,7 +1304,7 @@
     cur = 1;
     leaves.forEach(L => {
       L.leaf.style.opacity = "0";
-      L.leaf.style.transform = "translate3d(-16vw, 5vh, -240px) rotateY(-168deg)";
+      L.leaf.style.transform = "translate3d(-16vw, 5vh, -240px) rotateY(-172deg)";
       L.shade.style.opacity = "0";
     });
     scene.style.transform = "scale(1)";
