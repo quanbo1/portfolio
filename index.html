@@ -470,12 +470,157 @@
   .contact-card .row { font-family: var(--mono); font-size: 13px; margin: 10px 0; }
   .contact-card .row b { display: inline-block; min-width: 70px; text-align: left; color: var(--ink-soft); font-size: 11px; }
 
+  /* ========== 封面（翻页） ========== */
+  .scene { transition: transform 1.6s cubic-bezier(.6,0,.3,1); transform: scale(1.04); }
+  body.ready .scene { transform: scale(1); }
+
+  #cover {
+    position: fixed; inset: 0;
+    z-index: 300;
+    perspective: 2400px;
+    perspective-origin: left center;
+    cursor: pointer;
+  }
+  #cover.done { display: none; }
+  .cover-page {
+    position: absolute; inset: 0;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 1.6s cubic-bezier(.65,0,.25,1);
+    will-change: transform;
+  }
+  #cover.open .cover-page { transform: rotateY(-179deg); }
+  .face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* 封面正面 */
+  .cover-front {
+    background:
+      radial-gradient(circle, rgba(29,24,18,0.10) 2px, transparent 2.6px) 16px 16px / 34px 34px,
+      linear-gradient(150deg, #f4ecdb 0%, #ece2cd 70%, #e5d9c1 100%);
+    box-shadow: inset 0 0 120px rgba(90,70,40,0.14);
+    overflow: hidden;
+  }
+  .cover-front::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 55%, rgba(255,255,255,0.35) 60%, transparent 66%);
+    pointer-events: none;
+  }
+  .rings {
+    position: absolute; left: 34px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center; gap: 120px;
+  }
+  .rings span {
+    width: 26px; height: 34px;
+    border: 7px solid #17130d;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 2px rgba(255,255,255,0.25), 3px 3px 5px rgba(0,0,0,0.3);
+  }
+  .tape {
+    position: absolute; top: -20px; right: 120px;
+    width: 150px; height: 46px;
+    background: rgba(246,185,29,0.75);
+    transform: rotate(35deg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  }
+  .cover-inner {
+    position: absolute; inset: 0;
+    padding: 70px 90px 60px 130px;
+    display: flex; flex-direction: column;
+    font-family: var(--mono);
+  }
+  .cover-top {
+    display: flex; justify-content: space-between;
+    font-size: 12px; letter-spacing: 0.14em; font-weight: 700;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px;
+  }
+  .cover-inner h1 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(70px, 11vw, 148px);
+    letter-spacing: 0.08em;
+    line-height: 1.15;
+    margin-top: auto;
+  }
+  .cover-sub {
+    font-size: 12px; letter-spacing: 0.22em; color: var(--ink-soft);
+    margin: 18px 0 0;
+  }
+  .cover-index {
+    list-style: none;
+    margin-top: 42px;
+    font-size: 12px; letter-spacing: 0.12em;
+    line-height: 2.3;
+    color: var(--ink-soft);
+    columns: 2; max-width: 460px;
+  }
+  .cover-index b { color: var(--ink); }
+  .cover-open {
+    margin-top: 44px;
+    align-self: flex-start;
+    font-size: 12px; letter-spacing: 0.2em; font-weight: 700;
+    border: 1.5px solid var(--ink);
+    padding: 14px 26px;
+    animation: breathe 2.2s ease infinite;
+  }
+  .cover-open span { display: inline-block; color: var(--yellow); text-shadow: 0 0 1px rgba(120,90,0,0.4); }
+  @keyframes breathe {
+    0%, 100% { transform: translateX(0); opacity: 1; }
+    50% { transform: translateX(6px); opacity: 0.65; }
+  }
+  .cover-barcode { width: 180px; margin-top: auto; }
+
+  /* 封面背面（纸张背面） */
+  .cover-back {
+    transform: rotateY(180deg);
+    background:
+      radial-gradient(circle, rgba(29,24,18,0.07) 2px, transparent 2.6px) 16px 16px / 34px 34px,
+      linear-gradient(210deg, #e2d7c0, #d8ccb2);
+    box-shadow: inset 0 0 100px rgba(90,70,40,0.2);
+  }
+  .cover-back::after {
+    content: "02 SELECTED WORKS — 翻过这一页，看看我的作品";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em;
+    color: rgba(74,66,55,0.4);
+  }
+
   @media (max-width: 1240px) {
     body { overflow-x: scroll; }
   }
 </style>
 </head>
 <body>
+
+<!-- ===== 封面 ===== -->
+<div id="cover">
+  <div class="cover-page">
+    <div class="face cover-front">
+      <div class="tape"></div>
+      <div class="rings"><span></span><span></span><span></span></div>
+      <div class="cover-inner">
+        <div class="cover-top"><span>DA×WN PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
+        <h1>个人<br />作品集</h1>
+        <div class="cover-sub">PERSONAL PORTFOLIO — WHERE IDEAS MEET NEW BEGINNINGS.</div>
+        <ul class="cover-index">
+          <li><b>01</b> · 简介 ABOUT</li>
+          <li><b>02</b> · 作品 WORKS</li>
+          <li><b>03</b> · 履历 CV</li>
+          <li><b>04</b> · 技能 SKILLS</li>
+          <li><b>05</b> · 联系 CONTACT</li>
+        </ul>
+        <div class="cover-open">CLICK TO OPEN · 点击翻开 <span>→</span></div>
+        <div class="cover-barcode barcode"></div>
+      </div>
+    </div>
+    <div class="face cover-back"></div>
+  </div>
+</div>
 
 <div class="scene">
 
@@ -748,6 +893,21 @@
   });
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") document.querySelectorAll(".modal").forEach(m => m.classList.remove("show"));
+  });
+
+  // ===== 封面翻页 =====
+  const cover = document.getElementById("cover");
+  let opened = false;
+  function openCover() {
+    if (opened) return;
+    opened = true;
+    cover.classList.add("open");
+    document.body.classList.add("ready");
+    setTimeout(() => cover.classList.add("done"), 1750);
+  }
+  cover.addEventListener("click", openCover);
+  document.addEventListener("keydown", e => {
+    if ((e.key === "Enter" || e.key === " ") && !opened) { e.preventDefault(); openCover(); }
   });
 </script>
 </body>
