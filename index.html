@@ -993,6 +993,11 @@
   <!-- 便利贴 -->
   <div class="sticky">TODO ✓<br />—— 好的设计<br />是解决问题的<br />方式，不是装<br />饰。2026</div>
 
+  <!-- 返回封面提示 -->
+  <div style="position:absolute; left:360px; bottom:26px; font-family:var(--mono); font-size:10px; letter-spacing:0.18em; color:var(--ink-soft);">
+    ↑ SCROLL UP · 向上滚动返回封面
+  </div>
+
 </div>
 
 <!-- ===== 弹窗：作品 ===== -->
@@ -1306,19 +1311,35 @@
     scene.style.filter = "none";
     cover.classList.add("done");
     document.body.classList.remove("lock");
-    window.removeEventListener("wheel", onWheel);
-    window.removeEventListener("touchmove", onTouchMove);
+  }
+
+  // 从洞洞板向上滚动：倒放翻页动画回到封面
+  function reopen() {
+    if (!done) return;
+    done = false;
+    cover.classList.remove("done");
+    document.body.classList.add("lock");
+    target = 0.84;
+    startRender();
   }
 
   function onWheel(e) {
-    if (done) return;
+    if (done) {
+      if (e.deltaY < 0) { e.preventDefault(); reopen(); }
+      return;
+    }
     e.preventDefault();
     target = clamp01(target + e.deltaY * 0.00055);
     startRender();
   }
   let lastTouchY = null;
   function onTouchMove(e) {
-    if (done) return;
+    if (done) {
+      const y = e.touches[0].clientY;
+      if (lastTouchY !== null && y - lastTouchY > 30) reopen();
+      lastTouchY = y;
+      return;
+    }
     if (e.touches.length !== 1) return;
     e.preventDefault();
     const y = e.touches[0].clientY;
@@ -1334,6 +1355,7 @@
   document.addEventListener("keydown", e => {
     if ((e.key === "Enter" || e.key === " ") && !done) { e.preventDefault(); target = 1; startRender(); }
     if (e.key === "ArrowDown" && !done) { e.preventDefault(); target = clamp01(target + 0.22); startRender(); }
+    if (e.key === "ArrowUp" && done) { e.preventDefault(); reopen(); }
   });
   startRender();
 </script>
