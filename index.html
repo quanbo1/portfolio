@@ -552,7 +552,6 @@
   #route-layer {
     position: fixed; inset: 0; z-index: 400;
     pointer-events: none; display: none;
-    background: rgba(60, 45, 25, 0.10);
   }
   #route-layer.on { display: block; }
   #route-svg {
@@ -562,7 +561,15 @@
   #route-svg.on { opacity: 1; }
   #route-dot { opacity: 0; transition: opacity .3s; }
   #route-svg.on #route-dot { opacity: 1; }
-  .route-wp { opacity: 0; transition: opacity .4s; }
+
+  /* 第二页内的路线延续段 */
+  .p2-route { position: absolute; inset: 0; pointer-events: none; z-index: 9; }
+  #p2-route-svg { width: 100%; height: 100%; opacity: 0; transition: opacity .3s; }
+  #p2-route-svg.on { opacity: 1; }
+  #p2-route-dot { opacity: 0; transition: opacity .3s; }
+  #p2-route-svg.on #p2-route-dot { opacity: 1; }
+  .p2-wp { opacity: 0; transition: opacity .4s; }
+  .p2-route .station-sign { left: 50%; top: 215px; }
 
   .station-sign {
     position: absolute;
@@ -1725,15 +1732,8 @@
       </mask>
     </defs>
     <path id="route-dashed" d="M 0 0" stroke="#26211a" stroke-width="3.5" stroke-dasharray="12 9" fill="none" mask="url(#route-mask)" />
-    <circle class="route-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
-    <circle class="route-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
     <circle id="route-dot" r="10" fill="#f6b91d" stroke="#1d1812" stroke-width="3" />
   </svg>
-  <div class="station-sign" id="station-sign">
-    <div class="s-pin">📍</div>
-    <div class="s-board">STOP 02 · NEXT PAGE</div>
-    <div class="s-pole"></div>
-  </div>
 </div>
 
 <section id="page2">
@@ -1791,6 +1791,26 @@
     </figure>
   </div>
 
+  <!-- 第二页内的路线延续段：从底部接续 → 穿过拼贴墙 → 终点站牌 -->
+  <div class="p2-route">
+    <svg id="p2-route-svg">
+      <defs>
+        <mask id="p2-route-mask">
+          <path id="p2-route-solid" d="M 0 0" stroke="#fff" stroke-width="6" fill="none" />
+        </mask>
+      </defs>
+      <path id="p2-route-dashed" d="M 0 0" stroke="#26211a" stroke-width="3.5" stroke-dasharray="12 9" fill="none" mask="url(#p2-route-mask)" />
+      <circle class="p2-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
+      <circle class="p2-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
+      <circle id="p2-route-dot" r="10" fill="#f6b91d" stroke="#1d1812" stroke-width="3" />
+    </svg>
+    <div class="station-sign" id="station-sign">
+      <div class="s-pin">📍</div>
+      <div class="s-board">STOP 02 · ON TOUR</div>
+      <div class="s-pole"></div>
+    </div>
+  </div>
+
   <button class="p2-back" id="p2-back">← TICKET BACK · 返回洞洞板</button>
 </section>
 
@@ -1802,64 +1822,62 @@
   const solid = document.getElementById("route-solid");
   const dashed = document.getElementById("route-dashed");
   const dot = document.getElementById("route-dot");
-  const wps = document.querySelectorAll(".route-wp");
-  const sign = document.getElementById("station-sign");
   const page2 = document.getElementById("page2");
   const back = document.getElementById("p2-back");
+  const p2svg = document.getElementById("p2-route-svg");
+  const p2solid = document.getElementById("p2-route-solid");
+  const p2dashed = document.getElementById("p2-route-dashed");
+  const p2dot = document.getElementById("p2-route-dot");
+  const p2wps = document.querySelectorAll(".p2-wp");
+  const sign = document.getElementById("station-sign");
   let active = false;
+
+  function ease(p) { return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; }
+
+  function travel(pathEl, dotEl, len, dur, onTick, onDone) {
+    const t0 = performance.now();
+    (function frame(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const e = ease(p);
+      pathEl.style.strokeDashoffset = len * (1 - e);
+      if (dotEl) {
+        const pt = pathEl.getPointAtLength(len * e);
+        dotEl.setAttribute("cx", pt.x);
+        dotEl.setAttribute("cy", pt.y);
+      }
+      onTick && onTick(e);
+      if (p < 1) requestAnimationFrame(frame); else onDone && onDone();
+    })(performance.now());
+  }
 
   function startRoute() {
     if (active) return;
     active = true;
 
+    // 起点：票根；虚线向下延伸，从屏幕底部"驶出"
     const r = ticket.getBoundingClientRect();
     const sx = r.left + r.width * 0.38;
     const sy = r.top + r.height * 0.45;
-    const ex = window.innerWidth * 0.60;
-    const ey = window.innerHeight * 0.46;
-    const d = `M ${sx} ${sy} C ${sx + 130} ${sy - 130}, ${ex - 220} ${ey + 150}, ${ex} ${ey}`;
-
-    sign.style.left = ex + "px";
-    sign.style.top = ey + "px";
-    sign.classList.remove("pop");
-
-    solid.setAttribute("d", d);
-    dashed.setAttribute("d", d);
+    const ex = window.innerWidth * 0.62;
+    const ey = window.innerHeight;
+    solid.setAttribute("d", `M ${sx} ${sy} C ${sx + 60} ${sy + 170}, ${ex - 200} ${ey - 240}, ${ex} ${ey}`);
+    dashed.setAttribute("d", solid.getAttribute("d"));
     const len = solid.getTotalLength();
     solid.style.strokeDasharray = len;
     solid.style.strokeDashoffset = len;
-
-    const wpData = [];
-    wps.forEach((el, i) => {
-      const at = 0.34 + i * 0.28;
-      const pt = solid.getPointAtLength(len * at);
-      el.setAttribute("cx", pt.x);
-      el.setAttribute("cy", pt.y);
-      el.style.opacity = 0;
-      wpData.push({ el, at });
-    });
+    dot.style.opacity = "";
 
     // 1. 撕票
     ticket.classList.add("torn");
     layer.classList.add("on");
 
-    // 2. 虚线路线延伸
+    // 2. 第一段虚线向下延伸出屏幕
     setTimeout(() => {
       svg.classList.add("on");
-      const t0 = performance.now();
-      const DUR = 2100;
-      function frame(t) {
-        const p = Math.min(1, (t - t0) / DUR);
-        const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-        solid.style.strokeDashoffset = len * (1 - e);
-        const pt = solid.getPointAtLength(len * e);
-        dot.setAttribute("cx", pt.x);
-        dot.setAttribute("cy", pt.y);
-        wpData.forEach(w => { if (e >= w.at) w.el.style.opacity = 1; });
-        if (p < 1) { requestAnimationFrame(frame); }
-        else { sign.classList.add("pop"); setTimeout(showPage2, 750); }
-      }
-      requestAnimationFrame(frame);
+      travel(solid, dot, len, 1700, null, () => {
+        dot.style.opacity = 0;
+        setTimeout(showPage2, 320);
+      });
     }, 480);
   }
 
@@ -1867,18 +1885,49 @@
     page2.style.display = "flex";
     setTimeout(() => {
       page2.classList.add("in");
-      setTimeout(() => { layer.classList.remove("on"); svg.classList.remove("on"); }, 650);
+      setTimeout(startPage2Route, 500);
     }, 40);
+  }
+
+  // 3. 第二段路线在第二页内延续：同位置从底部接续，穿过拼贴墙，到达终点站牌
+  function startPage2Route() {
+    const W = window.innerWidth, H = window.innerHeight;
+    const x0 = W * 0.62, y0 = H + 12;   // 与第一段同 x 无缝衔接
+    const x1 = W * 0.50, y1 = 215;      // 终点：站牌立杆位置
+    p2solid.setAttribute("d", `M ${x0} ${y0} C ${x0 - 70} ${y0 - 230}, ${x1 + 190} ${H * 0.52}, ${x1} ${y1}`);
+    p2dashed.setAttribute("d", p2solid.getAttribute("d"));
+    const len = p2solid.getTotalLength();
+    p2solid.style.strokeDasharray = len;
+    p2solid.style.strokeDashoffset = len;
+    p2svg.classList.add("on");
+
+    const wpData = [];
+    p2wps.forEach((el, i) => {
+      const at = 0.42 + i * 0.3;
+      const pt = p2solid.getPointAtLength(len * at);
+      el.setAttribute("cx", pt.x);
+      el.setAttribute("cy", pt.y);
+      el.style.opacity = 0;
+      wpData.push({ el, at });
+    });
+    sign.classList.remove("pop");
+
+    travel(p2solid, p2dot, len, 1400, (e) => {
+      wpData.forEach(w => { if (e >= w.at) w.el.style.opacity = 1; });
+    }, () => sign.classList.add("pop"));
   }
 
   back.addEventListener("click", () => {
     page2.classList.remove("in");
     setTimeout(() => {
       page2.style.display = "none";
-      ticket.classList.remove("torn");
+      p2svg.classList.remove("on");
+      p2wps.forEach(el => el.style.opacity = 0);
       sign.classList.remove("pop");
       svg.classList.remove("on");
-      wps.forEach(el => el.style.opacity = 0);
+      layer.classList.remove("on");
+      ticket.classList.remove("torn");
+      dot.style.opacity = "";
       active = false;
     }, 550);
   });
