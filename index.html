@@ -550,8 +550,8 @@
   .r2-ticket.torn::before, .r2-ticket.torn::after { opacity: 0; }
 
   /* 世界容器：洞洞板 + 第二页纵向拼接成一张长图，镜头在其上平移 */
-  #world { position: relative; will-change: transform; }
-  #world.routing { pointer-events: none; }
+  #world { position: relative; }
+  #world.routing { pointer-events: none; will-change: transform; }
 
   #route-layer {
     position: absolute; inset: 0; z-index: 400;
