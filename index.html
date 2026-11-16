@@ -641,6 +641,12 @@
     font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .2em;
   }
   .p2-slot .ph small { font-size: 7px; letter-spacing: .14em; opacity: .75; font-weight: 400; }
+  .p2-slot img {
+    width: 100%; height: calc(100% - 20px);
+    object-fit: cover; display: block;
+    border-radius: 1px;
+  }
+  .p2-slot img.fit-contain { object-fit: contain; background: #fff; }
   .p2-slot figcaption {
     display: flex; justify-content: space-between; align-items: center;
     padding-top: 5px;
@@ -1744,40 +1750,46 @@
     <div class="p2-sw" style="left:15%;top:76%;background:#d98e5f;--rot:5deg;width:30px;height:30px"></div>
     <div class="p2-sw" style="left:55%;top:84%;background:#f6b91d;--rot:-6deg;width:26px;height:26px"></div>
 
-    <!-- 作品位 01 大横幅 -->
-    <figure class="p2-slot" style="left:4%;top:8%;width:300px;height:210px;--rot:-2deg;z-index:2">
-      <div class="ph"><span>IMG 01</span><small>作品位 · 待插图</small></div>
-      <figcaption><b>01</b><span>BRANDING 品牌设计</span></figcaption>
+    <!-- 01 秋野拾趣 · 游戏场景板（横 1.49:1） -->
+    <figure class="p2-slot" style="left:3%;top:6%;width:350px;height:256px;--rot:-2deg;z-index:2">
+      <img src="works/w1-qy.jpg" alt="秋野拾趣 · 游戏场景设计" loading="lazy" />
+      <figcaption><b>01</b><span>GAME SCENE 数字场景 · 秋野拾趣</span></figcaption>
     </figure>
 
-    <!-- 作品位 02 竖幅（与01叠压） -->
-    <figure class="p2-slot" style="left:23%;top:24%;width:215px;height:285px;--rot:2deg;z-index:3">
-      <div class="ph"><span>IMG 02</span><small>作品位 · 待插图</small></div>
-      <figcaption><b>02</b><span>POSTER 海报设计</span></figcaption>
+    <!-- 02 UPSTREAM · 交互编程板（横 1.51:1） -->
+    <figure class="p2-slot" style="left:33%;top:3%;width:310px;height:227px;--rot:2deg;z-index:3">
+      <img src="works/w2-upstream.png" alt="UPSTREAM 交互鱼群" loading="lazy" />
+      <figcaption><b>02</b><span>INTERACTIVE 交互设计 · UPSTREAM</span></figcaption>
     </figure>
 
-    <!-- 作品位 03 中竖幅 -->
-    <figure class="p2-slot" style="left:43%;top:4%;width:240px;height:262px;--rot:3deg;z-index:2">
-      <div class="ph"><span>IMG 03</span><small>作品位 · 待插图</small></div>
-      <figcaption><b>03</b><span>AI VISUAL AI视觉</span></figcaption>
+    <!-- 03 觅径游园 · 竖版信息图（竖 0.66:1） -->
+    <figure class="p2-slot" style="left:63%;top:5%;width:215px;height:348px;--rot:3deg;z-index:2">
+      <img src="works/w5-garden.png" alt="觅径游园 信息可视化" loading="lazy" />
+      <figcaption><b>03</b><span>INFO DESIGN 信息可视化 · 觅径游园</span></figcaption>
     </figure>
 
-    <!-- 作品位 04 小横幅 -->
-    <figure class="p2-slot" style="left:65%;top:16%;width:235px;height:172px;--rot:-2deg;z-index:2">
-      <div class="ph"><span>IMG 04</span><small>作品位 · 待插图</small></div>
-      <figcaption><b>04</b><span>EDITORIAL 编辑设计</span></figcaption>
+    <!-- 04 武汉港 · 超宽地图（横 1.99:1） -->
+    <figure class="p2-slot" style="left:36%;top:34%;width:300px;height:172px;--rot:-2deg;z-index:4">
+      <img src="works/w3-map.png" alt="武汉港口地图可视化" loading="lazy" />
+      <figcaption><b>04</b><span>DATA MAP 数据地图 · 武汉港</span></figcaption>
     </figure>
 
-    <!-- 作品位 05 大主图（与02/03叠压） -->
-    <figure class="p2-slot" style="left:39%;top:46%;width:330px;height:248px;--rot:-2deg;z-index:4">
-      <div class="ph"><span>IMG 05</span><small>作品位 · 待插图</small></div>
-      <figcaption><b>05</b><span>PACKAGING 包装设计</span></figcaption>
+    <!-- 05 海洋拼贴 · 正方形（1:1，整图无裁切） -->
+    <figure class="p2-slot" style="left:6%;top:42%;width:212px;height:234px;--rot:2deg;z-index:2">
+      <img class="fit-contain" src="works/w4-ocean.png" alt="海洋主题拼贴" loading="lazy" />
+      <figcaption><b>05</b><span>COLLAGE 拼贴艺术 · 海洋苏醒</span></figcaption>
     </figure>
 
-    <!-- 作品位 06 小横幅 -->
-    <figure class="p2-slot" style="left:13%;top:56%;width:200px;height:146px;--rot:2deg;z-index:2">
-      <div class="ph"><span>IMG 06</span><small>作品位 · 待插图</small></div>
-      <figcaption><b>06</b><span>SOCIAL MEDIA 社媒视觉</span></figcaption>
+    <!-- 06 恭城茶韵 · 横版近方（1.04:1） -->
+    <figure class="p2-slot" style="left:34%;top:62%;width:240px;height:253px;--rot:-2deg;z-index:3">
+      <img src="works/w7-tea-h.png" alt="恭城茶韵 横版信息图" loading="lazy" />
+      <figcaption><b>06</b><span>INFO POSTER 信息海报 · 茶韵风物</span></figcaption>
+    </figure>
+
+    <!-- 07 恭城茶韵 · 竖版（0.57:1） -->
+    <figure class="p2-slot" style="left:62%;top:52%;width:200px;height:371px;--rot:2deg;z-index:2">
+      <img src="works/w6-tea-v.png" alt="恭城茶韵 竖版信息图" loading="lazy" />
+      <figcaption><b>07</b><span>INFO POSTER 信息海报 · 茶韵工艺</span></figcaption>
     </figure>
   </div>
 
