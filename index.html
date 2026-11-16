@@ -470,9 +470,9 @@
   .contact-card .row { font-family: var(--mono); font-size: 13px; margin: 10px 0; }
   .contact-card .row b { display: inline-block; min-width: 70px; text-align: left; color: var(--ink-soft); font-size: 11px; }
 
-  /* ========== 封面（翻页） ========== */
-  .scene { transition: transform 1.6s cubic-bezier(.6,0,.3,1); transform: scale(1.04); }
-  body.ready .scene { transform: scale(1); }
+  /* ========== 封面（滚动驱动翻页） ========== */
+  .scene { transition: none; transform: scale(1.05); will-change: transform; }
+  body.lock { overflow: hidden; }
 
   #cover {
     position: fixed; inset: 0;
@@ -486,10 +486,8 @@
     position: absolute; inset: 0;
     transform-origin: left center;
     transform-style: preserve-3d;
-    transition: transform 1.6s cubic-bezier(.65,0,.25,1);
     will-change: transform;
   }
-  #cover.open .cover-page { transform: rotateY(-179deg); }
   .face {
     position: absolute; inset: 0;
     backface-visibility: hidden;
@@ -532,7 +530,48 @@
     padding: 70px 90px 60px 130px;
     display: flex; flex-direction: column;
     font-family: var(--mono);
+    will-change: transform, opacity;
   }
+  .cover-top { transition: opacity 0.3s; }
+  .cover-hint-wrap {
+    margin-top: 10px;
+    display: flex; align-items: center; gap: 14px;
+    font-size: 11px; letter-spacing: 0.18em; color: var(--ink-soft);
+  }
+  .hint-track {
+    width: 120px; height: 3px;
+    background: rgba(29,24,18,0.15);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .hint-fill {
+    display: block; height: 100%; width: 0%;
+    background: var(--yellow);
+    border-radius: 99px;
+  }
+
+  /* 滚动进度轨 */
+  .rail {
+    position: absolute;
+    right: 30px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    z-index: 5;
+  }
+  .rail-track {
+    width: 3px; height: 180px;
+    background: rgba(29,24,18,0.18);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .rail-fill {
+    display: block; width: 100%; height: 0%;
+    background: var(--yellow);
+    transition: none;
+  }
+  .rail-num { font-weight: 700; color: var(--ink); }
   .cover-top {
     display: flex; justify-content: space-between;
     font-size: 12px; letter-spacing: 0.14em; font-weight: 700;
@@ -569,8 +608,8 @@
   }
   .cover-open span { display: inline-block; color: var(--yellow); text-shadow: 0 0 1px rgba(120,90,0,0.4); }
   @keyframes breathe {
-    0%, 100% { transform: translateX(0); opacity: 1; }
-    50% { transform: translateX(6px); opacity: 0.65; }
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(6px); opacity: 0.65; }
   }
   .cover-barcode { width: 180px; margin-top: auto; }
 
@@ -599,12 +638,17 @@
 
 <!-- ===== 封面 ===== -->
 <div id="cover">
-  <div class="cover-page">
+  <div class="rail">
+    <span id="rail-num">001</span>
+    <span class="rail-track"><span class="rail-fill" id="rail-fill"></span></span>
+    <span>002</span>
+  </div>
+  <div class="cover-page" id="cover-page">
     <div class="face cover-front">
       <div class="tape"></div>
       <div class="rings"><span></span><span></span><span></span></div>
-      <div class="cover-inner">
-        <div class="cover-top"><span>DA×WN PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
+      <div class="cover-inner" id="cover-inner">
+        <div class="cover-top" id="cover-top"><span>DA×WN PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
         <h1>个人<br />作品集</h1>
         <div class="cover-sub">PERSONAL PORTFOLIO — WHERE IDEAS MEET NEW BEGINNINGS.</div>
         <ul class="cover-index">
@@ -614,7 +658,12 @@
           <li><b>04</b> · 技能 SKILLS</li>
           <li><b>05</b> · 联系 CONTACT</li>
         </ul>
-        <div class="cover-open">CLICK TO OPEN · 点击翻开 <span>→</span></div>
+        <div class="cover-open">SCROLL TO OPEN · 滚动翻开 <span>↓</span></div>
+        <div class="cover-hint-wrap">
+          <span>READ PROGRESS</span>
+          <span class="hint-track"><span class="hint-fill" id="hint-fill"></span></span>
+          <span>或点击直接进入</span>
+        </div>
         <div class="cover-barcode barcode"></div>
       </div>
     </div>
@@ -895,20 +944,92 @@
     if (e.key === "Escape") document.querySelectorAll(".modal").forEach(m => m.classList.remove("show"));
   });
 
-  // ===== 封面翻页 =====
+  // ===== 封面：滚动驱动翻页 =====
   const cover = document.getElementById("cover");
-  let opened = false;
-  function openCover() {
-    if (opened) return;
-    opened = true;
-    cover.classList.add("open");
-    document.body.classList.add("ready");
-    setTimeout(() => cover.classList.add("done"), 1750);
+  const coverPage = document.getElementById("cover-page");
+  const coverInner = document.getElementById("cover-inner");
+  const coverTop = document.getElementById("cover-top");
+  const railFill = document.getElementById("rail-fill");
+  const railNum = document.getElementById("rail-num");
+  const hintFill = document.getElementById("hint-fill");
+  const scene = document.querySelector(".scene");
+
+  document.body.classList.add("lock");
+
+  let target = 0, cur = 0, done = false, rafId = null;
+
+  const clamp01 = v => Math.min(1, Math.max(0, v));
+  const easeInOutCubic = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+
+  function render() {
+    cur += (target - cur) * 0.085;
+    if (Math.abs(target - cur) < 0.0005) cur = target;
+
+    // 阶段1：封面内容视差上移
+    coverInner.style.transform = `translateY(${-cur * 110}px)`;
+    coverInner.style.opacity = String(1 - clamp01(cur / 0.55) * 0.9);
+    coverTop.style.opacity = String(1 - clamp01(cur / 0.3));
+
+    // 阶段2：封面绕装订线翻开
+    const flip = easeInOutCubic(clamp01((cur - 0.28) / 0.72));
+    coverPage.style.transform = `rotateY(${-179 * flip}deg)`;
+
+    // 阶段3：洞洞板推进聚焦
+    scene.style.transform = `scale(${1.05 - 0.05 * flip})`;
+    scene.style.filter = `brightness(${0.72 + 0.28 * flip}) saturate(${0.9 + 0.1 * flip})`;
+
+    // 进度指示
+    railFill.style.height = (cur * 100).toFixed(1) + "%";
+    hintFill.style.width = (cur * 100).toFixed(1) + "%";
+    railNum.textContent = cur > 0.5 ? "002" : "001";
+
+    if (cur > 0.995) { finish(); return; }
+    rafId = requestAnimationFrame(render);
   }
-  cover.addEventListener("click", openCover);
+
+  function startRender() {
+    if (rafId === null) rafId = requestAnimationFrame(render);
+  }
+
+  function finish() {
+    done = true;
+    cancelAnimationFrame(rafId); rafId = null;
+    cur = 1;
+    coverPage.style.transform = "rotateY(-179deg)";
+    scene.style.transform = "scale(1)";
+    scene.style.filter = "none";
+    cover.classList.add("done");
+    document.body.classList.remove("lock");
+    window.removeEventListener("wheel", onWheel);
+    window.removeEventListener("touchmove", onTouchMove);
+  }
+
+  function onWheel(e) {
+    if (done) return;
+    e.preventDefault();
+    target = clamp01(target + e.deltaY * 0.0011);
+    startRender();
+  }
+  let lastTouchY = null;
+  function onTouchMove(e) {
+    if (done) return;
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    if (lastTouchY !== null) target = clamp01(target + (lastTouchY - y) * 0.0018);
+    lastTouchY = y;
+    startRender();
+  }
+  window.addEventListener("wheel", onWheel, { passive: false });
+  window.addEventListener("touchmove", onTouchMove, { passive: false });
+  window.addEventListener("touchend", () => { lastTouchY = null; });
+
+  cover.addEventListener("click", () => { if (!done) { target = 1; startRender(); } });
   document.addEventListener("keydown", e => {
-    if ((e.key === "Enter" || e.key === " ") && !opened) { e.preventDefault(); openCover(); }
+    if ((e.key === "Enter" || e.key === " ") && !done) { e.preventDefault(); target = 1; startRender(); }
+    if (e.key === "ArrowDown" && !done) { e.preventDefault(); target = clamp01(target + 0.22); startRender(); }
   });
+  startRender();
 </script>
 </body>
 </html>
