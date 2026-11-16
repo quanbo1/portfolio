@@ -525,6 +525,102 @@
     transform: rotate(35deg);
     box-shadow: 0 4px 8px rgba(0,0,0,0.12);
   }
+
+  /* 翻页飞出的物件 */
+  .face.cover-front { transform-style: preserve-3d; }
+  .flyer {
+    position: absolute;
+    will-change: transform, opacity;
+    opacity: 0;
+    font-family: var(--mono);
+    filter: drop-shadow(0 10px 12px rgba(60,45,25,0.35));
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .flyer.tag-y {
+    background: linear-gradient(160deg, #ffc82e, var(--yellow) 60%, #e3a50c);
+    color: var(--black-tag);
+    font-weight: 700; font-size: 13px;
+    padding: 26px 14px 14px;
+    border-radius: 10px;
+  }
+  .flyer.tag-y::before {
+    content: "";
+    position: absolute; top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 16px; height: 16px;
+    background: #f3ecdc;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.35);
+  }
+  .flyer.scrap {
+    background: #fbf8f1;
+    color: var(--ink);
+    font-size: 11px; font-weight: 700;
+    padding: 12px 16px;
+    border-radius: 3px;
+    box-shadow: 0 8px 14px rgba(60,45,25,0.3);
+  }
+  .flyer.sticky-mini {
+    width: 64px; height: 60px;
+    background: linear-gradient(170deg, #ffe27a, #ffd94f);
+    color: #4d3f10;
+    font-size: 10px; font-weight: 700;
+    padding: 12px 8px;
+    box-shadow: 0 8px 14px rgba(60,45,25,0.3);
+  }
+  .flyer.clip-fly { width: 34px; height: 52px; }
+  .clip-fly::before {
+    content: "";
+    position: absolute; inset: 0;
+    border: 5px solid #b3aea6;
+    border-radius: 17px;
+    border-bottom-color: transparent;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.7);
+  }
+  .clip-fly::after {
+    content: "";
+    position: absolute; left: 5px; right: 5px; bottom: 8px;
+    height: 16px;
+    border: 5px solid #a09b93;
+    border-top-color: transparent;
+    border-radius: 0 0 10px 10px;
+  }
+  .flyer.stamp-fly {
+    width: 52px; height: 58px;
+    background: #fff;
+    border: 1px dashed #b9ab8d;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+  }
+  .flyer.bar-fly {
+    width: 86px; height: 22px;
+    background: #fbf8f1;
+    padding: 4px 8px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.18);
+  }
+  .bar-fly::before {
+    content: "";
+    display: block; height: 100%;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px, var(--ink) 9px 12px, transparent 12px 14px);
+  }
+  .flyer.sticker {
+    width: 46px; height: 46px;
+    background: var(--yellow);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: var(--black-tag);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  }
+  .flyer.pill-fly {
+    background: radial-gradient(120% 120% at 30% 20%, #2a251e, var(--black-tag) 65%);
+    color: #f0e9db;
+    font-size: 10px; letter-spacing: 0.2em;
+    padding: 9px 18px;
+    border-radius: 999px;
+    box-shadow: 0 8px 14px rgba(40,32,20,0.4);
+  }
   .cover-inner {
     position: absolute; inset: 0;
     padding: 70px 90px 60px 130px;
@@ -647,6 +743,18 @@
     <div class="face cover-front">
       <div class="tape"></div>
       <div class="rings"><span></span><span></span><span></span></div>
+
+      <!-- 翻页时飞出的物件（滚动驱动，可逆） -->
+      <div class="flyer tag-y" style="top:38%; left:58%;"  data-at="0.34" data-dx="330" data-dy="-190" data-rot="38"  data-z="90">IDEA →</div>
+      <div class="flyer scrap"  style="top:22%; left:38%;" data-at="0.38" data-dx="-260" data-dy="-140" data-rot="-30" data-z="70">2026 ©</div>
+      <div class="flyer sticky-mini" style="top:60%; left:30%;" data-at="0.42" data-dx="-330" data-dy="60" data-rot="-42" data-z="85">✓<br />DONE</div>
+      <div class="flyer clip-fly" style="top:48%; left:70%;" data-at="0.45" data-dx="300" data-dy="-30" data-rot="55" data-z="110"></div>
+      <div class="flyer stamp-fly" style="top:70%; left:55%;" data-at="0.48" data-dx="200" data-dy="210" data-rot="28" data-z="75">😀</div>
+      <div class="flyer bar-fly" style="top:30%; left:72%;" data-at="0.51" data-dx="180" data-dy="-260" data-rot="-22" data-z="95"></div>
+      <div class="flyer sticker" style="top:66%; left:40%;" data-at="0.54" data-dx="-180" data-dy="230" data-rot="-35" data-z="80">★</div>
+      <div class="flyer pill-fly" style="top:14%; left:52%;" data-at="0.57" data-dx="60" data-dy="-280" data-rot="14" data-z="100">SKILLS</div>
+      <div class="flyer scrap"  style="top:82%; left:68%;" data-at="0.60" data-dx="320" data-dy="130" data-rot="47" data-z="70">HELLO!</div>
+      <div class="flyer tag-y" style="top:76%; left:24%;" data-at="0.63" data-dx="-300" data-dy="150" data-rot="-50" data-z="90">OPEN</div>
       <div class="cover-inner" id="cover-inner">
         <div class="cover-top" id="cover-top"><span>DA×WN PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
         <h1>个人<br />作品集</h1>
@@ -961,18 +1069,36 @@
   const clamp01 = v => Math.min(1, Math.max(0, v));
   const easeInOutCubic = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
 
+  const flyers = [...document.querySelectorAll(".flyer")].map(el => ({
+    el,
+    at: +el.dataset.at,
+    dx: +el.dataset.dx, dy: +el.dataset.dy,
+    rot: +el.dataset.rot, z: +el.dataset.z,
+  }));
+
   function render() {
-    cur += (target - cur) * 0.085;
-    if (Math.abs(target - cur) < 0.0005) cur = target;
+    cur += (target - cur) * 0.055;
+    if (Math.abs(target - cur) < 0.0004) cur = target;
 
     // 阶段1：封面内容视差上移
     coverInner.style.transform = `translateY(${-cur * 110}px)`;
-    coverInner.style.opacity = String(1 - clamp01(cur / 0.55) * 0.9);
+    coverInner.style.opacity = String(1 - clamp01(cur / 0.6) * 0.92);
     coverTop.style.opacity = String(1 - clamp01(cur / 0.3));
 
-    // 阶段2：封面绕装订线翻开
-    const flip = easeInOutCubic(clamp01((cur - 0.28) / 0.72));
+    // 阶段2：封面绕装订线翻开（更长的滚动行程，更从容）
+    const flip = easeInOutCubic(clamp01((cur - 0.3) / 0.7));
     coverPage.style.transform = `rotateY(${-179 * flip}deg)`;
+
+    // 飞出的物件：跟滚动进度可逆播放
+    for (const f of flyers) {
+      const t = clamp01((cur - f.at) / 0.32);
+      if (t === 0) { f.el.style.opacity = "0"; continue; }
+      const fade = t > 0.78 ? 1 - (t - 0.78) / 0.22 : 1;
+      const sway = Math.sin(t * Math.PI * 2 + f.rot) * 14;
+      f.el.style.opacity = fade.toFixed(3);
+      f.el.style.transform =
+        `translate(-50%,-50%) translate3d(${(f.dx * t + sway).toFixed(1)}px, ${(f.dy * t).toFixed(1)}px, ${f.z}px) rotate(${(f.rot * t).toFixed(1)}deg) scale(${(0.45 + 0.55 * t).toFixed(3)})`;
+    }
 
     // 阶段3：洞洞板推进聚焦
     scene.style.transform = `scale(${1.05 - 0.05 * flip})`;
@@ -1007,7 +1133,7 @@
   function onWheel(e) {
     if (done) return;
     e.preventDefault();
-    target = clamp01(target + e.deltaY * 0.0011);
+    target = clamp01(target + e.deltaY * 0.00055);
     startRender();
   }
   let lastTouchY = null;
