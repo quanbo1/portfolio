@@ -37,7 +37,7 @@
   .scene {
     position: relative;
     min-height: 100vh;
-    min-width: 1180px;
+    min-width: 1370px;
     padding: 34px;
     background:
       radial-gradient(circle, rgba(29,24,18,0.16) 2.2px, transparent 2.8px) 14px 14px / 30px 30px,
@@ -152,7 +152,7 @@
 
   /* ========== 挂件通用 ========== */
   .obj {
-    position: absolute;
+    position: relative;
     cursor: pointer;
     transform-origin: 50% -20px;
     transition: transform 0.45s cubic-bezier(.34,1.56,.64,1), filter 0.3s;
@@ -160,8 +160,20 @@
   }
   .obj:hover { transform: rotate(0deg) translateY(-4px) !important; filter: drop-shadow(0 22px 24px rgba(60,45,25,0.3)); }
 
+  /* 板面挂件区：三列弹性分布，自适应铺满宽度 */
+  .board {
+    position: absolute; left: 354px; right: 24px; top: 30px; bottom: 76px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 20px; z-index: 4;
+  }
+  .b-col { display: flex; flex-direction: column; gap: 26px; align-items: center; }
+  .b-col.c1 { margin-top: 25px; }
+  .b-col.c2 { margin-top: 95px; }
+  .b-col.c3 { margin-top: 35px; }
+  .b-row { display: flex; gap: 20px; align-items: flex-start; }
+
   /* 01 黄色钥匙牌 */
-  .key-tag { left: 360px; top: 70px; width: 185px; transform: rotate(-9deg); }
+  .key-tag { width: 185px; transform: rotate(-9deg); }
   .key-tag .key-svg { display: block; margin: 0 auto 4px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
   .key-tag .tag {
     background: linear-gradient(160deg, #ffc82e, var(--yellow) 60%, #e3a50c);
@@ -187,7 +199,7 @@
   .key-tag .arrow { font-family: var(--mono); font-weight: 700; margin-top: 10px; font-size: 14px; }
 
   /* 02 亚克力作品框 */
-  .acrylic { left: 580px; top: 55px; width: 390px; transform: rotate(1.5deg); }
+  .acrylic { width: 380px; transform: rotate(1.5deg); }
   .acrylic .frame {
     position: relative;
     background: linear-gradient(145deg, rgba(255,255,255,0.55), rgba(240,235,225,0.28) 40%, rgba(255,255,255,0.4));
@@ -254,7 +266,7 @@
   }
 
   /* 03 织物工牌（放大版） */
-  .id-badge { left: 995px; top: 60px; width: 235px; transform: rotate(3deg); }
+  .id-badge { width: 235px; transform: rotate(3deg); }
   .id-badge .body {
     background: linear-gradient(160deg, #d6d2c9, #c4c0b6);
     border-radius: 14px;
@@ -286,7 +298,7 @@
   .id-badge .view:hover { background: #000; }
 
   /* 04 黑色技能牌 */
-  .skills-tag { left: 360px; top: 465px; width: 235px; transform: rotate(-5deg); }
+  .skills-tag { width: 235px; transform: rotate(-5deg); }
   .skills-tag .body {
     background: radial-gradient(120% 120% at 30% 20%, #2a251e, var(--black-tag) 65%);
     border-radius: 90px;
@@ -307,7 +319,7 @@
   .skills-tag .arrow { font-family: var(--mono); margin-top: 16px; font-size: 13px; color: var(--yellow); }
 
   /* 05 航空信封联系卡 */
-  .envelope { left: 630px; top: 585px; width: 245px; transform: rotate(2deg); }
+  .envelope { width: 245px; transform: rotate(2deg); }
   .envelope .body {
     background: #fbf7ee;
     border-radius: 4px;
@@ -336,7 +348,7 @@
   .envelope .arrow { font-family: var(--mono); font-weight: 700; margin-top: 12px; font-size: 13px; }
 
   /* OPEN TO WORK 小吊牌 */
-  .open-tag { left: 1080px; top: 385px; width: 112px; transform: rotate(7deg); }
+  .open-tag { width: 112px; transform: rotate(7deg); }
   .open-tag .body {
     background: #fbf8f1;
     border-radius: 4px;
@@ -363,8 +375,7 @@
 
   /* 便利贴 */
   .sticky {
-    left: 940px; top: 385px;
-    width: 120px; height: 110px;
+    width: 130px; height: 118px;
     background: linear-gradient(170deg, #ffe27a, #ffd94f);
     transform: rotate(6deg);
     box-shadow: 0 10px 20px rgba(60,45,25,0.25);
@@ -410,7 +421,7 @@
 
   /* 06 票根（点击进入下一页，动效后续接入） */
   .r2-ticket {
-    position: absolute; left: 895px; top: 585px; width: 340px;
+    position: relative; width: 340px;
     display: flex; z-index: 4;
     transform: rotate(-2deg); transform-origin: 50% 50%;
     cursor: pointer;
@@ -896,7 +907,7 @@
     color: rgba(74,66,55,0.4);
   }
 
-  @media (max-width: 1240px) {
+  @media (max-width: 1380px) {
     body { overflow-x: scroll; }
   }
 </style>
@@ -1016,6 +1027,10 @@
     </div>
   </aside>
 
+  <!-- ===== 板面挂件区：三列弹性布局 ===== -->
+  <div class="board">
+  <div class="b-col c1">
+
   <!-- ===== 01 钥匙牌 ===== -->
   <div class="obj key-tag" data-open="about">
     <svg class="key-svg" width="70" height="46" viewBox="0 0 70 46">
@@ -1034,6 +1049,7 @@
 
   <!-- ===== 02 亚克力作品框 ===== -->
   <div class="obj acrylic" data-open="works">
+    <div class="tape-deco" style="position:absolute; left:-24px; top:-10px; transform:rotate(-40deg)"></div>
     <div class="clip"></div>
     <div class="frame">
       <div class="sheet">
@@ -1052,16 +1068,9 @@
     </div>
   </div>
 
-  <!-- ===== 03 工作证 ===== -->
-  <div class="obj id-badge" data-open="cv">
-    <div class="ring"></div>
-    <div class="body">
-      <div class="head"><span class="en">03 ABOUT ME</span><span class="cn">简介</span></div>
-      <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:84px;height:84px;border-radius:8px;margin-top:14px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);" />
-      <div class="rows">刘芸熙 · 艺术与科技<br />湖北美术学院 在读</div>
-      <button class="view">VIEW CV →</button>
-    </div>
   </div>
+
+  <div class="b-col c2">
 
   <!-- ===== 04 黑色技能牌 ===== -->
   <div class="obj skills-tag" data-open="skills">
@@ -1096,6 +1105,24 @@
     </div>
   </div>
 
+  </div>
+
+  <div class="b-col c3">
+
+  <!-- ===== 03 工作证 ===== -->
+  <div class="obj id-badge" data-open="cv">
+    <div class="tape-deco red" style="position:absolute; right:-22px; top:-8px; transform:rotate(35deg)"></div>
+    <div class="ring"></div>
+    <div class="body">
+      <div class="head"><span class="en">03 ABOUT ME</span><span class="cn">简介</span></div>
+      <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:84px;height:84px;border-radius:8px;margin-top:14px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);" />
+      <div class="rows">刘芸熙 · 艺术与科技<br />湖北美术学院 在读</div>
+      <button class="view">VIEW CV →</button>
+    </div>
+  </div>
+
+  <div class="b-row">
+
   <!-- ===== OPEN TO WORK 吊牌 ===== -->
   <div class="obj open-tag">
     <div class="ring"></div>
@@ -1109,24 +1136,11 @@
   <!-- 便利贴 -->
   <div class="sticky">TODO ✓<br />—— 好的设计<br />是解决问题的<br />方式，不是装<br />饰。2026</div>
 
-  <!-- 小装饰：图钉 -->
-  <div class="pin" style="left:556px;top:378px"></div>
-  <div class="pin dark" style="left:342px;top:52px"></div>
-  <div class="pin red" style="left:1152px;top:42px"></div>
-  <div class="pin white" style="left:598px;top:556px"></div>
-  <div class="pin" style="left:1066px;top:468px"></div>
-  <div class="pin dark" style="left:602px;top:798px"></div>
-
-  <!-- 小装饰：和纸胶带 -->
-  <div class="tape-deco" style="left:528px;top:34px;transform:rotate(-42deg)"></div>
-  <div class="tape-deco red" style="left:1090px;top:38px;transform:rotate(40deg)"></div>
-  <div class="tape-deco blue" style="left:884px;top:572px;transform:rotate(-12deg);width:84px"></div>
-
-  <!-- 小装饰：贴纸 -->
-  <div class="sticker-deco" style="left:366px;bottom:22px;z-index:4">★</div>
+  </div>
 
   <!-- 06 票根：点击进入下一页（动效待接入） -->
   <div class="r2-ticket" id="ticket" data-next="true">
+    <div class="tape-deco blue" style="position:absolute; left:-16px; top:-10px; transform:rotate(-18deg); width:80px"></div>
     <div class="t-main">
       <div class="t-top"><b>ADMIT ONE</b><span>NO. 000006</span></div>
       <div class="t-big"><b>下一站</b> NEXT PAGE</div>
@@ -1139,6 +1153,12 @@
       <span class="seat">A-01</span>
     </div>
   </div>
+
+  </div>
+  </div>
+
+  <!-- 小装饰：贴纸（贴在直尺左端） -->
+  <div class="sticker-deco" style="left:366px;bottom:22px;z-index:4">★</div>
 
   <!-- 直尺：底部横条 -->
   <div class="ruler">
