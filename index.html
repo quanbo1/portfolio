@@ -1237,16 +1237,26 @@
     tilt.style.transform =
       `scale(${(1 + 0.07 * pre).toFixed(4)}) rotateX(${(-my * 6 * (1 - pre)).toFixed(2)}deg) rotateY(${(mx * 11 * (1 - pre)).toFixed(2)}deg)`;
 
-    // 级联翻页：6 条页带连续波浪折落，窗口长重叠无停顿区间
+    // 级联翻页：6 条页带连续波浪折落
     let flipSum = 0;
     leaves.forEach((L, i) => {
-      const p = smooth(clamp01((cur - (0.06 + i * 0.045)) / 0.6));
+      const p = smooth(clamp01((cur - (0.06 + i * 0.042)) / 0.56));
       flipSum += p;
       L.leaf.style.transform =
         `rotateY(${(-172 * p).toFixed(2)}deg) rotateX(${(Math.sin(p * Math.PI) * 3).toFixed(2)}deg)`;
       L.shade.style.opacity = (Math.sin(p * Math.PI) * 0.38).toFixed(3);
     });
     const flip = flipSum / N;
+
+    // 收尾退场：折叠完成后，整叠纸页向后沉降、左移并淡出，自然过渡到洞洞板
+    const out = smooth(clamp01((cur - 0.86) / 0.14));
+    if (out > 0) {
+      leaves.forEach(L => {
+        L.leaf.style.opacity = (1 - out).toFixed(3);
+        L.leaf.style.transform =
+          `translate3d(${(-out * 16).toFixed(2)}vw, ${(out * 5).toFixed(2)}vh, ${(-out * 240).toFixed(1)}px) rotateY(-172deg)`;
+      });
+    }
 
     // 封面内容视差上移
     coverInners.forEach(el => {
@@ -1275,7 +1285,7 @@
     hintFill.style.width = (cur * 100).toFixed(1) + "%";
     railNum.textContent = cur > 0.5 ? "002" : "001";
 
-    if (cur > 0.97) { finish(); return; }
+    if (cur > 0.995) { finish(); return; }
     rafId = requestAnimationFrame(render);
   }
 
@@ -1288,7 +1298,8 @@
     cancelAnimationFrame(rafId); rafId = null;
     cur = 1;
     leaves.forEach(L => {
-      L.leaf.style.transform = "rotateY(-172deg)";
+      L.leaf.style.opacity = "0";
+      L.leaf.style.transform = "translate3d(-16vw, 5vh, -240px) rotateY(-172deg)";
       L.shade.style.opacity = "0";
     });
     scene.style.transform = "scale(1)";
