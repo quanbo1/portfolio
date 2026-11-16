@@ -253,39 +253,34 @@
     image-rendering: pixelated;
   }
 
-  /* 03 织物工牌 */
-  .id-badge { left: 968px; top: 88px; width: 190px; transform: rotate(4deg); }
+  /* 03 织物工牌（放大版） */
+  .id-badge { left: 890px; top: 55px; width: 250px; transform: rotate(3deg); }
   .id-badge .body {
     background: linear-gradient(160deg, #d6d2c9, #c4c0b6);
-    border-radius: 12px;
-    padding: 18px 16px 16px;
-    box-shadow: 0 12px 24px rgba(60,45,25,0.3), inset 0 1px 2px rgba(255,255,255,0.6);
+    border-radius: 14px;
+    padding: 22px 20px 20px;
+    box-shadow: 0 16px 30px rgba(60,45,25,0.32), inset 0 1px 2px rgba(255,255,255,0.6);
     position: relative;
   }
   .id-badge .body::before {
     content: "";
-    position: absolute; inset: 6px;
+    position: absolute; inset: 7px;
     border: 1.5px dashed rgba(80,74,64,0.5);
-    border-radius: 8px;
+    border-radius: 10px;
     pointer-events: none;
   }
   .id-badge .head { display: flex; align-items: center; justify-content: space-between; }
-  .id-badge .head .en { font-family: var(--mono); font-weight: 700; font-size: 12px; }
+  .id-badge .head .en { font-family: var(--mono); font-weight: 700; font-size: 14px; }
   .id-badge .head .cn {
-    font-size: 9px; letter-spacing: 0.3em; color: #fff;
-    background: var(--black-tag); padding: 3px 7px; border-radius: 3px;
+    font-size: 10px; letter-spacing: 0.3em; color: #fff;
+    background: var(--black-tag); padding: 4px 9px; border-radius: 3px;
   }
-  .id-badge .photo {
-    width: 52px; height: 52px; border-radius: 6px; object-fit: cover;
-    margin-top: 12px; border: 2px solid #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-  }
-  .id-badge .rows { margin-top: 8px; font-size: 10px; color: var(--ink-soft); line-height: 1.9; }
+  .id-badge .rows { margin-top: 10px; font-size: 11.5px; color: var(--ink-soft); line-height: 1.9; }
   .id-badge .view {
-    margin-top: 12px; width: 100%;
-    font-family: var(--mono); font-weight: 700; font-size: 10px; letter-spacing: 0.15em;
+    margin-top: 14px; width: 100%;
+    font-family: var(--mono); font-weight: 700; font-size: 11px; letter-spacing: 0.15em;
     background: var(--black-tag); color: #fff;
-    border: none; padding: 8px 0; border-radius: 4px; cursor: pointer;
+    border: none; padding: 10px 0; border-radius: 5px; cursor: pointer;
     transition: background 0.2s;
   }
   .id-badge .view:hover { background: #000; }
@@ -341,7 +336,7 @@
   .envelope .arrow { font-family: var(--mono); font-weight: 700; margin-top: 12px; font-size: 13px; }
 
   /* OPEN TO WORK 小吊牌 */
-  .open-tag { right: 40px; top: 400px; width: 108px; transform: rotate(7deg); }
+  .open-tag { right: 40px; top: 432px; width: 108px; transform: rotate(7deg); }
   .open-tag .body {
     background: #fbf8f1;
     border-radius: 4px;
@@ -368,7 +363,7 @@
 
   /* 便利贴 */
   .sticky {
-    right: 60px; top: 130px;
+    left: 690px; top: 500px;
     width: 120px; height: 110px;
     background: linear-gradient(170deg, #ffe27a, #ffd94f);
     transform: rotate(6deg);
@@ -949,7 +944,7 @@
     <div class="ring"></div>
     <div class="body">
       <div class="head"><span class="en">03 ABOUT ME</span><span class="cn">简介</span></div>
-      <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:56px;height:62px;border-radius:6px;margin-top:12px;border:1.5px solid rgba(29,24,18,0.35);" />
+      <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:84px;height:84px;border-radius:8px;margin-top:14px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);" />
       <div class="rows">刘芸熙 · 艺术与科技<br />湖北美术学院 在读</div>
       <button class="view">VIEW CV →</button>
     </div>
