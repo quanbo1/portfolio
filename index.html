@@ -735,6 +735,13 @@
   .work-grid .info { padding: 12px 14px 14px; }
   .work-grid .t { font-size: 13px; font-weight: 700; }
   .work-grid .c { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; color: var(--yellow); margin-top: 5px; }
+  .work-empty {
+    grid-column: 1 / -1;
+    border: 1.5px dashed rgba(240,233,219,.4); border-radius: 10px;
+    padding: 38px 20px; text-align: center;
+    font-family: var(--mono); font-size: 12px; letter-spacing: .18em;
+    color: rgba(240,233,219,.7);
+  }
 
   /* 简历弹窗 */
   .cv { display: grid; grid-template-columns: 200px 1fr; gap: 34px; align-items: start; }
@@ -1216,13 +1223,13 @@
         <div class="num">02</div>
         <h2>SELECTED WORKS</h2>
         <div class="cn-title">精 选 作 品</div>
-        <p class="desc">A selection of projects in <b>branding</b>, packaging, poster &amp; more. 点击查看全部案例。</p>
+        <p class="desc">A selection of projects in <b>painting</b>, display boards, AI × code &amp; more. 点击查看全部案例。</p>
         <ul class="work-list">
-          <li><span class="no">01</span><span class="cat-en">BRANDING</span><span class="cat-cn">品牌设计</span><img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=200&q=70" alt="" loading="lazy" /></li>
-          <li><span class="no">02</span><span class="cat-en">POSTER</span><span class="cat-cn">海报设计</span><img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=200&q=70" alt="" loading="lazy" /></li>
-          <li><span class="no">03</span><span class="cat-en">PACKAGING</span><span class="cat-cn">包装设计</span><img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200&q=70" alt="" loading="lazy" /></li>
-          <li><span class="no">04</span><span class="cat-en">AI VISUAL</span><span class="cat-cn">AI 视觉</span><img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=200&q=70" alt="" loading="lazy" /></li>
-          <li><span class="no">05</span><span class="cat-en">EDITORIAL</span><span class="cat-cn">编辑设计</span><img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200&q=70" alt="" loading="lazy" /></li>
+          <li><span class="no">01</span><span class="cat-en">PAINTING</span><span class="cat-cn">绘画类</span><img src="works/w4-ocean.png" alt="" loading="lazy" /></li>
+          <li><span class="no">02</span><span class="cat-en">DISPLAY BOARD</span><span class="cat-cn">展板设计</span><img src="works/w5-garden.png" alt="" loading="lazy" /></li>
+          <li><span class="no">03</span><span class="cat-en">AI × CODE</span><span class="cat-cn">AI代码运用</span><img src="works/w2-upstream.png" alt="" loading="lazy" /></li>
+          <li><span class="no">04</span><span class="cat-en">EXHIBIT MAKING</span><span class="cat-cn">实物展品制作</span><img src="works/w1-qy.jpg" alt="" loading="lazy" /></li>
+          <li><span class="no">05</span><span class="cat-en">MODELING</span><span class="cat-cn">建模</span><img src="works/w3-map.png" alt="" loading="lazy" /></li>
         </ul>
       </div>
     </div>
@@ -1359,11 +1366,11 @@
     <div class="modal-title">SELECTED WORKS<span class="cn">精 选 作 品</span></div>
     <div class="tabs" id="work-tabs">
       <button class="active" data-f="all">全部 ALL</button>
-      <button data-f="branding">品牌 BRANDING</button>
-      <button data-f="poster">海报 POSTER</button>
-      <button data-f="packaging">包装 PACKAGING</button>
-      <button data-f="ai">AI 视觉 AI VISUAL</button>
-      <button data-f="editorial">编辑 EDITORIAL</button>
+      <button data-f="painting">绘画 PAINTING</button>
+      <button data-f="board">展板 DISPLAY BOARD</button>
+      <button data-f="aicode">AI代码 AI × CODE</button>
+      <button data-f="exhibit">实物展品 EXHIBIT</button>
+      <button data-f="modeling">建模 MODELING</button>
     </div>
     <div class="work-grid" id="work-grid"></div>
   </div>
@@ -1444,22 +1451,24 @@
 </div>
 
 <script>
-  // ===== 作品数据 =====
+  // ===== 作品数据（7 件真实作品） =====
   const WORKS = [
-    { t: "山雾茶事 · 品牌重塑", c: "branding", cl: "BRANDING 品牌设计", img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=75" },
-    { t: "白鹿咖啡 · 包装系统", c: "packaging", cl: "PACKAGING 包装设计", img: "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=600&q=75" },
-    { t: "城市折叠 · 实验海报", c: "poster", cl: "POSTER 海报设计", img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600&q=75" },
-    { t: "NOIR · AI 抽象视觉", c: "ai", cl: "AI VISUAL AI视觉", img: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=75" },
-    { t: "夜航西飞 · 独立刊物", c: "editorial", cl: "EDITORIAL 编辑设计", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=75" },
-    { t: "拾光书店 · VI 全案", c: "branding", cl: "BRANDING 品牌设计", img: "https://images.unsplash.com/photo-1493934558415-9d19f0b2b4d2?w=600&q=75" },
-    { t: "SUNSHINE · 活动主视觉", c: "poster", cl: "POSTER 海报设计", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=75" },
-    { t: "纸间造物 · 礼盒包装", c: "packaging", cl: "PACKAGING 包装设计", img: "https://images.unsplash.com/photo-1607346256330-dee7afaf4703?w=600&q=75" },
-    { t: "流动的边界 · AI 系列", c: "ai", cl: "AI VISUAL AI视觉", img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=75" },
+    { t: "海洋苏醒 · 主题拼贴", c: "painting", cl: "PAINTING 绘画类", img: "works/w4-ocean.png" },
+    { t: "觅径游园 · 可视化展板", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w5-garden.png" },
+    { t: "恭城茶韵 · 风物篇", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w7-tea-h.png" },
+    { t: "恭城茶韵 · 工艺篇", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w6-tea-v.png" },
+    { t: "UPSTREAM · 交互鱼群", c: "aicode", cl: "AI × CODE AI代码运用", img: "works/w2-upstream.png" },
+    { t: "武汉港 · 数据地图", c: "aicode", cl: "AI × CODE AI代码运用", img: "works/w3-map.png" },
+    { t: "秋野拾趣 · 场景建模", c: "modeling", cl: "MODELING 建模", img: "works/w1-qy.jpg" },
   ];
 
   const grid = document.getElementById("work-grid");
   function renderWorks(f) {
     const list = f === "all" ? WORKS : WORKS.filter(w => w.c === f);
+    if (!list.length) {
+      grid.innerHTML = `<div class="work-empty">本分类作品整理中 · COMING SOON</div>`;
+      return;
+    }
     grid.innerHTML = list.map(w => `
       <div class="card">
         <img src="${w.img}" alt="${w.t}" loading="lazy" />
