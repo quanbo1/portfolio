@@ -542,6 +542,90 @@
     background: repeating-linear-gradient(90deg, rgba(74,60,30,0.55) 0 1px, transparent 1px 12px, rgba(74,60,30,0.55) 12px 13px, transparent 13px 24px);
   }
 
+  /* ========== 票根撕票 + 路线转场 ========== */
+  .r2-ticket .t-main, .r2-ticket .t-stub { transition: transform .55s cubic-bezier(.3,.7,.4,1), opacity .55s ease; }
+  .r2-ticket.torn { pointer-events: none; }
+  .r2-ticket.torn .t-stub { transform: translate3d(96px, -52px, 0) rotate(32deg); opacity: 0; }
+  .r2-ticket.torn .t-main { transform: translate3d(-18px, 8px, 0) rotate(-5deg); }
+  .r2-ticket.torn::before, .r2-ticket.torn::after { opacity: 0; }
+
+  #route-layer {
+    position: fixed; inset: 0; z-index: 400;
+    pointer-events: none; display: none;
+    background: rgba(60, 45, 25, 0.10);
+  }
+  #route-layer.on { display: block; }
+  #route-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; transition: opacity .3s;
+  }
+  #route-svg.on { opacity: 1; }
+  #route-dot { opacity: 0; transition: opacity .3s; }
+  #route-svg.on #route-dot { opacity: 1; }
+  .route-wp { opacity: 0; transition: opacity .4s; }
+
+  .station-sign {
+    position: absolute;
+    transform: translate(-50%, -100%) scale(.6);
+    opacity: 0;
+    transition: all .45s cubic-bezier(.34,1.56,.64,1);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .station-sign.pop { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+  .station-sign .s-pin { font-size: 26px; filter: drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
+  .station-sign .s-board {
+    margin-top: 4px;
+    background: var(--yellow);
+    border: 2px solid var(--black-tag);
+    border-radius: 6px;
+    padding: 9px 16px;
+    font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: .14em;
+    box-shadow: 0 6px 14px rgba(60,45,25,.3);
+  }
+  .station-sign .s-pole { width: 4px; height: 44px; background: var(--black-tag); border-radius: 2px; }
+
+  /* ========== 第二页：旅程地图 ========== */
+  #page2 {
+    position: fixed; inset: 0; z-index: 390;
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .6s ease;
+    background:
+      repeating-linear-gradient(0deg, rgba(29,24,18,0.045) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, rgba(29,24,18,0.045) 0 1px, transparent 1px 64px),
+      radial-gradient(ellipse at 50% 10%, #f3ecdc, var(--board) 75%);
+  }
+  #page2.in { opacity: 1; }
+  .p2-inner { text-align: center; padding: 30px; }
+  .p2-stamp {
+    display: inline-block;
+    font-family: var(--mono); font-weight: 700; font-size: 26px; letter-spacing: .2em;
+    color: #c2422f;
+    border: 3px solid #c2422f; border-radius: 6px;
+    padding: 10px 22px;
+    transform: rotate(-6deg); opacity: .85;
+  }
+  #page2 h2 {
+    font-family: var(--sans); font-weight: 700; font-size: 44px;
+    margin: 26px 0 8px; letter-spacing: .08em;
+  }
+  .p2-sub { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--ink-soft); }
+  .p2-box {
+    margin: 34px auto 0; max-width: 520px;
+    border: 2px dashed rgba(29,24,18,.4); border-radius: 10px;
+    padding: 44px 30px;
+    font-family: var(--mono); font-size: 13px; letter-spacing: .1em;
+    background: rgba(255,255,255,.35);
+  }
+  .p2-box span { display: block; margin-top: 8px; font-size: 9px; color: var(--ink-soft); letter-spacing: .18em; }
+  .p2-back {
+    margin-top: 34px;
+    font-family: var(--mono); font-weight: 700; font-size: 11px; letter-spacing: .14em;
+    background: var(--black-tag); color: #fff;
+    border: none; padding: 14px 30px; border-radius: 999px;
+    cursor: pointer; transition: transform .2s, background .2s;
+  }
+  .p2-back:hover { background: #000; transform: translateY(-2px); }
+
   /* ========== 弹窗 ========== */
   .modal {
     position: fixed; inset: 0;
@@ -1594,6 +1678,132 @@
     if (e.key === "ArrowUp" && done) { e.preventDefault(); reopen(); }
   });
   startRender();
+</script>
+
+<!-- ===== 票根撕票 → 路线延伸 → 第二页 ===== -->
+<div id="route-layer">
+  <svg id="route-svg">
+    <defs>
+      <mask id="route-mask">
+        <path id="route-solid" d="M 0 0" stroke="#fff" stroke-width="6" fill="none" />
+      </mask>
+    </defs>
+    <path id="route-dashed" d="M 0 0" stroke="#26211a" stroke-width="3.5" stroke-dasharray="12 9" fill="none" mask="url(#route-mask)" />
+    <circle class="route-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
+    <circle class="route-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
+    <circle id="route-dot" r="10" fill="#f6b91d" stroke="#1d1812" stroke-width="3" />
+  </svg>
+  <div class="station-sign" id="station-sign">
+    <div class="s-pin">📍</div>
+    <div class="s-board">STOP 02 · NEXT PAGE</div>
+    <div class="s-pole"></div>
+  </div>
+</div>
+
+<section id="page2">
+  <div class="p2-inner">
+    <div class="p2-stamp">STOP 02</div>
+    <h2>下一站 · 旅程继续</h2>
+    <div class="p2-sub">YOU ARRIVED — 票根已检 · 欢迎来到第二页</div>
+    <div class="p2-box">
+      本章内容待铺设
+      <span>COMING SOON — 新的旅程正在装填</span>
+    </div>
+    <button class="p2-back" id="p2-back">← TICKET BACK · 返回洞洞板</button>
+  </div>
+</section>
+
+<script>
+(function () {
+  const ticket = document.getElementById("ticket");
+  const layer = document.getElementById("route-layer");
+  const svg = document.getElementById("route-svg");
+  const solid = document.getElementById("route-solid");
+  const dashed = document.getElementById("route-dashed");
+  const dot = document.getElementById("route-dot");
+  const wps = document.querySelectorAll(".route-wp");
+  const sign = document.getElementById("station-sign");
+  const page2 = document.getElementById("page2");
+  const back = document.getElementById("p2-back");
+  let active = false;
+
+  function startRoute() {
+    if (active) return;
+    active = true;
+
+    const r = ticket.getBoundingClientRect();
+    const sx = r.left + r.width * 0.38;
+    const sy = r.top + r.height * 0.45;
+    const ex = window.innerWidth * 0.60;
+    const ey = window.innerHeight * 0.46;
+    const d = `M ${sx} ${sy} C ${sx + 130} ${sy - 130}, ${ex - 220} ${ey + 150}, ${ex} ${ey}`;
+
+    sign.style.left = ex + "px";
+    sign.style.top = ey + "px";
+    sign.classList.remove("pop");
+
+    solid.setAttribute("d", d);
+    dashed.setAttribute("d", d);
+    const len = solid.getTotalLength();
+    solid.style.strokeDasharray = len;
+    solid.style.strokeDashoffset = len;
+
+    const wpData = [];
+    wps.forEach((el, i) => {
+      const at = 0.34 + i * 0.28;
+      const pt = solid.getPointAtLength(len * at);
+      el.setAttribute("cx", pt.x);
+      el.setAttribute("cy", pt.y);
+      el.style.opacity = 0;
+      wpData.push({ el, at });
+    });
+
+    // 1. 撕票
+    ticket.classList.add("torn");
+    layer.classList.add("on");
+
+    // 2. 虚线路线延伸
+    setTimeout(() => {
+      svg.classList.add("on");
+      const t0 = performance.now();
+      const DUR = 2100;
+      function frame(t) {
+        const p = Math.min(1, (t - t0) / DUR);
+        const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+        solid.style.strokeDashoffset = len * (1 - e);
+        const pt = solid.getPointAtLength(len * e);
+        dot.setAttribute("cx", pt.x);
+        dot.setAttribute("cy", pt.y);
+        wpData.forEach(w => { if (e >= w.at) w.el.style.opacity = 1; });
+        if (p < 1) { requestAnimationFrame(frame); }
+        else { sign.classList.add("pop"); setTimeout(showPage2, 750); }
+      }
+      requestAnimationFrame(frame);
+    }, 480);
+  }
+
+  function showPage2() {
+    page2.style.display = "flex";
+    setTimeout(() => {
+      page2.classList.add("in");
+      setTimeout(() => { layer.classList.remove("on"); svg.classList.remove("on"); }, 650);
+    }, 40);
+  }
+
+  back.addEventListener("click", () => {
+    page2.classList.remove("in");
+    setTimeout(() => {
+      page2.style.display = "none";
+      ticket.classList.remove("torn");
+      sign.classList.remove("pop");
+      svg.classList.remove("on");
+      wps.forEach(el => el.style.opacity = 0);
+      active = false;
+    }, 550);
+  });
+
+  ticket.addEventListener("click", startRoute);
+})();
 </script>
 </body>
 </html>
