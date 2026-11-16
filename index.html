@@ -561,12 +561,6 @@
     box-shadow: inset 0 0 120px rgba(90,70,40,0.14);
     overflow: hidden;
   }
-  .cover-front::after {
-    content: "";
-    position: absolute; inset: 0;
-    background: linear-gradient(105deg, transparent 55%, rgba(255,255,255,0.35) 60%, transparent 66%);
-    pointer-events: none;
-  }
   .rings {
     position: absolute; left: 34px; top: 0; bottom: 0;
     display: flex; flex-direction: column; justify-content: center; gap: 120px;
@@ -804,7 +798,7 @@
       <div class="tape"></div>
       <div class="rings"><span></span><span></span><span></span></div>
 
-      <!-- 翻页时飞出的物件（滚动驱动，可逆） -->
+      <!-- 翻页时飞出的物件（滚动驱动，可逆）× 30 -->
       <div class="flyer tag-y" style="top:38%; left:58%;"  data-at="0.34" data-dx="330" data-dy="-190" data-rot="38"  data-z="90">IDEA →</div>
       <div class="flyer scrap"  style="top:22%; left:38%;" data-at="0.38" data-dx="-260" data-dy="-140" data-rot="-30" data-z="70">2026 ©</div>
       <div class="flyer sticky-mini" style="top:60%; left:30%;" data-at="0.42" data-dx="-330" data-dy="60" data-rot="-42" data-z="85">✓<br />DONE</div>
@@ -815,6 +809,33 @@
       <div class="flyer pill-fly" style="top:14%; left:52%;" data-at="0.57" data-dx="60" data-dy="-280" data-rot="14" data-z="100">SKILLS</div>
       <div class="flyer scrap"  style="top:82%; left:68%;" data-at="0.60" data-dx="320" data-dy="130" data-rot="47" data-z="70">HELLO!</div>
       <div class="flyer tag-y" style="top:76%; left:24%;" data-at="0.63" data-dx="-300" data-dy="150" data-rot="-50" data-z="90">OPEN</div>
+
+      <div class="flyer tag-y" style="top:8%; left:26%;"   data-at="0.30" data-dx="-160" data-dy="-240" data-rot="-28" data-z="95">NEW!</div>
+      <div class="flyer sticker" style="top:20%; left:14%;" data-at="0.32" data-dx="-300" data-dy="-90" data-rot="-45" data-z="85">✦</div>
+      <div class="flyer scrap"  style="top:12%; left:44%;" data-at="0.33" data-dx="40" data-dy="-300" data-rot="24" data-z="75">PORTFOLIO</div>
+      <div class="flyer pill-fly" style="top:26%; left:82%;" data-at="0.35" data-dx="260" data-dy="-160" data-rot="30" data-z="105">BRANDING</div>
+      <div class="flyer sticky-mini" style="top:36%; left:12%;" data-at="0.36" data-dx="-280" data-dy="-40" data-rot="-55" data-z="80">→<br />GO</div>
+      <div class="flyer bar-fly" style="top:44%; left:40%;" data-at="0.37" data-dx="-120" data-dy="-220" data-rot="18" data-z="90"></div>
+      <div class="flyer sticker" style="top:55%; left:78%;" data-at="0.39" data-dx="240" data-dy="60" data-rot="40" data-z="85">♥</div>
+      <div class="flyer scrap"  style="top:58%; left:46%;" data-at="0.40" data-dx="-60" data-dy="260" data-rot="-26" data-z="70">EST.2016</div>
+      <div class="flyer clip-fly" style="top:64%; left:18%;" data-at="0.41" data-dx="-240" data-dy="180" data-rot="-60" data-z="100"></div>
+      <div class="flyer tag-y" style="top:30%; left:66%;"  data-at="0.43" data-dx="200" data-dy="-120" data-rot="26" data-z="95">2026</div>
+      <div class="flyer stamp-fly" style="top:16%; left:60%;" data-at="0.44" data-dx="160" data-dy="-230" data-rot="35" data-z="80">✈</div>
+      <div class="flyer pill-fly" style="top:50%; left:60%;" data-at="0.46" data-dx="150" data-dy="240" data-rot="-20" data-z="110">POSTER</div>
+      <div class="flyer scrap"  style="top:88%; left:38%;" data-at="0.47" data-dx="-140" data-dy="240" data-rot="32" data-z="72">CHANGSHA</div>
+      <div class="flyer sticky-mini" style="top:74%; left:60%;" data-at="0.49" data-dx="230" data-dy="180" data-rot="45" data-z="88">★<br />BEST</div>
+      <div class="flyer sticker" style="top:6%; left:70%;"  data-at="0.50" data-dx="120" data-dy="-280" data-rot="-35" data-z="90">◎</div>
+      <div class="flyer bar-fly" style="top:82%; left:12%;" data-at="0.52" data-dx="-280" data-dy="120" data-rot="-38" data-z="85"></div>
+      <div class="flyer clip-fly" style="top:26%; left:50%;" data-at="0.53" data-dx="90" data-dy="-260" data-rot="48" data-z="115"></div>
+      <div class="flyer pill-fly" style="top:70%; left:86%;" data-at="0.55" data-dx="300" data-dy="100" data-rot="24" data-z="100">AI VISUAL</div>
+      <div class="flyer tag-y" style="top:46%; left:8%;"   data-at="0.56" data-dx="-320" data-dy="-150" data-rot="-48" data-z="92">PACKAGING</div>
+      <div class="flyer scrap"  style="top:92%; left:58%;" data-at="0.58" data-dx="200" data-dy="230" data-rot="-30" data-z="75">THANKS!</div>
+      <div class="flyer sticker" style="top:36%; left:32%;" data-at="0.59" data-dx="-200" data-dy="-170" data-rot="28" data-z="82">✿</div>
+      <div class="flyer stamp-fly" style="top:56%; left:26%;" data-at="0.61" data-dx="-260" data-dy="90" data-rot="-42" data-z="78">☕</div>
+      <div class="flyer pill-fly" style="top:84%; left:80%;" data-at="0.62" data-dx="260" data-dy="200" data-rot="36" data-z="98">CONTACT</div>
+      <div class="flyer bar-fly" style="top:4%; left:36%;"  data-at="0.64" data-dx="-80" data-dy="-290" data-rot="16" data-z="92"></div>
+      <div class="flyer sticky-mini" style="top:44%; left:84%;" data-at="0.66" data-dx="320" data-dy="-90" data-rot="-30" data-z="105">✉<br />MAIL</div>
+      <div class="flyer scrap"  style="top:68%; left:50%;" data-at="0.68" data-dx="40" data-dy="290" data-rot="20" data-z="70">…AND MORE</div>
       <div class="cover-inner" id="cover-inner">
         <div class="cover-top" id="cover-top"><span>DA×WN PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
         <h1>个人<br />作品集</h1>
@@ -1202,18 +1223,20 @@
   });
 
   function render() {
-    cur += (target - cur) * 0.055;
+    // 尾段加速：接近终点时插值加快，避免最后一段"翻不动"
+    const k = target > 0.98 && cur > 0.75 ? 0.16 : 0.055;
+    cur += (target - cur) * k;
     if (Math.abs(target - cur) < 0.0004) cur = target;
 
     // 预备段：镜头逼近 + 鼠标视差（随翻页渐弱）
     const pre = clamp01(cur / 0.22);
     tilt.style.transform =
-      `scale(${(1 + 0.07 * pre).toFixed(4)}) rotateX(${(-my * 3.2 * (1 - pre)).toFixed(2)}deg) rotateY(${(mx * 5.5 * (1 - pre)).toFixed(2)}deg)`;
+      `scale(${(1 + 0.07 * pre).toFixed(4)}) rotateX(${(-my * 6 * (1 - pre)).toFixed(2)}deg) rotateY(${(mx * 11 * (1 - pre)).toFixed(2)}deg)`;
 
-    // 级联翻页：4 条页带依次折落，折角处渐变光影扫过
+    // 级联翻页：4 条页带依次折落，折角处渐变光影扫过（行程收紧到 0.88 前结束）
     let flipSum = 0;
     leaves.forEach((L, i) => {
-      const p = easeInOutCubic(clamp01((cur - (0.2 + i * 0.11)) / 0.44));
+      const p = easeInOutCubic(clamp01((cur - (0.17 + i * 0.09)) / 0.4));
       flipSum += p;
       L.leaf.style.transform =
         `rotateY(${(-172 * p).toFixed(2)}deg) rotateX(${(Math.sin(p * Math.PI) * 3.4).toFixed(2)}deg)`;
@@ -1248,7 +1271,7 @@
     hintFill.style.width = (cur * 100).toFixed(1) + "%";
     railNum.textContent = cur > 0.5 ? "002" : "001";
 
-    if (cur > 0.995) { finish(); return; }
+    if (cur > 0.97) { finish(); return; }
     rafId = requestAnimationFrame(render);
   }
 
@@ -1260,6 +1283,10 @@
     done = true;
     cancelAnimationFrame(rafId); rafId = null;
     cur = 1;
+    leaves.forEach(L => {
+      L.leaf.style.transform = "rotateY(-172deg)";
+      L.shade.style.opacity = "0";
+    });
     scene.style.transform = "scale(1)";
     scene.style.filter = "none";
     cover.classList.add("done");
