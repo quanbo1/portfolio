@@ -168,7 +168,19 @@
   }
   .b-col { display: flex; flex-direction: column; gap: 26px; align-items: center; }
   .b-col.c1 { margin-top: 25px; }
-  .b-col.c2 { margin-top: 95px; }
+  .b-col.c2 { margin-top: 80px; }
+
+  /* 中列装饰：贴纸排 */
+  .deco-row { display: flex; gap: 14px; align-items: center; }
+  .sticker-deco.k {
+    background: radial-gradient(circle at 35% 30%, #4a4438, #211c15 60%);
+    color: var(--yellow);
+  }
+  .sticker-deco.p {
+    background: radial-gradient(circle at 35% 30%, #fff, #e8e0cf 60%);
+    color: var(--ink);
+  }
+  .sticker-deco.s { width: 38px; height: 38px; font-size: 15px; }
   .b-col.c3 { margin-top: 35px; }
   .b-row { display: flex; gap: 20px; align-items: flex-start; }
 
@@ -298,23 +310,23 @@
   .id-badge .view:hover { background: #000; }
 
   /* 04 黑色技能牌 */
-  .skills-tag { width: 235px; transform: rotate(-5deg); }
+  .skills-tag { width: 275px; transform: rotate(-5deg); }
   .skills-tag .body {
     background: radial-gradient(120% 120% at 30% 20%, #2a251e, var(--black-tag) 65%);
-    border-radius: 90px;
-    padding: 60px 26px 44px;
+    border-radius: 110px;
+    padding: 68px 30px 52px;
     text-align: center;
     color: #f0e9db;
     box-shadow: 0 14px 26px rgba(40,32,20,0.4), inset 0 1px 2px rgba(255,255,255,0.14);
   }
-  .skills-tag .num { font-family: var(--mono); font-size: 13px; opacity: 0.75; }
-  .skills-tag h3 { font-family: var(--mono); font-size: 17px; letter-spacing: 0.1em; margin: 4px 0 2px; }
-  .skills-tag .cn { font-size: 12px; letter-spacing: 0.4em; margin-bottom: 16px; }
-  .skills-tag .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .skills-tag .num { font-family: var(--mono); font-size: 14px; opacity: 0.75; }
+  .skills-tag h3 { font-family: var(--mono); font-size: 19px; letter-spacing: 0.1em; margin: 4px 0 2px; }
+  .skills-tag .cn { font-size: 13px; letter-spacing: 0.4em; margin-bottom: 18px; }
+  .skills-tag .chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
   .skills-tag .chip {
-    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
     border: 1px solid rgba(240,233,219,0.55);
-    padding: 5px 10px; border-radius: 999px;
+    padding: 6px 12px; border-radius: 999px;
   }
   .skills-tag .arrow { font-family: var(--mono); margin-top: 16px; font-size: 13px; color: var(--yellow); }
 
@@ -1086,6 +1098,14 @@
       </div>
       <div class="arrow">→</div>
     </div>
+  </div>
+
+  <!-- 中列装饰：贴纸排 -->
+  <div class="deco-row">
+    <div class="sticker-deco s" style="position:relative">★</div>
+    <div class="sticker-deco k s" style="position:relative">✦</div>
+    <div class="sticker-deco p s" style="position:relative">✿</div>
+    <div class="tape-deco blue" style="position:relative; width:72px; transform:rotate(-6deg)"></div>
   </div>
 
   <!-- ===== 05 信封联系卡 ===== -->
