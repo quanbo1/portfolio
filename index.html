@@ -37,7 +37,7 @@
   .scene {
     position: relative;
     min-height: 100vh;
-    min-width: 1370px;
+    min-width: 1550px;
     padding: 34px;
     background:
       radial-gradient(circle, rgba(29,24,18,0.16) 2.2px, transparent 2.8px) 14px 14px / 30px 30px,
@@ -168,7 +168,7 @@
   }
   .b-col { display: flex; flex-direction: column; gap: 26px; align-items: center; }
   .b-col.c1 { margin-top: 25px; }
-  .b-col.c2 { margin-top: 80px; }
+  .b-col.c2 { margin-top: 50px; }
 
   /* 中列装饰：贴纸排 */
   .deco-row { display: flex; gap: 14px; align-items: center; }
@@ -181,7 +181,7 @@
     color: var(--ink);
   }
   .sticker-deco.s { width: 38px; height: 38px; font-size: 15px; }
-  .b-col.c3 { margin-top: 35px; }
+  .b-col.c3 { margin-top: 35px; align-self: stretch; }
   .b-row { display: flex; gap: 20px; align-items: flex-start; }
 
   /* 列间装饰条：随弹性布局自动落在列缝隙中 */
@@ -206,7 +206,7 @@
     background: var(--board);
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
   }
-  @media (max-width: 1520px) {
+  @media (max-width: 1660px) {
     .deco-col { display: none; }
   }
 
@@ -357,11 +357,11 @@
   .skills-tag .arrow { font-family: var(--mono); margin-top: 16px; font-size: 13px; color: var(--yellow); }
 
   /* 05 航空信封联系卡 */
-  .envelope { width: 245px; transform: rotate(2deg); }
+  .envelope { width: 275px; transform: rotate(2deg); }
   .envelope .body {
     background: #fbf7ee;
     border-radius: 4px;
-    padding: 24px 20px 20px;
+    padding: 28px 24px 24px;
     box-shadow: 0 12px 24px rgba(60,45,25,0.3);
     position: relative;
     border: 5px solid transparent;
@@ -369,19 +369,19 @@
     background-clip: padding-box;
   }
   .envelope .stamp {
-    position: absolute; top: 10px; right: 12px;
-    width: 44px; height: 48px;
+    position: absolute; top: 12px; right: 14px;
+    width: 50px; height: 54px;
     background: #fff;
     border: 1px dashed #b9ab8d;
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
+    font-size: 25px;
     transform: rotate(4deg);
     box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   }
-  .envelope .num { font-family: var(--mono); font-weight: 700; font-size: 16px; }
-  .envelope h3 { font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; margin: 2px 0 0; }
-  .envelope .cn { font-size: 10.5px; letter-spacing: 0.45em; margin: 4px 0 14px; }
-  .envelope .rows { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); line-height: 2; }
+  .envelope .num { font-family: var(--mono); font-weight: 700; font-size: 17px; }
+  .envelope h3 { font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; margin: 2px 0 0; }
+  .envelope .cn { font-size: 11px; letter-spacing: 0.45em; margin: 5px 0 16px; }
+  .envelope .rows { font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft); line-height: 2.1; }
   .envelope .rows b { color: var(--ink); font-weight: 700; }
   .envelope .arrow { font-family: var(--mono); font-weight: 700; margin-top: 12px; font-size: 13px; }
 
@@ -459,7 +459,8 @@
 
   /* 06 票根（点击进入下一页，动效后续接入） */
   .r2-ticket {
-    position: relative; width: 340px;
+    position: relative; width: 435px;
+    margin-top: auto;
     display: flex; z-index: 4;
     transform: rotate(-2deg); transform-origin: 50% 50%;
     cursor: pointer;
@@ -470,58 +471,58 @@
     flex: 1;
     background: linear-gradient(165deg, #f6efdf, #eddfc4);
     border-radius: 10px 0 0 10px;
-    padding: 22px 24px 20px;
+    padding: 30px 30px 28px;
     box-shadow: 0 14px 28px rgba(60,45,25,0.32), inset 0 1px 2px rgba(255,255,255,0.6);
   }
   .r2-ticket .t-top {
     display: flex; justify-content: space-between; align-items: center;
-    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
-    border-bottom: 1.5px solid rgba(29,24,18,0.55); padding-bottom: 9px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+    border-bottom: 1.5px solid rgba(29,24,18,0.55); padding-bottom: 11px;
   }
   .r2-ticket .t-top span { color: var(--ink-soft); font-weight: 400; }
   .r2-ticket .t-big {
-    margin-top: 16px;
-    font-family: var(--sans); font-weight: 700; font-size: 30px; letter-spacing: 0.06em;
+    margin-top: 24px;
+    font-family: var(--sans); font-weight: 700; font-size: 42px; letter-spacing: 0.06em;
     color: var(--ink);
   }
   .r2-ticket .t-big b {
     display: inline-block;
-    background: var(--yellow); padding: 0 10px; border-radius: 3px;
+    background: var(--yellow); padding: 0 14px; border-radius: 3px;
   }
   .r2-ticket .t-sub {
-    margin-top: 10px;
-    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--ink-soft);
+    margin-top: 14px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; color: var(--ink-soft);
   }
   .r2-ticket .t-sub::before { content: "→ "; color: var(--yellow); font-weight: 700; }
   .r2-ticket .t-row {
-    margin-top: 16px;
+    margin-top: 24px;
     display: flex; justify-content: space-between;
-    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--ink-soft);
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--ink-soft);
   }
   .r2-ticket .t-stub {
-    width: 100px;
+    width: 110px;
     background: linear-gradient(180deg, #f1e7d2, #e6d7b8);
     border-left: 2px dashed rgba(29,24,18,0.4);
     border-radius: 0 10px 10px 0;
     display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-    padding: 16px 8px;
+    padding: 20px 10px;
     font-family: var(--mono);
   }
   .r2-ticket .t-stub .vword {
     writing-mode: vertical-rl; letter-spacing: 0.4em;
-    font-size: 11px; font-weight: 700; color: var(--ink);
+    font-size: 12px; font-weight: 700; color: var(--ink);
   }
   .r2-ticket .t-stub .t-bar {
-    width: 100%; height: 24px;
+    width: 100%; height: 30px;
     background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px);
   }
-  .r2-ticket .t-stub .seat { font-size: 9px; color: var(--ink-soft); letter-spacing: 0.1em; }
+  .r2-ticket .t-stub .seat { font-size: 10px; color: var(--ink-soft); letter-spacing: 0.1em; }
   .r2-ticket::before, .r2-ticket::after {
     content: ""; position: absolute;
     width: 18px; height: 18px; border-radius: 50%;
     background: var(--board);
     box-shadow: inset 0 2px 3px rgba(0,0,0,0.3);
-    left: calc(100% - 100px - 9px);
+    left: calc(100% - 110px - 9px);
   }
   .r2-ticket::before { top: -9px; }
   .r2-ticket::after { bottom: -9px; }
@@ -945,7 +946,7 @@
     color: rgba(74,66,55,0.4);
   }
 
-  @media (max-width: 1380px) {
+  @media (max-width: 1560px) {
     body { overflow-x: scroll; }
   }
 </style>
