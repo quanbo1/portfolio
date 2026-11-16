@@ -161,7 +161,7 @@
   .obj:hover { transform: rotate(0deg) translateY(-4px) !important; filter: drop-shadow(0 22px 24px rgba(60,45,25,0.3)); }
 
   /* 01 黄色钥匙牌 */
-  .key-tag { left: 360px; top: 80px; width: 170px; transform: rotate(-9deg); }
+  .key-tag { left: 360px; top: 70px; width: 185px; transform: rotate(-9deg); }
   .key-tag .key-svg { display: block; margin: 0 auto 4px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
   .key-tag .tag {
     background: linear-gradient(160deg, #ffc82e, var(--yellow) 60%, #e3a50c);
@@ -187,7 +187,7 @@
   .key-tag .arrow { font-family: var(--mono); font-weight: 700; margin-top: 10px; font-size: 14px; }
 
   /* 02 亚克力作品框 */
-  .acrylic { left: 560px; top: 55px; width: 350px; transform: rotate(1.5deg); }
+  .acrylic { left: 580px; top: 55px; width: 390px; transform: rotate(1.5deg); }
   .acrylic .frame {
     position: relative;
     background: linear-gradient(145deg, rgba(255,255,255,0.55), rgba(240,235,225,0.28) 40%, rgba(255,255,255,0.4));
@@ -236,10 +236,10 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: 3px;
   }
-  .work-list .cat-en { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; min-width: 96px; }
-  .work-list .cat-cn { font-size: 10px; color: var(--ink-soft); letter-spacing: 0.25em; flex: 1; }
+  .work-list .cat-en { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; min-width: 106px; }
+  .work-list .cat-cn { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.25em; flex: 1; }
   .work-list img {
-    width: 62px; height: 40px; object-fit: cover;
+    width: 76px; height: 48px; object-fit: cover;
     border-radius: 2px;
     filter: saturate(0.9);
     box-shadow: 0 1px 3px rgba(0,0,0,0.25);
@@ -254,7 +254,7 @@
   }
 
   /* 03 织物工牌（放大版） */
-  .id-badge { left: 935px; top: 60px; width: 240px; transform: rotate(3deg); }
+  .id-badge { left: 995px; top: 60px; width: 235px; transform: rotate(3deg); }
   .id-badge .body {
     background: linear-gradient(160deg, #d6d2c9, #c4c0b6);
     border-radius: 14px;
@@ -286,7 +286,7 @@
   .id-badge .view:hover { background: #000; }
 
   /* 04 黑色技能牌 */
-  .skills-tag { left: 345px; top: 420px; width: 200px; transform: rotate(-5deg); }
+  .skills-tag { left: 360px; top: 465px; width: 235px; transform: rotate(-5deg); }
   .skills-tag .body {
     background: radial-gradient(120% 120% at 30% 20%, #2a251e, var(--black-tag) 65%);
     border-radius: 90px;
@@ -307,7 +307,7 @@
   .skills-tag .arrow { font-family: var(--mono); margin-top: 16px; font-size: 13px; color: var(--yellow); }
 
   /* 05 航空信封联系卡 */
-  .envelope { left: 575px; top: 545px; width: 230px; transform: rotate(2deg); }
+  .envelope { left: 630px; top: 585px; width: 245px; transform: rotate(2deg); }
   .envelope .body {
     background: #fbf7ee;
     border-radius: 4px;
@@ -336,7 +336,7 @@
   .envelope .arrow { font-family: var(--mono); font-weight: 700; margin-top: 12px; font-size: 13px; }
 
   /* OPEN TO WORK 小吊牌 */
-  .open-tag { left: 352px; top: 715px; width: 112px; transform: rotate(7deg); }
+  .open-tag { left: 1080px; top: 385px; width: 112px; transform: rotate(7deg); }
   .open-tag .body {
     background: #fbf8f1;
     border-radius: 4px;
@@ -363,7 +363,7 @@
 
   /* 便利贴 */
   .sticky {
-    left: 945px; top: 365px;
+    left: 940px; top: 385px;
     width: 120px; height: 110px;
     background: linear-gradient(170deg, #ffe27a, #ffd94f);
     transform: rotate(6deg);
@@ -410,7 +410,7 @@
 
   /* 06 票根（点击进入下一页，动效后续接入） */
   .r2-ticket {
-    position: absolute; left: 825px; top: 545px; width: 355px;
+    position: absolute; left: 895px; top: 585px; width: 340px;
     display: flex; z-index: 4;
     transform: rotate(-2deg); transform-origin: 50% 50%;
     cursor: pointer;
@@ -421,41 +421,41 @@
     flex: 1;
     background: linear-gradient(165deg, #f6efdf, #eddfc4);
     border-radius: 10px 0 0 10px;
-    padding: 18px 20px 16px;
+    padding: 22px 24px 20px;
     box-shadow: 0 14px 28px rgba(60,45,25,0.32), inset 0 1px 2px rgba(255,255,255,0.6);
   }
   .r2-ticket .t-top {
     display: flex; justify-content: space-between; align-items: center;
-    font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
-    border-bottom: 1.5px solid rgba(29,24,18,0.55); padding-bottom: 8px;
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    border-bottom: 1.5px solid rgba(29,24,18,0.55); padding-bottom: 9px;
   }
   .r2-ticket .t-top span { color: var(--ink-soft); font-weight: 400; }
   .r2-ticket .t-big {
-    margin-top: 14px;
-    font-family: var(--sans); font-weight: 700; font-size: 26px; letter-spacing: 0.06em;
+    margin-top: 16px;
+    font-family: var(--sans); font-weight: 700; font-size: 30px; letter-spacing: 0.06em;
     color: var(--ink);
   }
   .r2-ticket .t-big b {
     display: inline-block;
-    background: var(--yellow); padding: 0 8px; border-radius: 3px;
+    background: var(--yellow); padding: 0 10px; border-radius: 3px;
   }
   .r2-ticket .t-sub {
-    margin-top: 8px;
-    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; color: var(--ink-soft);
+    margin-top: 10px;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--ink-soft);
   }
   .r2-ticket .t-sub::before { content: "→ "; color: var(--yellow); font-weight: 700; }
   .r2-ticket .t-row {
-    margin-top: 14px;
+    margin-top: 16px;
     display: flex; justify-content: space-between;
-    font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.1em; color: var(--ink-soft);
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--ink-soft);
   }
   .r2-ticket .t-stub {
-    width: 90px;
+    width: 100px;
     background: linear-gradient(180deg, #f1e7d2, #e6d7b8);
     border-left: 2px dashed rgba(29,24,18,0.4);
     border-radius: 0 10px 10px 0;
     display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-    padding: 14px 8px;
+    padding: 16px 8px;
     font-family: var(--mono);
   }
   .r2-ticket .t-stub .vword {
@@ -463,7 +463,7 @@
     font-size: 11px; font-weight: 700; color: var(--ink);
   }
   .r2-ticket .t-stub .t-bar {
-    width: 100%; height: 22px;
+    width: 100%; height: 24px;
     background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px);
   }
   .r2-ticket .t-stub .seat { font-size: 9px; color: var(--ink-soft); letter-spacing: 0.1em; }
@@ -472,7 +472,7 @@
     width: 18px; height: 18px; border-radius: 50%;
     background: var(--board);
     box-shadow: inset 0 2px 3px rgba(0,0,0,0.3);
-    left: calc(100% - 90px - 9px);
+    left: calc(100% - 100px - 9px);
   }
   .r2-ticket::before { top: -9px; }
   .r2-ticket::after { bottom: -9px; }
@@ -1110,20 +1110,20 @@
   <div class="sticky">TODO ✓<br />—— 好的设计<br />是解决问题的<br />方式，不是装<br />饰。2026</div>
 
   <!-- 小装饰：图钉 -->
-  <div class="pin" style="left:540px;top:360px"></div>
+  <div class="pin" style="left:556px;top:378px"></div>
   <div class="pin dark" style="left:342px;top:52px"></div>
   <div class="pin red" style="left:1152px;top:42px"></div>
-  <div class="pin white" style="left:808px;top:512px"></div>
-  <div class="pin" style="left:1120px;top:420px"></div>
-  <div class="pin dark" style="left:540px;top:722px"></div>
+  <div class="pin white" style="left:598px;top:556px"></div>
+  <div class="pin" style="left:1066px;top:468px"></div>
+  <div class="pin dark" style="left:602px;top:798px"></div>
 
   <!-- 小装饰：和纸胶带 -->
   <div class="tape-deco" style="left:528px;top:34px;transform:rotate(-42deg)"></div>
   <div class="tape-deco red" style="left:1090px;top:38px;transform:rotate(40deg)"></div>
-  <div class="tape-deco blue" style="left:838px;top:534px;transform:rotate(-10deg);width:84px"></div>
+  <div class="tape-deco blue" style="left:884px;top:572px;transform:rotate(-12deg);width:84px"></div>
 
   <!-- 小装饰：贴纸 -->
-  <div class="sticker-deco" style="left:531px;top:342px">★</div>
+  <div class="sticker-deco" style="left:366px;bottom:22px;z-index:4">★</div>
 
   <!-- 06 票根：点击进入下一页（动效待接入） -->
   <div class="r2-ticket" id="ticket" data-next="true">
