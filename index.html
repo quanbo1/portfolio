@@ -245,6 +245,24 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   }
 
+  /* 头像占位框（等图片插入后替换） */
+  .avatar-slot {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px;
+    background:
+      linear-gradient(45deg, transparent 48%, rgba(29,24,18,0.12) 49%, rgba(29,24,18,0.12) 51%, transparent 52%),
+      repeating-linear-gradient(45deg, rgba(29,24,18,0.05) 0 8px, transparent 8px 16px),
+      #fbf8f1;
+    border: 1.5px dashed rgba(29,24,18,0.4);
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    text-align: center;
+  }
+  .avatar-slot .cam { font-size: 14px; }
+  .avatar-slot .t1 { font-size: 8px; font-weight: 700; letter-spacing: 0.15em; }
+  .avatar-slot .t2 { font-size: 7px; letter-spacing: 0.1em; opacity: 0.8; }
+
   /* 03 织物工牌 */
   .id-badge { left: 968px; top: 88px; width: 190px; transform: rotate(4deg); }
   .id-badge .body {
@@ -839,7 +857,7 @@
       <div class="flyer sticky-mini" style="top:44%; left:84%;" data-at="0.66" data-dx="320" data-dy="-90" data-rot="-30" data-z="105">✉<br />MAIL</div>
       <div class="flyer scrap"  style="top:68%; left:50%;" data-at="0.68" data-dx="40" data-dy="290" data-rot="20" data-z="70">…AND MORE</div>
       <div class="cover-inner" id="cover-inner">
-        <div class="cover-top" id="cover-top"><span>DA×WN PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
+        <div class="cover-top" id="cover-top"><span>LIU YUNXI PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
         <h1>个人<br />作品集</h1>
         <div class="cover-sub">PERSONAL PORTFOLIO — WHERE IDEAS MEET NEW BEGINNINGS.</div>
         <ul class="cover-index">
@@ -867,7 +885,7 @@
 
   <!-- ===== 左侧信息面板 ===== -->
   <aside class="panel">
-    <div class="brand">DA×WN PORTFOLIO</div>
+    <div class="brand">刘芸熙 · PORTFOLIO</div>
     <div class="slogan">WHERE IDEAS MEET NEW BEGINNINGS.</div>
 
     <div class="mode">
@@ -941,8 +959,12 @@
     <div class="ring"></div>
     <div class="body">
       <div class="head"><span class="en">03 ABOUT ME</span><span class="cn">简介</span></div>
-      <img class="photo" src="https://images.unsplash.com/photo-1552058544-f2b08422138a?w=200&q=70" alt="头像" />
-      <div class="rows">工作经历 / EDUCATION<br />点击查看完整履历</div>
+      <div class="avatar-slot" id="avatar-badge" style="width:56px;height:62px;border-radius:6px;margin-top:12px;">
+        <span class="cam">📷</span>
+        <span class="t1">HEADSHOT</span>
+        <span class="t2">头像位 · 待插入</span>
+      </div>
+      <div class="rows">刘芸熙 · 艺术与科技<br />湖北美术学院 在读</div>
       <button class="view">VIEW CV →</button>
     </div>
   </div>
@@ -972,9 +994,9 @@
       <h3>CONTACT</h3>
       <div class="cn">联 系 方 法</div>
       <div class="rows">
-        <b>邮箱</b> &nbsp;1500432035@qq.com<br />
-        <b>电话</b> &nbsp;183 7398 5105<br />
-        <b>坐标</b> &nbsp;Changsha, China
+        <b>邮箱</b> &nbsp;18162756912@163.com<br />
+        <b>电话</b> &nbsp;18162756912<br />
+        <b>坐标</b> &nbsp;湖北武汉 · 江岸区
       </div>
       <div class="arrow">→</div>
     </div>
@@ -985,7 +1007,7 @@
     <div class="ring"></div>
     <div class="body">
       <h4>OPEN TO WORK</h4>
-      <p>接受新项目合作<br />全流程设计服务<br />自由职业 · 远程</p>
+      <p>接受项目合作<br />实习机会欢迎<br />艺术设计 · 在读</p>
       <div class="barcode"></div>
     </div>
   </div>
@@ -1039,31 +1061,40 @@
     <div class="modal-title">ABOUT ME<span class="cn">个 人 履 历</span></div>
     <div class="cv">
       <div class="photo-box">
-        <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a?w=400&q=70" alt="照片" />
+        <div class="avatar-slot" id="avatar-cv" style="width:100%;height:250px;border-radius:10px;">
+          <span class="cam" style="font-size:26px;">📷</span>
+          <span class="t1" style="font-size:11px;">HEADSHOT</span>
+          <span class="t2" style="font-size:9px;">头像位 · 待插入</span>
+        </div>
+        <div style="margin-top:14px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:0.08em;">刘芸熙</div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:#8f8676;margin-top:4px;">LIU YUNXI · ART &amp; TECH</div>
       </div>
       <div>
         <div class="sec">
           <h4>简介 / INTRO</h4>
-          <p>独立视觉设计师，专注品牌形象、包装与海报设计，同时探索 AI 视觉在商业项目中的应用。相信好的设计是解决问题的方法，而非装饰。</p>
+          <p>湖北美术学院 艺术与科技专业在读，关注视觉艺术与数字技术的交叉领域，在学习可视化艺术、空间构建与交互媒体的过程中不断探索自己的表达方式。</p>
         </div>
         <div class="sec">
-          <h4>工作经历 / EXPERIENCE</h4>
+          <h4>基本信息 / PROFILE</h4>
           <ul>
-            <li><b>2023 — 至今</b> &nbsp;自由设计师 / 独立工作室主理人</li>
-            <li><b>2020 — 2023</b> &nbsp;某品牌设计公司 · 资深视觉设计师</li>
-            <li><b>2018 — 2020</b> &nbsp;某广告公司 · 平面设计师</li>
+            <li><b>出生年月</b> &nbsp;2006 年 8 月</li>
+            <li><b>籍贯</b> &nbsp;湖北省武汉市</li>
+            <li><b>现居地址</b> &nbsp;武汉市江岸区新三巷社区</li>
+            <li><b>手机号码</b> &nbsp;18162756912</li>
+            <li><b>邮箱</b> &nbsp;18162756912@163.com</li>
           </ul>
         </div>
         <div class="sec">
           <h4>教育背景 / EDUCATION</h4>
           <ul>
-            <li><b>2014 — 2018</b> &nbsp;视觉传达设计 · 学士</li>
+            <li><b>2024.09 — 2028.06</b> &nbsp;湖北美术学院 · 艺术与科技专业（本科在读）</li>
+            <li><b>专业排名</b> &nbsp;11</li>
           </ul>
         </div>
         <div class="sec">
-          <h4>服务客户 / CLIENTS</h4>
+          <h4>主修课程 / COURSES</h4>
           <ul>
-            <li>餐饮、文创、科技初创等 30+ 品牌与团队</li>
+            <li>开源编程基础 · 空间信息应用 · 可视化艺术与交互媒体 · 空间与构建 · 图绘思考</li>
           </ul>
         </div>
       </div>
@@ -1078,10 +1109,10 @@
     <div class="contact-card">
       <h3>CONTACT</h3>
       <div class="cn">期 待 与 你 合 作</div>
-      <div class="row"><b>邮箱 EMAIL</b> 1500432035@qq.com</div>
-      <div class="row"><b>电话 TEL</b> 183 7398 5105</div>
-      <div class="row"><b>坐标 LOC</b> Changsha, China</div>
-      <div class="row"><b>微信 WECHAT</b> 请备注「合作」</div>
+      <div class="row"><b>邮箱 EMAIL</b> 18162756912@163.com</div>
+      <div class="row"><b>电话 TEL</b> 18162756912</div>
+      <div class="row"><b>坐标 LOC</b> 湖北省武汉市 江岸区</div>
+      <div class="row"><b>籍贯 HOME</b> 湖北省武汉市</div>
     </div>
   </div>
 </div>
