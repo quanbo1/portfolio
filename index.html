@@ -1,2116 +1,554 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>洞洞板作品集 · PEGBOARD PORTFOLIO</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --board: #e8dfcf;
-    --board-dark: #ddd2bd;
-    --paper: #f3ecdc;
-    --paper-2: #efe6d3;
-    --ink: #1d1812;
-    --ink-soft: #4a4237;
-    --yellow: #f6b91d;
-    --black-tag: #191510;
-    --line: #c9bda6;
-    --mono: "Space Mono", "Noto Sans SC", monospace;
-    --sans: "Noto Sans SC", sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-
-  body {
-    font-family: var(--sans);
-    color: var(--ink);
-    overflow: hidden;
-    background: var(--board);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ========== 洞洞板背景 ========== */
-  .scene {
-    position: relative;
-    min-height: 100vh;
-    min-width: 1550px;
-    padding: 34px;
-    background:
-      radial-gradient(circle, rgba(29,24,18,0.16) 2.2px, transparent 2.8px) 14px 14px / 30px 30px,
-      radial-gradient(ellipse at 50% 0%, #efe7d7 0%, var(--board) 55%, var(--board-dark) 100%);
-    box-shadow: inset 0 0 140px rgba(90, 70, 40, 0.18);
-  }
-  .scene::after {
-    content: "";
-    position: absolute; inset: 0;
-    pointer-events: none;
-    box-shadow: inset 0 -30px 60px rgba(90,70,40,0.08);
-  }
-
-  /* ========== 挂环 / 挂钩 ========== */
-  .ring {
-    position: absolute;
-    top: -26px; left: 50%;
-    transform: translateX(-50%);
-    width: 30px; height: 42px;
-    border: 6px solid #b9b4ac;
-    border-radius: 50%;
-    border-bottom-color: #8d8880;
-    box-shadow: 0 3px 4px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.7);
-    z-index: 3;
-  }
-  .clip {
-    position: absolute;
-    top: -30px; left: 50%;
-    transform: translateX(-50%);
-    width: 44px; height: 26px;
-    background: linear-gradient(180deg, #d8d5cf, #a8a49c 55%, #cfccc6);
-    border-radius: 6px 6px 3px 3px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    z-index: 3;
-  }
-  .clip::before {
-    content: "";
-    position: absolute; top: -12px; left: 50%;
-    transform: translateX(-50%);
-    width: 18px; height: 18px;
-    border: 5px solid #b9b4ac;
-    border-radius: 50%;
-    border-bottom-color: #8d8880;
-  }
-
-  /* ========== 左侧信息面板 ========== */
-  .panel {
-    position: absolute;
-    left: 34px; top: 34px; bottom: 34px;
-    width: 300px;
-    background: var(--paper);
-    border-radius: 14px;
-    padding: 30px 26px;
-    box-shadow: 0 14px 34px rgba(60,45,25,0.28), inset 0 1px 0 rgba(255,255,255,0.8);
-    font-family: var(--mono);
-    display: flex;
-    flex-direction: column;
-    z-index: 5;
-  }
-  .panel .brand { font-size: 15px; font-weight: 700; letter-spacing: 0.06em; }
-  .panel .slogan { font-size: 10px; color: var(--ink-soft); margin-top: 6px; letter-spacing: 0.04em; }
-  .panel .mode {
-    margin-top: 26px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
-  }
-  .panel .mode small {
-    display: block; font-weight: 400; font-size: 10px; color: var(--ink-soft); margin-top: 4px;
-  }
-  .panel .mode small::before { content: "○ "; color: var(--yellow); }
-
-  .legend { margin-top: 30px; font-size: 11px; }
-  .legend h4 { font-size: 11px; letter-spacing: 0.12em; border-bottom: 1px solid var(--ink); padding-bottom: 6px; margin-bottom: 10px; }
-  .legend ul { list-style: none; }
-  .legend li { display: flex; justify-content: space-between; padding: 5px 0; letter-spacing: 0.03em; }
-  .legend li span:last-child { color: var(--ink-soft); }
-
-  .legend a.item {
-    display: flex; justify-content: space-between; width: 100%;
-    padding: 6px 8px; margin: 0 -8px; border-radius: 6px;
-    text-decoration: none; color: var(--ink);
-    border: 1px dashed transparent;
-    transition: all 0.2s ease;
-  }
-  .legend a.item:hover { background: rgba(246,185,29,0.18); border-color: rgba(29,24,18,0.35); }
-
-  .obj-interface { margin-top: 26px; font-size: 10px; color: var(--ink-soft); letter-spacing: 0.05em; }
-  .obj-interface p { margin: 3px 0; }
-  .obj-interface p::before { content: "→ "; color: var(--yellow); font-weight: 700; }
-
-  .panel .bigtype {
-    margin-top: auto;
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 27px;
-    line-height: 1.18;
-    letter-spacing: 0.01em;
-  }
-  .panel .foot {
-    margin-top: 20px;
-    display: flex; align-items: center; gap: 10px;
-    font-size: 9px; color: var(--ink-soft); letter-spacing: 0.06em;
-  }
-  .qrs { display: flex; gap: 8px; }
-  .qr {
-    width: 44px; height: 44px;
-    background:
-      conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0) 0 0/12px 12px,
-      conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0) 6px 6px/12px 12px,
-      #fff;
-    border: 3px solid #fff;
-    outline: 1px solid var(--line);
-  }
-
-  /* ========== 挂件通用 ========== */
-  .obj {
-    position: relative;
-    cursor: pointer;
-    transform-origin: 50% -20px;
-    transition: transform 0.45s cubic-bezier(.34,1.56,.64,1), filter 0.3s;
-    z-index: 4;
-  }
-  .obj:hover { transform: rotate(0deg) translateY(-4px) !important; filter: drop-shadow(0 22px 24px rgba(60,45,25,0.3)); }
-
-  /* 板面挂件区：三列弹性分布，自适应铺满宽度 */
-  .board {
-    position: absolute; left: 354px; right: 24px; top: 30px; bottom: 76px;
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 20px; z-index: 4;
-  }
-  .b-col { display: flex; flex-direction: column; gap: 26px; align-items: center; }
-  .b-col.c1 { margin-top: 25px; }
-  .b-col.c2 { margin-top: 50px; }
-
-  /* 中列装饰：贴纸排 */
-  .deco-row { display: flex; gap: 14px; align-items: center; }
-  .sticker-deco.k {
-    background: radial-gradient(circle at 35% 30%, #4a4438, #211c15 60%);
-    color: var(--yellow);
-  }
-  .sticker-deco.p {
-    background: radial-gradient(circle at 35% 30%, #fff, #e8e0cf 60%);
-    color: var(--ink);
-  }
-  .sticker-deco.s { width: 38px; height: 38px; font-size: 15px; }
-  .b-col.c3 { margin-top: 35px; align-self: stretch; }
-  .b-row { display: flex; gap: 20px; align-items: flex-start; }
-
-  /* 列间装饰条：随弹性布局自动落在列缝隙中 */
-  .deco-col {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 44px; margin-top: 130px; flex: 0 0 auto;
-  }
-  .deco-col .pin, .deco-col .sticker-deco, .deco-col .tape-deco { position: relative; }
-  .vtag {
-    writing-mode: vertical-rl;
-    background: linear-gradient(180deg, #f1e7d2, #e6d7b8);
-    border-radius: 3px; padding: 16px 8px 12px;
-    font-family: var(--mono); font-size: 8px; letter-spacing: 0.28em;
-    color: rgba(74,60,30,0.85);
-    box-shadow: 0 6px 12px rgba(60,45,25,0.28);
-    position: relative;
-  }
-  .vtag::before {
-    content: ""; position: absolute; top: 5px; left: 50%;
-    transform: translateX(-50%);
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--board);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
-  }
-  @media (max-width: 1660px) {
-    .deco-col { display: none; }
-  }
-
-  /* 01 黄色钥匙牌 */
-  .key-tag { width: 185px; transform: rotate(-9deg); }
-  .key-tag .key-svg { display: block; margin: 0 auto 4px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
-  .key-tag .tag {
-    background: linear-gradient(160deg, #ffc82e, var(--yellow) 60%, #e3a50c);
-    border-radius: 16px;
-    padding: 44px 16px 22px;
-    text-align: center;
-    color: var(--black-tag);
-    box-shadow: 0 12px 22px rgba(60,45,25,0.3), inset 0 2px 3px rgba(255,255,255,0.5);
-    position: relative;
-  }
-  .key-tag .tag::before {
-    content: "";
-    position: absolute; top: 14px; left: 50%;
-    transform: translateX(-50%);
-    width: 26px; height: 26px;
-    background: var(--board);
-    border-radius: 50%;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.35), 0 1px 1px rgba(255,255,255,0.4);
-  }
-  .key-tag .num { font-family: var(--mono); font-weight: 700; font-size: 18px; }
-  .key-tag .cn { font-size: 15px; font-weight: 700; margin: 4px 0 8px; letter-spacing: 0.2em; }
-  .key-tag .en { font-family: var(--mono); font-size: 8px; color: rgba(25,21,16,0.65); line-height: 1.5; }
-  .key-tag .arrow { font-family: var(--mono); font-weight: 700; margin-top: 10px; font-size: 14px; }
-
-  /* 02 亚克力作品框 */
-  .acrylic { width: 380px; transform: rotate(1.5deg); }
-  .acrylic .frame {
-    position: relative;
-    background: linear-gradient(145deg, rgba(255,255,255,0.55), rgba(240,235,225,0.28) 40%, rgba(255,255,255,0.4));
-    border: 1px solid rgba(255,255,255,0.75);
-    border-radius: 10px;
-    padding: 14px;
-    box-shadow:
-      0 20px 40px rgba(60,45,25,0.3),
-      inset 0 0 0 1px rgba(255,255,255,0.5),
-      inset 6px 0 14px rgba(255,255,255,0.55),
-      inset -6px 0 14px rgba(120,100,70,0.1);
-    backdrop-filter: blur(2px);
-  }
-  .acrylic .frame::after {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: 10px;
-    background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.5) 46%, transparent 52%, transparent 68%, rgba(255,255,255,0.3) 72%, transparent 78%);
-    pointer-events: none;
-  }
-  .acrylic .sheet {
-    background: #fbf8f1;
-    border-radius: 4px;
-    padding: 26px 24px 20px;
-    box-shadow: 0 2px 8px rgba(60,45,25,0.15);
-  }
-  .acrylic .num { font-family: var(--mono); font-size: 20px; font-weight: 700; }
-  .acrylic h2 { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: 0.03em; margin: 2px 0 4px; }
-  .acrylic .cn-title { font-size: 14px; font-weight: 700; letter-spacing: 0.35em; margin-bottom: 12px; }
-  .acrylic .desc { font-family: var(--mono); font-size: 9.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 16px; }
-  .acrylic .desc b { background: var(--yellow); padding: 0 3px; }
-
-  .work-list { list-style: none; }
-  .work-list li {
-    display: flex; align-items: center; gap: 12px;
-    padding: 7px 0;
-    border-bottom: 1px solid rgba(29,24,18,0.12);
-    transition: transform 0.2s ease;
-  }
-  .work-list li:hover { transform: translateX(4px); }
-  .work-list li:last-child { border-bottom: none; }
-  .work-list .no {
-    font-family: var(--mono); font-weight: 700; font-size: 10px;
-    background: var(--yellow);
-    min-width: 26px; height: 20px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 3px;
-  }
-  .work-list .cat-en { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; min-width: 106px; }
-  .work-list .cat-cn { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.25em; flex: 1; }
-  .work-list img {
-    width: 76px; height: 48px; object-fit: cover;
-    border-radius: 2px;
-    filter: saturate(0.9);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-  }
-
-  /* 头像图片（像素风，保持锐利） */
-  .avatar-img {
-    display: block;
-    object-fit: contain;
-    background: #ffffff;
-    image-rendering: pixelated;
-  }
-
-  /* 03 织物工牌（放大版） */
-  .id-badge { width: 235px; transform: rotate(3deg); }
-  .id-badge .body {
-    background: linear-gradient(160deg, #d6d2c9, #c4c0b6);
-    border-radius: 14px;
-    padding: 22px 20px 20px;
-    box-shadow: 0 16px 30px rgba(60,45,25,0.32), inset 0 1px 2px rgba(255,255,255,0.6);
-    position: relative;
-  }
-  .id-badge .body::before {
-    content: "";
-    position: absolute; inset: 7px;
-    border: 1.5px dashed rgba(80,74,64,0.5);
-    border-radius: 10px;
-    pointer-events: none;
-  }
-  .id-badge .head { display: flex; align-items: center; justify-content: space-between; }
-  .id-badge .head .en { font-family: var(--mono); font-weight: 700; font-size: 14px; }
-  .id-badge .head .cn {
-    font-size: 10px; letter-spacing: 0.3em; color: #fff;
-    background: var(--black-tag); padding: 4px 9px; border-radius: 3px;
-  }
-  .id-badge .rows { margin-top: 10px; font-size: 11.5px; color: var(--ink-soft); line-height: 1.9; }
-  .id-badge .view {
-    margin-top: 14px; width: 100%;
-    font-family: var(--mono); font-weight: 700; font-size: 11px; letter-spacing: 0.15em;
-    background: var(--black-tag); color: #fff;
-    border: none; padding: 10px 0; border-radius: 5px; cursor: pointer;
-    transition: background 0.2s;
-  }
-  .id-badge .view:hover { background: #000; }
-
-  /* 04 黑色技能牌 */
-  .skills-tag { width: 275px; transform: rotate(-5deg); }
-  .skills-tag .body {
-    background: radial-gradient(120% 120% at 30% 20%, #2a251e, var(--black-tag) 65%);
-    border-radius: 110px;
-    padding: 68px 30px 52px;
-    text-align: center;
-    color: #f0e9db;
-    box-shadow: 0 14px 26px rgba(40,32,20,0.4), inset 0 1px 2px rgba(255,255,255,0.14);
-  }
-  .skills-tag .num { font-family: var(--mono); font-size: 14px; opacity: 0.75; }
-  .skills-tag h3 { font-family: var(--mono); font-size: 19px; letter-spacing: 0.1em; margin: 4px 0 2px; }
-  .skills-tag .cn { font-size: 13px; letter-spacing: 0.4em; margin-bottom: 18px; }
-  .skills-tag .chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
-  .skills-tag .chip {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
-    border: 1px solid rgba(240,233,219,0.55);
-    padding: 6px 12px; border-radius: 999px;
-  }
-  .skills-tag .arrow { font-family: var(--mono); margin-top: 16px; font-size: 13px; color: var(--yellow); }
-
-  /* 05 航空信封联系卡 */
-  .envelope { width: 275px; transform: rotate(2deg); }
-  .envelope .body {
-    background: #fbf7ee;
-    border-radius: 4px;
-    padding: 28px 24px 24px;
-    box-shadow: 0 12px 24px rgba(60,45,25,0.3);
-    position: relative;
-    border: 5px solid transparent;
-    border-image: repeating-linear-gradient(45deg, #d84b3a 0 12px, #fbf7ee 12px 24px, #3d5fa8 24px 36px, #fbf7ee 36px 48px) 5;
-    background-clip: padding-box;
-  }
-  .envelope .stamp {
-    position: absolute; top: 12px; right: 14px;
-    width: 50px; height: 54px;
-    background: #fff;
-    border: 1px dashed #b9ab8d;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 25px;
-    transform: rotate(4deg);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  }
-  .envelope .num { font-family: var(--mono); font-weight: 700; font-size: 17px; }
-  .envelope h3 { font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; margin: 2px 0 0; }
-  .envelope .cn { font-size: 11px; letter-spacing: 0.45em; margin: 5px 0 16px; }
-  .envelope .rows { font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft); line-height: 2.1; }
-  .envelope .rows b { color: var(--ink); font-weight: 700; }
-  .envelope .arrow { font-family: var(--mono); font-weight: 700; margin-top: 12px; font-size: 13px; }
-
-  /* OPEN TO WORK 小吊牌 */
-  .open-tag { width: 112px; transform: rotate(7deg); }
-  .open-tag .body {
-    background: #fbf8f1;
-    border-radius: 4px;
-    padding: 34px 12px 14px;
-    text-align: center;
-    box-shadow: 0 10px 20px rgba(60,45,25,0.28);
-    position: relative;
-  }
-  .open-tag .body::before {
-    content: "";
-    position: absolute; top: 12px; left: 50%;
-    transform: translateX(-50%);
-    width: 18px; height: 18px;
-    background: var(--board);
-    border-radius: 50%;
-    box-shadow: inset 0 2px 3px rgba(0,0,0,0.3);
-  }
-  .open-tag h4 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; }
-  .open-tag p { font-size: 8.5px; color: var(--ink-soft); line-height: 1.6; margin: 6px 0 10px; }
-  .barcode {
-    height: 26px;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 10px, var(--ink) 10px 13px, transparent 13px 15px);
-  }
-
-  /* 便利贴 */
-  .sticky {
-    width: 130px; height: 118px;
-    background: linear-gradient(170deg, #ffe27a, #ffd94f);
-    transform: rotate(6deg);
-    box-shadow: 0 10px 20px rgba(60,45,25,0.25);
-    padding: 16px 14px;
-    font-family: var(--mono);
-    font-size: 10px; line-height: 1.7; color: #4d3f10;
-    cursor: default;
-  }
-  .sticky::before {
-    content: "";
-    position: absolute; top: -8px; left: 0; right: 0; height: 16px;
-    background: rgba(120,95,40,0.18);
-  }
-
-  /* ========== 小装饰 ========== */
-  .pin {
-    position: absolute; width: 12px; height: 12px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ffd75e, var(--yellow) 55%, #c98f06);
-    box-shadow: 0 3px 4px rgba(0,0,0,0.35), inset 0 -2px 3px rgba(0,0,0,0.25);
-    pointer-events: none; z-index: 3;
-  }
-  .pin.dark { background: radial-gradient(circle at 35% 30%, #4a4438, #211c15 60%); }
-  .pin.red { background: radial-gradient(circle at 35% 30%, #ff8a7a, #d84b3a 60%); }
-  .pin.white { background: radial-gradient(circle at 35% 30%, #fff, #d9d2c2 60%); }
-
-  .tape-deco {
-    position: absolute; width: 110px; height: 26px; z-index: 6; pointer-events: none;
-    background:
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.25) 0 6px, transparent 6px 14px),
-      rgba(246,185,29,0.5);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-  }
-  .tape-deco.red { background-color: rgba(216,75,58,0.42); }
-  .tape-deco.blue { background-color: rgba(61,95,168,0.38); }
-
-  .sticker-deco {
-    position: absolute; width: 48px; height: 48px; border-radius: 50%; z-index: 3;
-    background: radial-gradient(circle at 35% 30%, #ffd75e, var(--yellow) 60%, #d99e08);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; color: var(--black-tag); font-weight: 700;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.25), inset 0 0 0 3px rgba(255,255,255,0.35);
-  }
-
-  /* 06 票根（点击进入下一页，动效后续接入） */
-  .r2-ticket {
-    position: relative; width: 435px;
-    margin-top: auto;
-    display: flex; z-index: 4;
-    transform: rotate(-2deg); transform-origin: 50% 50%;
-    cursor: pointer;
-    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), filter 0.3s;
-  }
-  .r2-ticket:hover { transform: rotate(-2deg) translateY(-5px); filter: drop-shadow(0 20px 22px rgba(60,45,25,0.3)); }
-  .r2-ticket .t-main {
-    flex: 1;
-    background: linear-gradient(165deg, #f6efdf, #eddfc4);
-    border-radius: 10px 0 0 10px;
-    padding: 30px 30px 28px;
-    box-shadow: 0 14px 28px rgba(60,45,25,0.32), inset 0 1px 2px rgba(255,255,255,0.6);
-  }
-  .r2-ticket .t-top {
-    display: flex; justify-content: space-between; align-items: center;
-    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
-    border-bottom: 1.5px solid rgba(29,24,18,0.55); padding-bottom: 11px;
-  }
-  .r2-ticket .t-top span { color: var(--ink-soft); font-weight: 400; }
-  .r2-ticket .t-big {
-    margin-top: 24px;
-    font-family: var(--sans); font-weight: 700; font-size: 42px; letter-spacing: 0.06em;
-    color: var(--ink);
-  }
-  .r2-ticket .t-big b {
-    display: inline-block;
-    background: var(--yellow); padding: 0 14px; border-radius: 3px;
-  }
-  .r2-ticket .t-sub {
-    margin-top: 14px;
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; color: var(--ink-soft);
-  }
-  .r2-ticket .t-sub::before { content: "→ "; color: var(--yellow); font-weight: 700; }
-  .r2-ticket .t-row {
-    margin-top: 24px;
-    display: flex; justify-content: space-between;
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--ink-soft);
-  }
-  .r2-ticket .t-stub {
-    width: 110px;
-    background: linear-gradient(180deg, #f1e7d2, #e6d7b8);
-    border-left: 2px dashed rgba(29,24,18,0.4);
-    border-radius: 0 10px 10px 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-    padding: 20px 10px;
-    font-family: var(--mono);
-  }
-  .r2-ticket .t-stub .vword {
-    writing-mode: vertical-rl; letter-spacing: 0.4em;
-    font-size: 12px; font-weight: 700; color: var(--ink);
-  }
-  .r2-ticket .t-stub .t-bar {
-    width: 100%; height: 30px;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px);
-  }
-  .r2-ticket .t-stub .seat { font-size: 10px; color: var(--ink-soft); letter-spacing: 0.1em; }
-  .r2-ticket::before, .r2-ticket::after {
-    content: ""; position: absolute;
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--board);
-    box-shadow: inset 0 2px 3px rgba(0,0,0,0.3);
-    left: calc(100% - 110px - 9px);
-  }
-  .r2-ticket::before { top: -9px; }
-  .r2-ticket::after { bottom: -9px; }
-
-  .ruler {
-    position: absolute; left: 352px; right: 40px; bottom: 28px; height: 32px; z-index: 3;
-    background: linear-gradient(180deg, #e8d9b8, #d9c69e);
-    border-radius: 3px;
-    box-shadow: 0 6px 12px rgba(60,45,25,0.3);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 14px;
-    font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
-    color: rgba(74,60,30,0.85);
-  }
-  .ruler::before {
-    content: ""; position: absolute; left: 10px; right: 10px; top: 0; height: 9px;
-    background: repeating-linear-gradient(90deg, rgba(74,60,30,0.55) 0 1px, transparent 1px 12px, rgba(74,60,30,0.55) 12px 13px, transparent 13px 24px);
-  }
-
-  /* ========== 票根撕票 + 路线转场 ========== */
-  .r2-ticket .t-main, .r2-ticket .t-stub { transition: transform .55s cubic-bezier(.3,.7,.4,1), opacity .55s ease; }
-  .r2-ticket.torn { pointer-events: none; }
-  .r2-ticket.torn .t-stub { transform: translate3d(96px, -52px, 0) rotate(32deg); opacity: 0; }
-  .r2-ticket.torn .t-main { transform: translate3d(-18px, 8px, 0) rotate(-5deg); }
-  .r2-ticket.torn::before, .r2-ticket.torn::after { opacity: 0; }
-
-  /* 世界容器：洞洞板 + 第二页纵向拼接成一张长图，镜头在其上平移 */
-  #world { position: relative; }
-  #world.routing { pointer-events: none; will-change: transform; }
-
-  #route-layer {
-    position: absolute; inset: 0; z-index: 400;
-    pointer-events: none;
-  }
-  #route-svg {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    opacity: 0; transition: opacity .3s;
-  }
-  #route-svg.on { opacity: 1; }
-  #route-dot { opacity: 0; transition: opacity .3s; }
-  #route-svg.on #route-dot { opacity: 1; }
-
-  /* 第二页终点区（站牌） */
-  .p2-route { position: absolute; inset: 0; pointer-events: none; z-index: 9; }
-  .p2-route .station-sign { left: 90.5%; top: 40%; }
-
-  .station-sign {
-    position: absolute;
-    transform: translate(-50%, -100%) scale(.6);
-    opacity: 0;
-    transition: all .45s cubic-bezier(.34,1.56,.64,1);
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .station-sign.pop { opacity: 1; transform: translate(-50%, -100%) scale(1); }
-  .station-sign .s-pin { font-size: 26px; filter: drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
-  .station-sign .s-board {
-    margin-top: 4px;
-    background: var(--yellow);
-    border: 2px solid var(--black-tag);
-    border-radius: 6px;
-    padding: 9px 16px;
-    font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: .14em;
-    box-shadow: 0 6px 14px rgba(60,45,25,.3);
-  }
-  .station-sign .s-pole { width: 4px; height: 44px; background: var(--black-tag); border-radius: 2px; }
-
-  /* ========== 第二页：作品拼贴墙（世界容器内，紧接洞洞板下方） ========== */
-  #page2 {
-    position: relative; width: 100%; height: 100vh;
-    display: flex; flex-direction: column;
-    background:
-      repeating-linear-gradient(0deg, rgba(29,24,18,0.045) 0 1px, transparent 1px 64px),
-      repeating-linear-gradient(90deg, rgba(29,24,18,0.045) 0 1px, transparent 1px 64px),
-      radial-gradient(ellipse at 50% 10%, #f3ecdc, var(--board) 75%);
-  }
-  .p2-head {
-    display: flex; align-items: center; justify-content: center;
-    gap: 18px; padding: 18px 20px 0;
-  }
-  .p2-stamp {
-    font-family: var(--mono); font-weight: 700; font-size: 16px; letter-spacing: .2em;
-    color: #c2422f;
-    border: 2.5px solid #c2422f; border-radius: 5px;
-    padding: 5px 12px;
-    transform: rotate(-5deg); opacity: .85;
-  }
-  #page2 h2 {
-    font-family: var(--sans); font-weight: 700; font-size: 24px;
-    margin: 0; letter-spacing: .08em;
-  }
-  .p2-sub { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; color: var(--ink-soft); }
-
-  /* 拼贴墙 */
-  .p2-collage {
-    position: relative; flex: 1; min-height: 0;
-    width: min(1150px, 94vw); margin: 6px auto 0;
-  }
-  .p2-slot {
-    position: absolute;
-    transform: rotate(var(--rot, 0deg));
-    background: #fbf7ee;
-    padding: 8px 8px 5px;
-    border-radius: 2px;
-    box-shadow: 0 12px 26px rgba(60,45,25,.28);
-    transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
-  }
-  .p2-slot:hover { transform: rotate(0deg) scale(1.03); box-shadow: 0 18px 34px rgba(60,45,25,.35); z-index: 9; }
-  .p2-slot .ph {
-    height: calc(100% - 20px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-    background:
-      repeating-linear-gradient(45deg, rgba(29,24,18,.05) 0 8px, transparent 8px 16px),
-      #ffffff;
-    border: 1.5px dashed rgba(29,24,18,.35);
-    color: var(--ink-soft);
-    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .2em;
-  }
-  .p2-slot .ph small { font-size: 7px; letter-spacing: .14em; opacity: .75; font-weight: 400; }
-  .p2-slot img {
-    width: 100%; height: calc(100% - 20px);
-    object-fit: cover; display: block;
-    border-radius: 1px;
-  }
-  .p2-slot img.fit-contain { object-fit: contain; background: #fff; }
-  .p2-slot figcaption {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 5px;
-    font-family: var(--mono); font-size: 8px; letter-spacing: .14em; color: var(--ink-soft);
-  }
-  .p2-slot figcaption b { color: var(--ink); }
-
-  .p2-sw {
-    position: absolute; width: 34px; height: 34px;
-    transform: rotate(var(--rot, 0deg));
-    box-shadow: 0 4px 8px rgba(0,0,0,.15);
-  }
-  .p2-cap-v {
-    position: absolute; writing-mode: vertical-rl;
-    font-family: var(--mono); font-size: 9px; letter-spacing: .3em; color: var(--ink-soft);
-  }
-
-  /* ========== 作品大图灯箱 ========== */
-  .lightbox {
-    position: fixed; inset: 0; z-index: 500;
-    background: rgba(16, 13, 9, 0.9);
-    backdrop-filter: blur(6px);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; visibility: hidden;
-    transition: opacity .35s ease, visibility .35s;
-  }
-  .lightbox.show { opacity: 1; visibility: visible; }
-  .lb-card {
-    display: flex;
-    background: #fbf7ee;
-    border-radius: 10px;
-    max-width: min(1080px, 92vw); max-height: 88vh;
-    overflow: hidden;
-    box-shadow: 0 30px 60px rgba(0,0,0,.55);
-    transform: translateY(16px) scale(.97);
-    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
-  }
-  .lightbox.show .lb-card { transform: none; }
-  .lb-imgwrap {
-    flex: 1.6; min-width: 0;
-    background: #14110c;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .lb-imgwrap img {
-    width: 100%; height: 100%;
-    max-height: 88vh;
-    object-fit: contain; display: block;
-  }
-  .lb-info {
-    flex: 1; min-width: 300px; max-width: 380px;
-    padding: 36px 30px 30px;
-    color: var(--ink);
-    display: flex; flex-direction: column; justify-content: center;
-    border-left: 1px dashed rgba(29,24,18,.35);
-  }
-  .lb-no { font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: .22em; color: #c2422f; }
-  .lb-info h3 { font-size: 21px; margin: 12px 0 10px; letter-spacing: .03em; line-height: 1.4; }
-  .lb-cat {
-    align-self: flex-start;
-    font-family: var(--mono); font-weight: 700; font-size: 9px; letter-spacing: .16em;
-    background: var(--yellow); color: #191510;
-    padding: 5px 12px; border-radius: 999px;
-  }
-  .lb-desc { margin-top: 18px; font-size: 12.5px; line-height: 2; color: rgba(29,24,18,.82); }
-  .lb-foot { margin-top: auto; padding-top: 22px; font-family: var(--mono); font-size: 8px; letter-spacing: .2em; color: var(--ink-soft); }
-  .lb-close {
-    position: absolute; top: 20px; right: 26px;
-    background: none; border: none; cursor: pointer;
-    color: #fbf7ee; font-size: 24px; line-height: 1;
-    opacity: .85; transition: opacity .2s, transform .2s;
-  }
-  .lb-close:hover { opacity: 1; transform: rotate(90deg); }
-  @media (max-width: 900px) {
-    .lb-card { flex-direction: column; overflow-y: auto; }
-    .lb-imgwrap img { max-height: 52vh; }
-    .lb-info { min-width: 0; max-width: none; border-left: none; border-top: 1px dashed rgba(29,24,18,.35); }
-  }
-
-  /* ========== 弹窗 ========== */
-  .modal {
-    position: fixed; inset: 0;
-    background: rgba(16, 13, 9, 0.88);
-    backdrop-filter: blur(6px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 100;
-    opacity: 0; visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s;
-  }
-  .modal.show { opacity: 1; visibility: visible; }
-  .modal-card {
-    background: #14110c;
-    color: #ece5d6;
-    border-radius: 16px;
-    padding: 40px 44px;
-    max-width: 880px; width: min(92vw, 880px);
-    max-height: 84vh;
-    overflow-y: auto;
-    position: relative;
-    transform: translateY(24px) scale(0.97);
-    transition: transform 0.35s ease;
-    box-shadow: 0 40px 90px rgba(0,0,0,0.6);
-  }
-  .modal.show .modal-card { transform: none; }
-  .modal-close {
-    position: absolute; top: 16px; right: 20px;
-    background: none; border: none;
-    color: #ece5d6; font-size: 20px; cursor: pointer;
-    font-family: var(--mono);
-    opacity: 0.7; transition: opacity 0.2s;
-  }
-  .modal-close:hover { opacity: 1; }
-  .modal-title { text-align: center; font-family: var(--mono); font-size: 17px; letter-spacing: 0.1em; margin-bottom: 34px; }
-  .modal-title .cn { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: 0.5em; margin-top: 6px; opacity: 0.7; }
-
-  /* 技能拱门卡 */
-  .arch-row { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; }
-  .arch { text-align: center; }
-  .arch .shape {
-    width: 128px; height: 210px;
-    border-radius: 999px;
-    overflow: hidden;
-    box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(236,229,214,0.15);
-    transition: transform 0.3s ease;
-  }
-  .arch:hover .shape { transform: translateY(-6px); }
-  .arch img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85); }
-  .arch .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; margin-top: 14px; color: #ece5d6; }
-
-  /* 作品网格 */
-  .tabs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; }
-  .tabs button {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
-    background: transparent; color: #b7ad99;
-    border: 1px solid rgba(236,229,214,0.3);
-    padding: 8px 18px; border-radius: 999px; cursor: pointer;
-    transition: all 0.25s;
-  }
-  .tabs button:hover { color: #ece5d6; border-color: rgba(236,229,214,0.6); }
-  .tabs button.active { background: var(--yellow); color: #191510; border-color: var(--yellow); font-weight: 700; }
-  .work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .work-grid .card {
-    background: #1d1913; border-radius: 10px; overflow: hidden;
-    transition: transform 0.25s ease;
-  }
-  .work-grid .card:hover { transform: translateY(-5px); }
-  .work-grid img { width: 100%; height: 130px; object-fit: cover; filter: saturate(0.9); display: block; }
-  .work-grid .info { padding: 12px 14px 14px; }
-  .work-grid .t { font-size: 13px; font-weight: 700; }
-  .work-grid .c { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; color: var(--yellow); margin-top: 5px; }
-  .work-empty {
-    grid-column: 1 / -1;
-    border: 1.5px dashed rgba(240,233,219,.4); border-radius: 10px;
-    padding: 38px 20px; text-align: center;
-    font-family: var(--mono); font-size: 12px; letter-spacing: .18em;
-    color: rgba(240,233,219,.7);
-  }
-
-  /* 简历弹窗 */
-  .cv { display: grid; grid-template-columns: 200px 1fr; gap: 34px; align-items: start; }
-  .cv .photo-box img { width: 100%; border-radius: 10px; display: block; }
-  .cv h4 { font-family: var(--mono); font-size: 13px; letter-spacing: 0.12em; margin: 0 0 12px; color: var(--yellow); }
-  .cv p { font-size: 13px; line-height: 2; color: #cfc7b6; margin-bottom: 24px; }
-  .cv ul { list-style: none; font-size: 12.5px; line-height: 2.1; color: #cfc7b6; }
-  .cv ul b { color: #ece5d6; }
-  .cv .sec { margin-bottom: 28px; }
-
-  /* 联系弹窗 */
-  .contact-card {
-    background: #fbf7ee; color: var(--ink);
-    border: 6px solid transparent;
-    border-image: repeating-linear-gradient(45deg, #d84b3a 0 12px, #fbf7ee 12px 24px, #3d5fa8 24px 36px, #fbf7ee 36px 48px) 6;
-    padding: 40px 44px;
-    text-align: center;
-  }
-  .contact-card h3 { font-family: var(--mono); font-size: 20px; }
-  .contact-card .cn { font-size: 12px; letter-spacing: 0.5em; margin: 8px 0 24px; color: var(--ink-soft); }
-  .contact-card .row { font-family: var(--mono); font-size: 13px; margin: 10px 0; }
-  .contact-card .row b { display: inline-block; min-width: 70px; text-align: left; color: var(--ink-soft); font-size: 11px; }
-
-  /* ========== 封面（滚动驱动翻页） ========== */
-  .scene { transition: none; transform: scale(1.05); will-change: transform; }
-  body.lock { overflow: hidden; }
-
-  #cover {
-    position: fixed; inset: 0;
-    z-index: 300;
-    perspective: 2000px;
-    perspective-origin: left center;
-    cursor: pointer;
-  }
-  #cover.done { display: none; }
-  .cover-page {
-    position: absolute; inset: 0;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-  .face {
-    position: absolute; inset: 0;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* 鼠标视差包裹层 */
-  #cover-tilt {
-    position: absolute; inset: 0;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-
-  /* 分段书页：级联折叠 */
-  .leaf {
-    position: absolute; top: 0; bottom: 0;
-    transform-origin: left center;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-  .leaf-front {
-    position: absolute; top: 0; bottom: 0; left: 0;
-    width: 100%;
-    overflow: hidden;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    background: none !important;
-    box-shadow: none !important;
-  }
-  /* 页带内的整页画布：保证跨带背景连续 */
-  .leaf-ink {
-    position: absolute; top: 0; bottom: 0;
-    width: 100vw;
-    background:
-      radial-gradient(circle, rgba(29,24,18,0.10) 2px, transparent 2.6px) 16px 16px / 34px 34px,
-      linear-gradient(150deg, #f4ecdb 0%, #ece2cd 70%, #e5d9c1 100%);
-    box-shadow: inset 0 0 120px rgba(90,70,40,0.14);
-  }
-  .leaf-back { transform: rotateY(180deg); }
-  .leaf-shade {
-    position: absolute; inset: 0;
-    background:
-      linear-gradient(to right, rgba(18,14,9,0.55), transparent 22%, transparent 78%, rgba(18,14,9,0.45)),
-      linear-gradient(to bottom, rgba(255,255,255,0.16), transparent 30%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* 飞出物件图层（屏幕空间，不随页旋转） */
-  .fly-layer { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
-
-  /* 漂浮尘埃 */
-  .dust {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(246,185,29,0.55);
-    box-shadow: 0 0 6px rgba(246,185,29,0.8);
-    animation: dustFloat 7s ease-in-out infinite;
-    pointer-events: none;
-  }
-  .dust.white { background: rgba(255,252,240,0.6); box-shadow: 0 0 5px rgba(255,252,240,0.7); }
-  @keyframes dustFloat {
-    0%   { transform: translateY(0) translateX(0); opacity: 0; }
-    20%  { opacity: 0.85; }
-    75%  { opacity: 0.5; }
-    100% { transform: translateY(-130px) translateX(34px); opacity: 0; }
-  }
-
-  /* 封面正面 */
-  .cover-front {
-    background:
-      radial-gradient(circle, rgba(29,24,18,0.10) 2px, transparent 2.6px) 16px 16px / 34px 34px,
-      linear-gradient(150deg, #f4ecdb 0%, #ece2cd 70%, #e5d9c1 100%);
-    box-shadow: inset 0 0 120px rgba(90,70,40,0.14);
-    overflow: hidden;
-  }
-  .rings {
-    position: absolute; left: 34px; top: 0; bottom: 0;
-    display: flex; flex-direction: column; justify-content: center; gap: 120px;
-  }
-  .rings span {
-    width: 26px; height: 34px;
-    border: 7px solid #17130d;
-    border-radius: 50%;
-    box-shadow: inset 0 2px 2px rgba(255,255,255,0.25), 3px 3px 5px rgba(0,0,0,0.3);
-  }
-  .tape {
-    position: absolute; top: -20px; right: 120px;
-    width: 150px; height: 46px;
-    background: rgba(246,185,29,0.75);
-    transform: rotate(35deg);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-  }
-
-  /* 翻页飞出的物件 */
-  .face.cover-front { transform-style: preserve-3d; }
-  .flyer {
-    position: absolute;
-    will-change: transform, opacity;
-    opacity: 0;
-    font-family: var(--mono);
-    filter: drop-shadow(0 10px 12px rgba(60,45,25,0.35));
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  .flyer.tag-y {
-    background: linear-gradient(160deg, #ffc82e, var(--yellow) 60%, #e3a50c);
-    color: var(--black-tag);
-    font-weight: 700; font-size: 13px;
-    padding: 26px 14px 14px;
-    border-radius: 10px;
-  }
-  .flyer.tag-y::before {
-    content: "";
-    position: absolute; top: 8px; left: 50%;
-    transform: translateX(-50%);
-    width: 16px; height: 16px;
-    background: #f3ecdc;
-    border-radius: 50%;
-    box-shadow: inset 0 2px 3px rgba(0,0,0,0.35);
-  }
-  .flyer.scrap {
-    background: #fbf8f1;
-    color: var(--ink);
-    font-size: 11px; font-weight: 700;
-    padding: 12px 16px;
-    border-radius: 3px;
-    box-shadow: 0 8px 14px rgba(60,45,25,0.3);
-  }
-  .flyer.sticky-mini {
-    width: 64px; height: 60px;
-    background: linear-gradient(170deg, #ffe27a, #ffd94f);
-    color: #4d3f10;
-    font-size: 10px; font-weight: 700;
-    padding: 12px 8px;
-    box-shadow: 0 8px 14px rgba(60,45,25,0.3);
-  }
-  .flyer.clip-fly { width: 34px; height: 52px; }
-  .clip-fly::before {
-    content: "";
-    position: absolute; inset: 0;
-    border: 5px solid #b3aea6;
-    border-radius: 17px;
-    border-bottom-color: transparent;
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.7);
-  }
-  .clip-fly::after {
-    content: "";
-    position: absolute; left: 5px; right: 5px; bottom: 8px;
-    height: 16px;
-    border: 5px solid #a09b93;
-    border-top-color: transparent;
-    border-radius: 0 0 10px 10px;
-  }
-  .flyer.stamp-fly {
-    width: 52px; height: 58px;
-    background: #fff;
-    border: 1px dashed #b9ab8d;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-  }
-  .flyer.bar-fly {
-    width: 86px; height: 22px;
-    background: #fbf8f1;
-    padding: 4px 8px;
-    box-shadow: 0 6px 10px rgba(0,0,0,0.18);
-  }
-  .bar-fly::before {
-    content: "";
-    display: block; height: 100%;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px, var(--ink) 9px 12px, transparent 12px 14px);
-  }
-  .flyer.sticker {
-    width: 46px; height: 46px;
-    background: var(--yellow);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 700; color: var(--black-tag);
-    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
-  }
-  .flyer.pill-fly {
-    background: radial-gradient(120% 120% at 30% 20%, #2a251e, var(--black-tag) 65%);
-    color: #f0e9db;
-    font-size: 10px; letter-spacing: 0.2em;
-    padding: 9px 18px;
-    border-radius: 999px;
-    box-shadow: 0 8px 14px rgba(40,32,20,0.4);
-  }
-  .cover-inner {
-    position: absolute; inset: 0;
-    padding: 70px 90px 60px 130px;
-    display: flex; flex-direction: column;
-    font-family: var(--mono);
-    will-change: transform, opacity;
-  }
-  .cover-top { transition: opacity 0.3s; }
-  .cover-hint-wrap {
-    margin-top: 10px;
-    display: flex; align-items: center; gap: 14px;
-    font-size: 11px; letter-spacing: 0.18em; color: var(--ink-soft);
-  }
-  .hint-track {
-    width: 120px; height: 3px;
-    background: rgba(29,24,18,0.15);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-  .hint-fill {
-    display: block; height: 100%; width: 0%;
-    background: var(--yellow);
-    border-radius: 99px;
-  }
-
-  /* 滚动进度轨 */
-  .rail {
-    position: absolute;
-    right: 30px; top: 50%;
-    transform: translateY(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
-    color: var(--ink-soft);
-    z-index: 5;
-  }
-  .rail-track {
-    width: 3px; height: 180px;
-    background: rgba(29,24,18,0.18);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-  .rail-fill {
-    display: block; width: 100%; height: 0%;
-    background: var(--yellow);
-    transition: none;
-  }
-  .rail-num { font-weight: 700; color: var(--ink); }
-  .cover-top {
-    display: flex; justify-content: space-between;
-    font-size: 12px; letter-spacing: 0.14em; font-weight: 700;
-    border-bottom: 2px solid var(--ink); padding-bottom: 14px;
-  }
-  .cover-inner h1 {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(70px, 11vw, 148px);
-    letter-spacing: 0.08em;
-    line-height: 1.15;
-    margin-top: auto;
-  }
-  .cover-sub {
-    font-size: 12px; letter-spacing: 0.22em; color: var(--ink-soft);
-    margin: 18px 0 0;
-  }
-  .cover-index {
-    list-style: none;
-    margin-top: 42px;
-    font-size: 12px; letter-spacing: 0.12em;
-    line-height: 2.3;
-    color: var(--ink-soft);
-    columns: 2; max-width: 460px;
-  }
-  .cover-index b { color: var(--ink); }
-  .cover-open {
-    margin-top: 44px;
-    align-self: flex-start;
-    font-size: 12px; letter-spacing: 0.2em; font-weight: 700;
-    border: 1.5px solid var(--ink);
-    padding: 14px 26px;
-    animation: breathe 2.2s ease infinite;
-  }
-  .cover-open span { display: inline-block; color: var(--yellow); text-shadow: 0 0 1px rgba(120,90,0,0.4); }
-  @keyframes breathe {
-    0%, 100% { transform: translateY(0); opacity: 1; }
-    50% { transform: translateY(6px); opacity: 0.65; }
-  }
-  .cover-barcode { width: 180px; margin-top: auto; }
-
-  /* 封面背面（纸张背面） */
-  .cover-back {
-    transform: rotateY(180deg);
-    background:
-      radial-gradient(circle, rgba(29,24,18,0.07) 2px, transparent 2.6px) 16px 16px / 34px 34px,
-      linear-gradient(210deg, #e2d7c0, #d8ccb2);
-    box-shadow: inset 0 0 100px rgba(90,70,40,0.2);
-  }
-  .cover-back::after {
-    content: "02 SELECTED WORKS — 翻过这一页，看看我的作品";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em;
-    color: rgba(74,66,55,0.4);
-  }
-
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>闲鹅 · 校园二手平台 产品故事</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ===== 封面 ===== -->
-<div id="cover">
-  <div class="rail">
-    <span id="rail-num">001</span>
-    <span class="rail-track"><span class="rail-fill" id="rail-fill"></span></span>
-    <span>002</span>
-  </div>
-  <div class="cover-page" id="cover-page">
-    <div id="cover-tilt">
-    <div class="face cover-front" id="cover-src">
-      <div class="tape"></div>
-      <div class="rings"><span></span><span></span><span></span></div>
+<div class="deck" id="deck">
 
-      <!-- 翻页时飞出的物件（滚动驱动，可逆）× 30 -->
-      <div class="flyer tag-y" style="top:38%; left:58%;"  data-at="0.34" data-dx="330" data-dy="-190" data-rot="38"  data-z="90">IDEA →</div>
-      <div class="flyer scrap"  style="top:22%; left:38%;" data-at="0.38" data-dx="-260" data-dy="-140" data-rot="-30" data-z="70">2026 ©</div>
-      <div class="flyer sticky-mini" style="top:60%; left:30%;" data-at="0.42" data-dx="-330" data-dy="60" data-rot="-42" data-z="85">✓<br />DONE</div>
-      <div class="flyer clip-fly" style="top:48%; left:70%;" data-at="0.45" data-dx="300" data-dy="-30" data-rot="55" data-z="110"></div>
-      <div class="flyer stamp-fly" style="top:70%; left:55%;" data-at="0.48" data-dx="200" data-dy="210" data-rot="28" data-z="75">😀</div>
-      <div class="flyer bar-fly" style="top:30%; left:72%;" data-at="0.51" data-dx="180" data-dy="-260" data-rot="-22" data-z="95"></div>
-      <div class="flyer sticker" style="top:66%; left:40%;" data-at="0.54" data-dx="-180" data-dy="230" data-rot="-35" data-z="80">★</div>
-      <div class="flyer pill-fly" style="top:14%; left:52%;" data-at="0.57" data-dx="60" data-dy="-280" data-rot="14" data-z="100">SKILLS</div>
-      <div class="flyer scrap"  style="top:82%; left:68%;" data-at="0.60" data-dx="320" data-dy="130" data-rot="47" data-z="70">HELLO!</div>
-      <div class="flyer tag-y" style="top:76%; left:24%;" data-at="0.63" data-dx="-300" data-dy="150" data-rot="-50" data-z="90">OPEN</div>
+  <header class="hud">
+    <div class="hud-brand"><span>🪿</span> 闲鹅 · 产品故事</div>
+    <div class="hud-chapter" id="hudChapter">封面</div>
+    <div class="hud-count"><b id="curNum">01</b> <span>/</span> <span id="totNum">23</span></div>
+  </header>
 
-      <div class="flyer tag-y" style="top:8%; left:26%;"   data-at="0.30" data-dx="-160" data-dy="-240" data-rot="-28" data-z="95">NEW!</div>
-      <div class="flyer sticker" style="top:20%; left:14%;" data-at="0.32" data-dx="-300" data-dy="-90" data-rot="-45" data-z="85">✦</div>
-      <div class="flyer scrap"  style="top:12%; left:44%;" data-at="0.33" data-dx="40" data-dy="-300" data-rot="24" data-z="75">PORTFOLIO</div>
-      <div class="flyer pill-fly" style="top:26%; left:82%;" data-at="0.35" data-dx="260" data-dy="-160" data-rot="30" data-z="105">BRANDING</div>
-      <div class="flyer sticky-mini" style="top:36%; left:12%;" data-at="0.36" data-dx="-280" data-dy="-40" data-rot="-55" data-z="80">→<br />GO</div>
-      <div class="flyer bar-fly" style="top:44%; left:40%;" data-at="0.37" data-dx="-120" data-dy="-220" data-rot="18" data-z="90"></div>
-      <div class="flyer sticker" style="top:55%; left:78%;" data-at="0.39" data-dx="240" data-dy="60" data-rot="40" data-z="85">♥</div>
-      <div class="flyer scrap"  style="top:58%; left:46%;" data-at="0.40" data-dx="-60" data-dy="260" data-rot="-26" data-z="70">EST.2016</div>
-      <div class="flyer clip-fly" style="top:64%; left:18%;" data-at="0.41" data-dx="-240" data-dy="180" data-rot="-60" data-z="100"></div>
-      <div class="flyer tag-y" style="top:30%; left:66%;"  data-at="0.43" data-dx="200" data-dy="-120" data-rot="26" data-z="95">2026</div>
-      <div class="flyer stamp-fly" style="top:16%; left:60%;" data-at="0.44" data-dx="160" data-dy="-230" data-rot="35" data-z="80">✈</div>
-      <div class="flyer pill-fly" style="top:50%; left:60%;" data-at="0.46" data-dx="150" data-dy="240" data-rot="-20" data-z="110">POSTER</div>
-      <div class="flyer scrap"  style="top:88%; left:38%;" data-at="0.47" data-dx="-140" data-dy="240" data-rot="32" data-z="72">CHANGSHA</div>
-      <div class="flyer sticky-mini" style="top:74%; left:60%;" data-at="0.49" data-dx="230" data-dy="180" data-rot="45" data-z="88">★<br />BEST</div>
-      <div class="flyer sticker" style="top:6%; left:70%;"  data-at="0.50" data-dx="120" data-dy="-280" data-rot="-35" data-z="90">◎</div>
-      <div class="flyer bar-fly" style="top:82%; left:12%;" data-at="0.52" data-dx="-280" data-dy="120" data-rot="-38" data-z="85"></div>
-      <div class="flyer clip-fly" style="top:26%; left:50%;" data-at="0.53" data-dx="90" data-dy="-260" data-rot="48" data-z="115"></div>
-      <div class="flyer pill-fly" style="top:70%; left:86%;" data-at="0.55" data-dx="300" data-dy="100" data-rot="24" data-z="100">AI VISUAL</div>
-      <div class="flyer tag-y" style="top:46%; left:8%;"   data-at="0.56" data-dx="-320" data-dy="-150" data-rot="-48" data-z="92">PACKAGING</div>
-      <div class="flyer scrap"  style="top:92%; left:58%;" data-at="0.58" data-dx="200" data-dy="230" data-rot="-30" data-z="75">THANKS!</div>
-      <div class="flyer sticker" style="top:36%; left:32%;" data-at="0.59" data-dx="-200" data-dy="-170" data-rot="28" data-z="82">✿</div>
-      <div class="flyer stamp-fly" style="top:56%; left:26%;" data-at="0.61" data-dx="-260" data-dy="90" data-rot="-42" data-z="78">☕</div>
-      <div class="flyer pill-fly" style="top:84%; left:80%;" data-at="0.62" data-dx="260" data-dy="200" data-rot="36" data-z="98">CONTACT</div>
-      <div class="flyer bar-fly" style="top:4%; left:36%;"  data-at="0.64" data-dx="-80" data-dy="-290" data-rot="16" data-z="92"></div>
-      <div class="flyer sticky-mini" style="top:44%; left:84%;" data-at="0.66" data-dx="320" data-dy="-90" data-rot="-30" data-z="105">✉<br />MAIL</div>
-      <div class="flyer scrap"  style="top:68%; left:50%;" data-at="0.68" data-dx="40" data-dy="290" data-rot="20" data-z="70">…AND MORE</div>
-      <div class="cover-inner" id="cover-inner">
-        <div class="cover-top" id="cover-top"><span>LIU YUNXI PORTFOLIO</span><span>2026 © EDITION NO.01</span></div>
-        <h1>个人<br />作品集</h1>
-        <div class="cover-sub">PERSONAL PORTFOLIO — WHERE IDEAS MEET NEW BEGINNINGS.</div>
-        <ul class="cover-index">
-          <li><b>01</b> · 简介 ABOUT</li>
-          <li><b>02</b> · 作品 WORKS</li>
-          <li><b>03</b> · 履历 CV</li>
-          <li><b>04</b> · 技能 SKILLS</li>
-          <li><b>05</b> · 联系 CONTACT</li>
-        </ul>
-        <div class="cover-open">SCROLL TO OPEN · 滚动翻开 <span>↓</span></div>
-        <div class="cover-hint-wrap">
-          <span>READ PROGRESS</span>
-          <span class="hint-track"><span class="hint-fill" id="hint-fill"></span></span>
-          <span>或点击直接进入</span>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+  <main class="slides" id="slides">
+
+    <!-- 01 封面 -->
+    <section class="slide active" data-chapter="封面">
+      <div class="deco deco--plant tr"></div>
+      <div class="deco deco--fish bl"></div>
+      <div class="deco deco--bear br"></div>
+      <div class="slide-inner cover">
+        <div class="eyebrow">校园二手闲置平台 · 2026 · 已上线迭代中</div>
+        <h1>重新设计<br><em>「校园二手交易」</em><br>的每一道坎</h1>
+        <p class="lead">这是「闲鹅」——一个面向大学生的校园二手闲置平台——从最初的想法，到团队讨论、问卷访谈， 再到网页与 App 落地、真实测试与2.0 → 3.0 升级的完整过程记录。 我们想把「定价难、消息被刷走、沟通费劲」这些买卖二手时真实的坎，一个个搬走。</p>
+        <div class="cover-stats">
+          <div><b>120+</b><span>计划问卷</span></div>
+          <div><b>8–10</b><span>深度访谈</span></div>
+          <div><b>2.0→3.0</b><span>版本迭代</span></div>
+          <div><b>12+</b><span>功能升级</span></div>
         </div>
-        <div class="cover-barcode barcode"></div>
+        <div class="hint">点击右下角箭头 / 按 → 键 / 左右滑动翻页</div>
       </div>
-    </div>
-    <div class="face cover-back"></div>
-    </div>
-  </div>
-</div>
+    </section>
 
-<div id="world">
-<div class="scene">
-
-  <!-- ===== 左侧信息面板 ===== -->
-  <aside class="panel">
-    <div class="brand">刘芸熙 · PORTFOLIO</div>
-    <div class="slogan">WHERE IDEAS MEET NEW BEGINNINGS.</div>
-
-    <div class="mode">
-      WHY NOT MODE
-      <small>好奇心运行中 / CURIOSITY ACTIVE</small>
-    </div>
-
-    <div class="legend">
-      <h4>BOARD LEGEND · 板面目录</h4>
-      <ul>
-        <li><a class="item" data-open="about"><span>01 · 钥匙牌</span><span>简介</span></a></li>
-        <li><a class="item" data-open="works"><span>02 · 透明卡</span><span>作品</span></a></li>
-        <li><a class="item" data-open="cv"><span>03 · 工作证</span><span>履历</span></a></li>
-        <li><a class="item" data-open="skills"><span>04 · 黑标牌</span><span>技能</span></a></li>
-        <li><a class="item" data-open="contact"><span>05 · 信封卡</span><span>联系</span></a></li>
-      </ul>
-    </div>
-
-    <div class="obj-interface">
-      <h4 style="font-size:11px; letter-spacing:0.12em; border-bottom:1px solid var(--ink); padding-bottom:6px; margin-bottom:8px; color:var(--ink);">OBJECT INTERFACE · 实物交互</h4>
-      <p>悬停查看细节 HOVER FOR DETAILS</p>
-      <p>点击展开内容 CLICK TO UNFOLD</p>
-    </div>
-
-    <div class="bigtype">BRANDS / OBJECTS<br />STORIES &amp;<br />IMAGE SYSTEMS.</div>
-
-    <div class="foot">
-      <div class="qrs"><div class="qr"></div><div class="qr"></div></div>
-      <div>CONNECT &amp; FOLLOW<br />扫码关注 · 一起合作</div>
-    </div>
-  </aside>
-
-  <!-- ===== 板面挂件区：三列弹性布局 ===== -->
-  <div class="board">
-  <div class="b-col c1">
-
-  <!-- ===== 01 钥匙牌 ===== -->
-  <div class="obj key-tag" data-open="about">
-    <svg class="key-svg" width="70" height="46" viewBox="0 0 70 46">
-      <circle cx="18" cy="18" r="10" fill="none" stroke="#9d988f" stroke-width="6"/>
-      <rect x="26" y="15" width="40" height="7" rx="2.5" fill="#c2beb6"/>
-      <rect x="56" y="22" width="5" height="10" rx="1.5" fill="#c2beb6"/>
-      <rect x="47" y="22" width="5" height="8" rx="1.5" fill="#c2beb6"/>
-    </svg>
-    <div class="tag">
-      <div class="num">01</div>
-      <div class="cn">个人简介</div>
-      <div class="en">KNOW MORE ABOUT ME, MY BACKGROUND AND MY VISION.</div>
-      <div class="arrow">→</div>
-    </div>
-  </div>
-
-  <!-- ===== 02 亚克力作品框 ===== -->
-  <div class="obj acrylic" data-open="works">
-    <div class="tape-deco" style="position:absolute; left:-24px; top:-10px; transform:rotate(-40deg)"></div>
-    <div class="clip"></div>
-    <div class="frame">
-      <div class="sheet">
-        <div class="num">02</div>
-        <h2>SELECTED WORKS</h2>
-        <div class="cn-title">精 选 作 品</div>
-        <p class="desc">A selection of projects in <b>painting</b>, display boards, AI × code &amp; more. 点击查看全部案例。</p>
-        <ul class="work-list">
-          <li><span class="no">01</span><span class="cat-en">PAINTING</span><span class="cat-cn">绘画类</span><img src="works/w6-tea-v.png" alt="" loading="lazy" /></li>
-          <li><span class="no">02</span><span class="cat-en">DISPLAY BOARD</span><span class="cat-cn">展板设计</span><img src="works/w1-qy.jpg" alt="" loading="lazy" /></li>
-          <li><span class="no">03</span><span class="cat-en">AI × CODE</span><span class="cat-cn">AI代码运用</span><img src="works/w2-upstream.png" alt="" loading="lazy" /></li>
-          <li><span class="no">04</span><span class="cat-en">EXHIBIT MAKING</span><span class="cat-cn">实物展品制作</span><img src="works/w4-ocean.png" alt="" loading="lazy" /></li>
-          <li><span class="no">05</span><span class="cat-en">MODELING</span><span class="cat-cn">建模</span><img src="works/w3-map.png" alt="" loading="lazy" /></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  </div>
-
-  <!-- 装饰列 A：左列与中列之间 -->
-  <div class="deco-col">
-    <div class="pin"></div>
-    <div class="tape-deco" style="width:26px;height:80px;transform:rotate(8deg)"></div>
-    <div class="sticker-deco p s">✿</div>
-    <div class="pin dark"></div>
-  </div>
-
-  <div class="b-col c2">
-
-  <!-- ===== 04 黑色技能牌 ===== -->
-  <div class="obj skills-tag" data-open="skills">
-    <div class="ring"></div>
-    <div class="body">
-      <div class="num">04</div>
-      <h3>SKILLS</h3>
-      <div class="cn">技能标签</div>
-      <div class="chips">
-        <span class="chip">BRANDING</span><span class="chip">POSTER</span>
-        <span class="chip">PACKAGING</span><span class="chip">AI VISUAL</span>
-        <span class="chip">SOCIAL MEDIA</span>
-      </div>
-      <div class="arrow">→</div>
-    </div>
-  </div>
-
-  <!-- 中列装饰：贴纸排 -->
-  <div class="deco-row">
-    <div class="sticker-deco s" style="position:relative">★</div>
-    <div class="sticker-deco k s" style="position:relative">✦</div>
-    <div class="sticker-deco p s" style="position:relative">✿</div>
-    <div class="tape-deco blue" style="position:relative; width:72px; transform:rotate(-6deg)"></div>
-  </div>
-
-  <!-- ===== 05 信封联系卡 ===== -->
-  <div class="obj envelope" data-open="contact">
-    <div class="ring"></div>
-    <div class="body">
-      <div class="stamp">😀</div>
-      <div class="num">05</div>
-      <h3>CONTACT</h3>
-      <div class="cn">联 系 方 法</div>
-      <div class="rows">
-        <b>邮箱</b> &nbsp;18162756912@163.com<br />
-        <b>电话</b> &nbsp;18162756912<br />
-        <b>坐标</b> &nbsp;湖北武汉 · 江岸区
-      </div>
-      <div class="arrow">→</div>
-    </div>
-  </div>
-
-  </div>
-
-  <!-- 装饰列 B：中列与右列之间 -->
-  <div class="deco-col" style="margin-top:200px">
-    <div class="sticker-deco k s">✦</div>
-    <div class="tape-deco red" style="width:26px;height:66px;transform:rotate(-10deg)"></div>
-    <div class="vtag">EST. 2006 · 武汉</div>
-    <div class="pin red"></div>
-  </div>
-
-  <div class="b-col c3">
-
-  <!-- ===== 03 工作证 ===== -->
-  <div class="obj id-badge" data-open="cv">
-    <div class="tape-deco red" style="position:absolute; right:-22px; top:-8px; transform:rotate(35deg)"></div>
-    <div class="ring"></div>
-    <div class="body">
-      <div class="head"><span class="en">03 ABOUT ME</span><span class="cn">简介</span></div>
-      <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:84px;height:84px;border-radius:8px;margin-top:14px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);" />
-      <div class="rows">刘芸熙 · 艺术与科技<br />湖北美术学院 在读</div>
-      <button class="view">VIEW CV →</button>
-    </div>
-  </div>
-
-  <div class="b-row">
-
-  <!-- ===== OPEN TO WORK 吊牌 ===== -->
-  <div class="obj open-tag">
-    <div class="ring"></div>
-    <div class="body">
-      <h4>OPEN TO WORK</h4>
-      <p>接受项目合作<br />实习机会欢迎<br />艺术设计 · 在读</p>
-      <div class="barcode"></div>
-    </div>
-  </div>
-
-  <!-- 便利贴 -->
-  <div class="sticky">TODO ✓<br />—— 好的设计<br />是解决问题的<br />方式，不是装<br />饰。2026</div>
-
-  </div>
-
-  <!-- 06 票根：点击进入下一页（动效待接入） -->
-  <div class="r2-ticket" id="ticket" data-next="true">
-    <div class="tape-deco blue" style="position:absolute; left:-16px; top:-10px; transform:rotate(-18deg); width:80px"></div>
-    <div class="t-main">
-      <div class="t-top"><b>ADMIT ONE</b><span>NO. 000006</span></div>
-      <div class="t-big"><b>下一站</b> NEXT PAGE</div>
-      <div class="t-sub">点击票根 · 翻开作品的下一页</div>
-      <div class="t-row"><span>SHOW · PORTFOLIO 2026</span><span>SEAT · A-01</span></div>
-    </div>
-    <div class="t-stub">
-      <span class="vword">TICKET STUB</span>
-      <div class="t-bar"></div>
-      <span class="seat">A-01</span>
-    </div>
-  </div>
-
-  </div>
-  </div>
-
-  <!-- 小装饰：贴纸（贴在直尺左端） -->
-  <div class="sticker-deco" style="left:366px;bottom:22px;z-index:4">★</div>
-
-  <!-- 直尺：底部横条 -->
-  <div class="ruler">
-    <span>↑ SCROLL UP · 向上滚动返回封面</span>
-    <span>MEASURE CREATIVITY · EST. 2006</span>
-  </div>
-
-</div>
-
-<!-- ===== 弹窗：作品 ===== -->
-<div class="modal" id="modal-works">
-  <div class="modal-card">
-    <button class="modal-close" data-close>✕</button>
-    <div class="modal-title">SELECTED WORKS<span class="cn">精 选 作 品</span></div>
-    <div class="tabs" id="work-tabs">
-      <button class="active" data-f="all">全部 ALL</button>
-      <button data-f="painting">绘画 PAINTING</button>
-      <button data-f="board">展板 DISPLAY BOARD</button>
-      <button data-f="aicode">AI代码 AI × CODE</button>
-      <button data-f="exhibit">实物展品 EXHIBIT</button>
-      <button data-f="modeling">建模 MODELING</button>
-    </div>
-    <div class="work-grid" id="work-grid"></div>
-  </div>
-</div>
-
-<!-- ===== 弹窗：技能 ===== -->
-<div class="modal" id="modal-skills">
-  <div class="modal-card">
-    <button class="modal-close" data-close>✕</button>
-    <div class="modal-title">SKILLS<span class="cn">技 能 标 签</span></div>
-    <div class="arch-row">
-      <div class="arch"><div class="shape"><img src="https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=400&q=70" alt="" /></div><div class="label">IP DESIGN</div></div>
-      <div class="arch"><div class="shape"><img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&q=70" alt="" /></div><div class="label">TYPOGRAPHY</div></div>
-      <div class="arch"><div class="shape"><img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&q=70" alt="" /></div><div class="label">BRANDING</div></div>
-      <div class="arch"><div class="shape"><img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&q=70" alt="" /></div><div class="label">POSTER</div></div>
-      <div class="arch"><div class="shape"><img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=70" alt="" /></div><div class="label">PACKAGING</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== 弹窗：简历 ===== -->
-<div class="modal" id="modal-cv">
-  <div class="modal-card">
-    <button class="modal-close" data-close>✕</button>
-    <div class="modal-title">ABOUT ME<span class="cn">个 人 履 历</span></div>
-    <div class="cv">
-      <div class="photo-box">
-        <img class="avatar-img" src="avatar.jpg" alt="刘芸熙的头像" style="width:100%;height:250px;border-radius:10px;border:1.5px solid rgba(29,24,18,0.35);" />
-        <div style="margin-top:14px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:0.08em;">刘芸熙</div>
-        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:#8f8676;margin-top:4px;">LIU YUNXI · ART &amp; TECH</div>
-      </div>
-      <div>
-        <div class="sec">
-          <h4>简介 / INTRO</h4>
-          <p>湖北美术学院 艺术与科技专业在读，关注视觉艺术与数字技术的交叉领域，在学习可视化艺术、空间构建与交互媒体的过程中不断探索自己的表达方式。</p>
+    <!-- 02 数据概览 -->
+    <section class="slide" data-chapter="概览">
+      <div class="deco deco--books tl"></div>
+      <div class="slide-inner">
+        <div class="mini-kicker">PROJECT AT A GLANCE</div>
+        <h2 class="big-title">调研与迭代 <span>一览</span></h2>
+        <div class="stat-grid">
+          <div class="stat-card"><b>120+</b><span>计划回收问卷</span><small>线上问卷 + 微访谈组合，覆盖不同年级、不同院系</small></div>
+          <div class="stat-card"><b>8–10</b><span>深度访谈对象</span><small>围绕「最近一次交易」还原完整路径</small></div>
+          <div class="stat-card"><b>7 组</b><span>亲和图主题分组</span><small>对 25 条原话逐条编码、归类收敛</small></div>
+          <div class="stat-card"><b>12+</b><span>2.0 → 3.0 升级点</span><small>来自真实使用的反馈与测试发现</small></div>
         </div>
-        <div class="sec">
-          <h4>基本信息 / PROFILE</h4>
-          <ul>
-            <li><b>出生年月</b> &nbsp;2006 年 8 月</li>
-            <li><b>籍贯</b> &nbsp;湖北省武汉市</li>
-            <li><b>手机号码</b> &nbsp;18162756912</li>
-            <li><b>邮箱</b> &nbsp;18162756912@163.com</li>
-          </ul>
+        <div class="flow-line"><span>想法诞生</span><i>→</i><span>讨论调研</span><i>→</i><span>洞察收敛</span><i>→</i><span>网页落地</span><i>→</i><span>测试升级</span><i>→</i><span>下一步</span></div>
+      </div>
+    </section>
+
+    <!-- 03 起源 -->
+    <section class="slide story-scene" data-chapter="01 · 起源" data-anim="thinker">
+      <div class="deco deco--lamp tr"></div>
+      <div class="slide-inner">
+        <div class="chapter-head"><div class="chapter-no">01</div><div><div class="kicker">Where it started</div><h2>一切从「卖不出去的闲置」开始</h2></div></div>
+
+        <div class="thinker-wrap" aria-hidden="true">
+          <img class="thinker-img" src="assets/goose.png" alt="思考的闲鹅">
+          <span class="thinker-word">嘎……先想想</span>
         </div>
-        <div class="sec">
-          <h4>教育背景 / EDUCATION</h4>
-          <ul>
-            <li><b>2024.09 — 2028.06</b> &nbsp;湖北美术学院 · 艺术与科技专业（本科在读）</li>
-            <li><b>专业排名</b> &nbsp;11</li>
-          </ul>
-        </div>
-        <div class="sec">
-          <h4>主修课程 / COURSES</h4>
-          <ul>
-            <li>开源编程基础 · 空间信息应用 · 可视化艺术与交互媒体 · 空间与构建 · 图绘思考</li>
-          </ul>
+
+        <div class="stage-reveal">
+          <p class="intro">每个宿舍角落都堆着「懒得卖」的东西：教材、台灯、小家电。不是不想卖，而是 定价没参照、消息被刷走、和陌生人沟通太费劲。我们把这些原话写成 POV，再转成 HMW。</p>
+          <div class="cards3">
+            <article class="pain-card"><div class="num">1</div><h3>定价的焦虑</h3><p class="quote">「这个到底值多少钱？」定价没有参照物，只能凭感觉，最后要么卖不掉，要么贱卖。</p><p class="small">来自宿舍夜谈的真实抱怨，也是问卷里被提到最多的痛点。</p></article>
+            <article class="pain-card"><div class="num">2</div><h3>消失的信息</h3><p class="quote">「刚发的消息被刷走了。」群里一条转让消息几分钟就沉底，想找某样东西只能翻聊天记录。</p><p class="small">熟人渠道有信任，但信息无法沉淀、无法检索。</p></article>
+            <article class="pain-card"><div class="num">3</div><h3>沟通的成本</h3><p class="quote">「约了三次都没遇上。」和陌生人约面交、砍价、售后，每一步都在消耗耐心。</p><p class="small">大平台解决「买得到」，却没解决「今天下午顺路拿到」。</p></article>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+
+    <!-- 04 POV HMW -->
+    <section class="slide" data-chapter="01 · 起源">
+      <div class="deco deco--cat br"></div>
+      <div class="slide-inner">
+        <div class="subhead"><h3>POV → HMW · 问题的重新定义</h3></div>
+        <div class="pov-hmw">
+          <div class="mini-card"><div class="tag">POV</div><p>大学生想出售二手闲置物品的时候遇到定价难、关注市场难——二手消息容易被刷走，买卖家双方沟通困难。<span class="sign">POV · 115 刘芸熙</span></p></div>
+          <div class="arrow-big">→</div>
+          <div class="mini-card"><div class="tag">HMW</div><p>如何让校园二手物品出售更加高效？<span class="sign">HMW · 115 刘芸熙</span></p></div>
+        </div>
+        <p class="design-question">我们可以怎样，让大学生在买卖二手闲置物品时流程更高效、沟通更顺畅、售后更省心？<span class="sign">DESIGN QUESTION · 项目组讨论收敛</span></p>
+      </div>
+    </section>
+
+    <!-- 05 竞品对比 -->
+    <section class="slide" data-chapter="02 · 调研">
+      <div class="slide-inner">
+        <div class="chapter-head"><div class="chapter-no">02</div><div><div class="kicker">Discuss & Research</div><h2>先拆竞品，再问对人</h2></div></div>
+        <p class="intro">讨论从三件事开始：竞品到底解决了哪一段、问卷该怎么问、别人已经做到了哪里。 工具的目的不是收集答案，而是尽快排除错误的假设。</p>
+        <div class="subhead"><h3>竞品对比表</h3><span>Competitive Analysis · Field Notes</span></div>
+        <p class="meta-note">姓名 / 组名：丁雯静 · 选题：校园二手平台 · 核心用户任务：三个方案比较同一个任务（例：找到一个现在能用的自习位置）</p>
+        <div class="scroll-area">
+          <table class="data-table">
+            <thead><tr><th>比较维度<br>Dimension</th><th>直接竞品<br>相同问题 · 类似产品</th><th>间接竞品<br>相似需求 · 不同方式</th><th>替代方案<br>用户现在怎么解决</th></tr></thead>
+            <tbody>
+              <tr><th>产品名称<br>Name</th><td>咸鱼、转转</td><td>小红书</td><td>QQ、微信二手物品群</td></tr>
+              <tr><th>目标用户<br>Who</th><td>为二手出售的人</td><td>年轻人</td><td>同学</td></tr>
+              <tr><th>核心问题<br>What</th><td>通过官方平台有保障地出售二手物品（二手电子产品），了解市场价格</td><td>发帖询问市场需求，浏览类似物品需求</td><td>方便同校出物，没有平台赚取手续费，没有邮费</td></tr>
+              <tr><th>关键流程<br>How</th><td>1. 实名认证登录 → 点「＋」发闲置<br>2. 上传物品图，填标题、成色、定价、配送方式（快递 / 自提）<br>3. 发布上架，等待咨询议价<br>4. 买家拍下付款 → 沟通，发货 / 线下当面交付<br>5. 买家确认收货 → 收款</td><td>1. 账号登录（满足条件、开通个人售卖）<br>2. 发布图文笔记，可挂上商品卡<br>3. 用户评论 / 私信询问议价<br>4. 买家在小红书站内拍下付款（平台担保）<br>5. 约定快递 / 自提，交付物品<br>6. 买家确认收货，卖家收款</td><td>1. 入群<br>2. 了解群内物品定价<br>3. 群内发物品图文<br>4. 私聊协商<br>5. 线下当面转账交付</td></tr>
+              <tr><th>做得好<br>Experience</th><td>商品基数大，担保交易</td><td>有平台保障，二次元、追星周边圈层曝光好</td><td>无平台手续费，自理便捷</td></tr>
+              <tr><th>不足<br>Experience</th><td>用户混杂，帖子易下沉，本校比价难，平台手续费</td><td>重图文包装，无同校分区，交易流程割裂</td><td>消息快速被刷走，需反复刷屏；无分类检索、比价功能；无交易担保</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="extracted">Extracted　由调研板「竞品分析模板 + 竞品对比表」重建为网页表格，非截图。</p>
+      </div>
+    </section>
+
+    <!-- 06 机会+用法 -->
+    <section class="slide" data-chapter="02 · 调研">
+      <div class="deco deco--sofa bl"></div>
+      <div class="slide-inner">
+        <div class="two-col">
+          <div class="note-panel" data-tab="OPPORTUNITY"><h3>待验证的设计机会 <span class="en">Opportunity</span></h3>
+            <ol class="step-list">
+              <li><b>现象发现</b><small>现象</small><p>大学生校内闲置交易渠道分散，拼单、代取等需求无法统一解决。</p></li>
+              <li><b>问题识别</b><small>问题</small><p>现有渠道普遍存在帖子易沉没、同校比价困难、功能割裂、交易风险等痛点。</p></li>
+              <li><b>机会提出</b><small>机会</small><p>搭建本校专属平台，闲置比价为核心，整合拼单、代取快递等校内服务。</p></li>
+              <li><b>验证</b><small>假设</small><p>通过问卷、用户访谈验证需求真实性。</p></li>
+            </ol>
+            <p class="footnote">※ 比较时记录操作步骤、截图和体验依据，区分观察事实与推测；不能实际体验时标注「待核实」。</p>
+          </div>
+          <div class="note-panel cream" data-tab="HOW TO USE"><h3>这张表怎么用 <span class="en">How to use</span></h3>
+            <ol class="step-list">
+              <li><b>1 明确赛道</b><p>先写清楚你做的产品、目标用户和核心问题。别急着找竞品。</p></li>
+              <li><b>2 找 3–5 款竞品</b><p>记住：竞品不一定是一项产品——相似产品是直接竞品，相同需求不同方式是间接竞品，用户手动替代是替代方案。</p></li>
+              <li><b>3 拆入表格</b><p>按用户、问题、流程、好与不足逐行拆，不要只罗列功能。</p></li>
+              <li><b>4 写结论，不保平安</b><p>每个格子都标注「待验证的设计机会」，对比的终点是判断。</p></li>
+            </ol>
+            <h3>四种常见错误 <span class="en">Common mistakes</span></h3>
+            <div class="mistake-row"><b>错误类型</b><span>常见写法 ✗</span><span>改进写法 ✓</span></div>
+            <div class="mistake-row"><span>只看功能，不看策略</span><span>整个表格都在罗列竞品有什么功能</span><span>标注每项功能背后要达成的目标</span></div>
+            <div class="mistake-row"><span>只做对比，不做判断</span><span>把「谁更好」写成小作文</span><span>用「做得好 / 不足 / 机会」三栏下结论</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 问卷话术 1 -->
+    <section class="slide" data-chapter="02 · 调研">
+      <div class="slide-inner">
+        <div class="subhead"><h3>问卷话术模板</h3><span>Survey Script · Field Notes</span></div>
+        <div class="note-panel wide" data-tab="SURVEY SCRIPT">
+          <h3>调研目标 <span class="en">Research goals</span></h3>
+          <div class="goal-grid">
+            <div><b>01 摸清真实痛点</b><p>现有二手微信群、闲鱼的使用麻烦点——邮费、自提、定价难、交易信任问题。</p></div>
+            <div><b>02 验证两个核心功能</b><p>① 校内寝室点点跑腿代送；② 历史成交记录辅助定价——看学生是否愿意使用。</p></div>
+            <div><b>03 支撑设计决策</b><p>收集二手品类、交易习惯、信任顾虑、付费意愿，为功能优先级、界面设计提供依据。</p></div>
+          </div>
+          <p class="meta-note"><b>调研方法说明 METHOD</b><br>组合使用【线上问卷 + 微访谈】<br>问卷：面向大范围在校生，快速统计整体偏好、使用频率、价格接受度，适合量化数据。<br>访谈：挑选有二手买卖经验的同学深度聊天，挖掘问卷看不到的细节——比如跑腿安全顾虑、定价时的纠结、担心被骗等隐性问题。</p>
+          <blockquote class="script">开场说明 · 你好！我们是【××大学】Feeling Futures 课程的学生，正在做一个关于【大学生闲置】的小调研，想占用你大约【3】分钟。回答没有对错，只用于课程作业，不会写你的名字。如果哪个问题不想答，随时可以跳过。</blockquote>
+          <h3>四种题目句式 <span class="en">Question patterns</span></h3>
+          <div class="four-grid">
+            <div class="q-card"><b>问数量 HOW MANY</b><p>每周几次？了解使用强度——过去【1 周】内，有几次【浏览 / 发布闲置】？</p></div>
+            <div class="q-card"><b>问频率 HOW OFTEN</b><p>限定时间范围——最近【1 个月】里，【搜寻闲置】几次？</p></div>
+            <div class="q-card"><b>问程度 HOW MUCH</b><p>判断态度强度——你觉得【闲置定价难】问题严重吗？（1–5 分）</p></div>
+            <div class="q-card"><b>问感受 HOW SATISFIED</b><p>比较参照系——和【其他二手渠道】比，你满意度打几分？（1–5 分）</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 问卷话术 2 -->
+    <section class="slide" data-chapter="02 · 调研">
+      <div class="deco deco--food br"></div>
+      <div class="slide-inner">
+        <div class="note-panel wide" data-tab="FIELD PLAN">
+          <p class="meta-note"><b>执行安排 FIELD PLAN</b><br>调研对象：本校在校本科生、研究生。问卷计划回收 120 份以上，覆盖不同年级、不同院系；访谈 8~10 人，筛选经常在二手群 / 闲鱼买卖闲置、愿意尝试校内跑腿的同学。<br>调研地点：问卷——微信朋友圈、班级群、校园闲置群线上发放；访谈——线下空闲教室 / 校园安静长椅，或线上语音。<br>1. 第 1 天：编写问卷题目、整理访谈提纲<br>2. 第 2–3 天：投放问卷，同步邀约访谈对象，开展访谈、录音记录（征得同意）<br>3. 第 4 天：整理问卷数据、转录访谈要点，汇总问题和需求<br>分工：主负责人——统筹进度、邀约访谈对象、整理最终调研报告；记录员——访谈文字记录、整理问卷回收数据与原始材料。</p>
+          <p class="meta-note"><b>调研核心问题方向 KEY QUESTIONS</b><br>问卷重点：是否买 / 卖过校园闲置、平时在哪交易、最讨厌什么问题；是否愿意寝室点点配送；能接受的跑腿费用；会不会参考历史成交定价；担心哪些风险（物品损坏、跑腿人员安全、交易纠纷）。<br>访谈重点：交易踩过什么坑；如果有跑腿，下单和收货最在意什么；定价一般怎么估；对 App 还有什么额外期待。</p>
+          <h3>四种最常见的坑 <span class="en">Common traps</span></h3>
+          <div class="mistake-row"><b>坑</b><span>常见写法 ✗</span><span>改进写法 ✓</span></div>
+          <div class="mistake-row"><span>一题问两件事</span><span>「发布 & 沟通 & 你会觉得麻烦吗？」</span><span>拆开问：发布麻烦吗？沟通麻烦吗？</span></div>
+          <div class="mistake-row"><span>选项不周全</span><span>「使用频率：1–3 / 3–5 / 5 次以上」（漏了 0 次）</span><span>加「0 次」，覆盖不使用者</span></div>
+          <div class="mistake-row"><span>带倾向的选项</span><span>「它是非常好用还是太难用？」（暗示难用）</span><span>改中性：使用中经常遇到哪些问题？</span></div>
+          <div class="mistake-row"><span>问未来不问过去</span><span>「以后会经常用这个 App 吗？」</span><span>问真实行为：你最近一次没买成的东西是什么？</span></div>
+          <h3>发出前，记住 4 个字 <span class="en">Before sending</span></h3>
+          <div class="four-grid">
+            <div class="q-card"><b>一</b><p>一题一问</p><small>一个问题，只问一件事</small></div>
+            <div class="q-card"><b>全</b><p>选项周全</p><small>不重叠、覆盖所有情况，留「其他」</small></div>
+            <div class="q-card"><b>中</b><p>保持中立</p><small>不暗示答案，不带预设判断</small></div>
+            <div class="q-card"><b>真</b><p>真问具体</p><small>问真实发生的事，不问想象</small></div>
+          </div>
+          <h3>读数据时的提醒 <span class="en">Data worries</span></h3>
+          <div class="four-grid">
+            <div class="q-card"><b>数量 ≠ 代言</b><p>100 份不等于全校的代表性——实训题：问卷到底发给了谁？</p></div>
+            <div class="q-card"><b>警惕样本偏差</b><p>只在社群发问卷，结果更能代表「活跃的那群人」。</p></div>
+            <div class="q-card"><b>相关 ≠ 因果</b><p>「点外卖多的同学不太去第一饭堂」不构成结论。</p></div>
+            <div class="q-card"><b>不爱回答要谨慎</b><p>30 人没回答的题，可能是问题模糊、羞于开口，别直接计入平均。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 问卷提交卡 -->
+    <section class="slide" data-chapter="02 · 调研">
+      <div class="slide-inner">
+        <div class="note-panel wide" data-tab="QUESTION CARD">
+          <h3>问卷提交卡 · 五个测量板块 <span class="en">Question card · 试填 30 人后修订投放</span></h3>
+          <ol class="long-list">
+            <li><b>一、基础背景信息（用户画像）</b>——年级；在校闲置出售 / 收物频率（从不 / 一学期 1–2 次 / 每月 1 次 / 每月多次）；是否参与过校内拼单、是否使用过代取快递服务。</li>
+            <li><b>二、现有渠道使用情况（闲鱼 / 转转 / 小红书 / 校园二手群）</b>——常用渠道（多选）；在该渠道遇到痛点的困扰程度（李克特 5 分）：帖子很快被刷下去需反复重发 · 难查本校同类闲置参考价、定价困难 · 校外无关人员过多 · 平台手续费 / 快递成本高 · 交易缺少保障担心被骗 · 拼单代取要换到别的软件 / 群聊操作很麻烦。</li>
+            <li><b>三、核心功能需求测量（5 分打分）</b>——仅限本校学生登录的闲置交易板块；发布闲置时自动查看本校同类商品历史成交价作为定价参考（核心卖点）；校内拼单板块（零食、周边、二次元 / 追星团购）；校内代取快递互助板块；校内定点自提交易方式。</li>
+            <li><b>四、产品接受意愿测量</b>——如果有本校专属一体化平台，是否愿意尝试使用；相比闲鱼 / 二手群优先选择本校平台的原因（多选）；可接受的平台形式（微信小程序 / App / 网页端）。</li>
+            <li><b>五、风险与顾虑测量</b>——使用本校平台最担心的问题（信息泄露、没人用、交易纠纷、功能不好用等）。</li>
+          </ol>
+          <p class="extracted">Extracted　由调研板「问卷话术模板（两页）+ 执行计划 + 问卷提交卡」重建为网页内容，非截图。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 团队讨论板 -->
+    <section class="slide" data-chapter="02 · 调研">
+      <div class="deco deco--plant bl"></div>
+      <div class="slide-inner">
+        <div class="subhead"><h3>团队讨论板</h3><span>Ideas & Benchmark</span></div>
+        <div class="sticky-grid">
+          <div class="sticky pink"><span class="pin"></span><b>成员想法 MEMBERS</b>
+            <p>想法 1做一个校内二手小程序，全校买卖闲置都装进一个 App，不用再混在群里。</p>
+            <p>想法 2资金托管担保交易——确认收货后再放款，买卖双方都放心。</p>
+            <p>想法 3定价要有参照：同校同类商品的成交价直接摆出来。</p>
+            <p>想法 4固定点位当面验货（东门驿站），顺路交货不走快递。</p>
+          </div>
+          <div class="sticky yellow"><span class="pin"></span><b>AI 想法 AI IDEAS</b>
+            <p>整合分散的渠道校园闲置交易渠道分散——统一到一个数字化平台：集中发布、担保交易、约定时间地点交付。</p>
+            <p>降低交易摩擦资金托管 + 物流/自提衔接，如何让管理提速，交易更简化高效。</p>
+          </div>
+          <div class="sticky mint"><span class="pin"></span><b>落地的现实项目 BENCHMARK</b>
+            <p>Gali · 校园托管担保交易平台专门面向学生：资金托管，约定在校内固定点位当面验货，确认无误才放款，纠纷在交接点处理。</p>
+            <p>校闲荟 · 大学生创新项目校园小程序：资金托管、校内纠纷仲裁、信息发布，亮点是 VR 看货。</p>
+            <p>咸鱼 AI 功能拍照识别物品，自动生成标题与描述——发布成本几乎归零。</p>
+          </div>
+        </div>
+        <p class="extracted">Rebuilt　由讨论板内容重新排版为网页便签，非截图。</p>
+        <div class="insight-grid">
+          <div class="insight"><b>大平台赢在流量，输在「最后一公里」</b><p>物流与快递对几十块的旧教材太重；「今天下午顺路拿到」才是校园高频场景。</p></div>
+          <div class="insight"><b>熟人渠道有信任，缺结构</b><p>微信群消息无法沉淀、不可检索、没有担保；信任是现成的，缺的是工具。</p></div>
+          <div class="insight"><b>机会 = 校内身份 + 自提 + AI</b><p>学号认证建立信任，驿站自提顺路交付，AI 识别降低发布成本——三者叠起来才成立。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 用户旅程地图 -->
+    <section class="slide" data-chapter="03 · 洞察">
+      <div class="slide-inner">
+        <div class="chapter-head"><div class="chapter-no">03</div><div><div class="kicker">Synthesis</div><h2>把 25 条原话，贴成一张地图</h2></div></div>
+        <p class="intro">用户旅程地图还原一个人的语境，亲和图找出多数人的共性——每条设计决策都能对应回某张便签。</p>
+        <div class="subhead"><h3>用户旅程地图 · 买卖二手物品</h3><span>Journey Map · Field Notes</span></div>
+        <div class="persona">
+          <div class="face">🙄</div><div><small>用户名</small><b>小陈 · 20 岁</b><span>在校大学生</span></div>
+          <div class="face">🛒</div><div><small>场景</small><b>买卖二手物品</b></div>
+          <div class="face">🎯</div><div><small>预期</small><b>高效买卖二手物品</b></div>
+        </div>
+        <div class="scroll-area">
+          <table class="data-table journey">
+            <thead><tr><th>阶段</th><th>第一阶段</th><th>第二阶段</th><th>第三阶段</th><th></th><th></th><th></th></tr></thead>
+            <tbody>
+              <tr><th>目标</th><td>找东西</td><td>联系对方</td><td>沟通价格</td><td>付款</td><td>等待物流</td><td>收货检查</td></tr>
+              <tr><th>想法</th><td>「哪个平台上东西价格更低」</td><td>「等待回复，商品到底卖没卖给别人」</td><td>「能不能快点确定，能不能砍一点价格」</td><td>「这价格合不合适心里，运费是否能接受」</td><td>「物品能不能快点到」</td><td>「商品有没有破损，不想要售后，很麻烦」</td></tr>
+              <tr><th>行为</th><td>去各个平台上浏览，对比价格</td><td>发起对话</td><td>沟通</td><td>付款</td><td>等待收货</td><td>收货，检查商品</td></tr>
+              <tr><th>接触点</th><td>在网上浏览想要的二手物品，但是平台推送不准确</td><td>与多方沟通价格、运费，但是消息提醒混杂</td><td>找到心意卖家后，平台提醒消息</td><td>付钱后，平台赚取中介费</td><td>催发货，平台显示物流速度</td><td>平台提醒到货，可以售后</td></tr>
+              <tr><th>问题</th><td>看到随意定价的人，找不到想买的物品</td><td>问了对方有没有货，对方已读不回，不知道什么意思</td><td>谈价过程中对方下架消失</td><td>付款时发现总额加运费，纠结要不要买</td><td>等待时间有点久</td><td>货物到手发现有运输破损或物品问题，找卖家售后没有回复、没有好的解决方案</td></tr>
+              <tr><th>情绪</th><td>😐平静</td><td>😟焦虑</td><td>😐平静</td><td>😠不满</td><td>😢难过</td><td>😫崩溃</td></tr>
+              <tr><th>机会</th><td>精准推送，分类物品，拼热门物品</td><td>有效消息显示，标记已读</td><td>分类用户，可选择相同用户买卖，出现拉黑</td><td>严格审查卖家资质设置，同城价格必须小于某个数</td><td>校内平台服务范围小，配送快</td><td>加入售后服务</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="extracted">Extracted　由调研板「用户旅程地图」逐格提取重建为网页表格（小陈 · 20 岁 · 在校大学生），非截图。</p>
+      </div>
+    </section>
+
+    <!-- 12 同理心地图 -->
+    <section class="slide" data-chapter="03 · 洞察">
+      <div class="deco deco--books tr"></div>
+      <div class="slide-inner">
+        <div class="subhead"><h3>同理心地图 · 校内二手交易平台</h3><span>Empathy Map · 每位典型受访者一张</span></div>
+        <p class="meta-note">受访者 01 · 小陈 · 20 岁 · 访谈日期 11.8 · 记录 丁雯静</p>
+        <div class="empathy-grid">
+          <div class="empathy"><b>FEELS 感受什么</b><p>① 来回等回复，消耗耐心</p><p>② 校内交易缺少规则约束，交易风险有隐患，很担心</p><p>③ 拿到货的时间可以尽可能缩短，很急切</p></div>
+          <div class="empathy"><b>MEET 遇到什么买卖家</b><p>① 部分二手 / 三手卖家，被问到物品瑕疵时，回答不上具体问题</p><p>② 出手全部，但是只要几本</p></div>
+          <div class="empathy"><b>SAYS 说些什么</b><p>「拍了一堆照片发到那个二手群里面，然后没有人鸟」</p><p>「卖家买家回消息有点慢吧」「看成交的价格吧，然后包不包邮」</p><p>「如果是二手或者三手的买家，他肯定回答不上你的某些问题——他也不知道这个东西哪里有瑕疵啥的」</p><p>「我希望这个东西直接空投到我家，不要省去那三天的时间」</p></div>
+          <div class="empathy"><b>THINKS 在想什么</b><p>① 卖东西优先看物品对自己是否还有用处，情感纪念意义也会影响要不要出</p><p>② 买二手，需求和喜欢程度，价格、物流也考量</p><p>③ 如果卖家对自家物品一问三不知，直接默认物品不靠谱，不愿冒险</p><p>④ 对于校内平台，不怕功能少，最怕没人用</p><p>⑤ 很看重物流速度、交付速度</p></div>
+        </div>
+        <p class="extracted">Extracted　由调研板「EMPATHY MAP · 校内二手市场交易平台」受访者 01 地图逐条提取（共 6 位受访者，此处展示典型一张），非截图。</p>
+      </div>
+    </section>
+
+    <!-- 13 亲和图 25 原话 -->
+    <section class="slide" data-chapter="03 · 洞察">
+      <div class="slide-inner">
+        <div class="subhead"><h3>亲和图 · 大学生二手交易方案</h3><span>Affinity Mapping · 7 组主题</span></div>
+        <p class="extracted">由超宽拼板「AFFINITY MAPPING」逐条提取：25 条原话（E01–E25，受访者 P01 小陈 / P02 压了 / P03 了了 / P04 大黄 / P05 泡芙 / P06 章章）→ 7 组主题 → 洞察总结，非截图。</p>
+        <div class="scroll-area tall">
+          <ol class="long-list">
+            <li>E01 · P01 小陈「卖卖买来回消息有点慢吧」</li>
+            <li>E02 · P02 压了「最麻烦的，就是在等回复消息，还不知道这个东西卖出去没有。」</li>
+            <li>E03 · P04 大黄「懒得出，感觉发的消息一发就沉大海了。」</li>
+            <li>E04 · P04 大黄「给他发了消息，他看完之后不回我，最后自己就显示了。如果他半天不回我就暗自拉黑。」</li>
+            <li>E05 · P02 压了「回复快一点吧，然后及时把已经出售的商品标注一下，没有出售的就还留在那里。」</li>
+            <li>E06 · P02 压了「希望出一个类似于小程序或网站，把要卖的东西汇总整理。」</li>
+            <li>E07 · P01 小陈「如果是一个二手或者是三手的卖家，他肯定回答不上来你的东西问题，比如他也不知道这个东西哪里有瑕疵的。」</li>
+            <li>E08 · P02 压了「最不放心的就是他那个东西的质量吧。」</li>
+            <li>E09 · P04 大黄「希望可以点击视频观看，物品能够 360 度展示，避免后边因为破损产生纠纷」</li>
+            <li>E10 · P01 小陈「有成交的价格吧，然后包邮。」</li>
+            <li>E11 · P02 压了「肯定会觉得有没有比他更好的，或者说卖便宜一点点的。」</li>
+            <li>E12 · P04 大黄「要贵一点的东西就用闲鱼，便宜点的东西就用二手的，小红书也有用。」</li>
+            <li>E13 · P04 大黄「希望它有同类型的品，不出压得过低的价。」</li>
+            <li>E14 · P04 大黄「然后最好针对纠纷行为，可以有客服介入，就跟闲鱼的小法庭一样。」</li>
+            <li>E15 · P01 小陈「拍了一堆照片发到那个二手群里面，然后没有人鸟」</li>
+            <li>E16 · P01 小陈「我希望这个东西直接空投到我家，不要省去那三天的时间。」</li>
+            <li>E17 · P03 了了「我在校园群里发消息没人理我。」</li>
+            <li>E18 · P03 了了「我说我的 500 块钱，已经是最低了，他上来问我 250 卖不卖。」</li>
+            <li>E19 · P03 了了「在甘肃，发到那个买家那个地方居然要 20 块运费。」</li>
+            <li>E20 · P05 泡芙「就是可能在和买家讨价还价的时候花费了我很多时间和精力。」</li>
+            <li>E21 · P05 泡芙「有时候你卖出一些东西，必须要填写物品类别，还要描述这个物品。」</li>
+            <li>E22 · P05 泡芙「部分买家想要卖家包邮，不愿意承担运费成本。」</li>
+            <li>E23 · P06 章章「和商家沟通确认有没有货的过程很麻烦，其实卖家东西已经被卖掉了，但他没有下架那个商品。」</li>
+            <li>E24 · P06 章章「不要让卖家自己随便设置运费。」</li>
+            <li>E25 · P03 了了「比如售后服务。」</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 7组主题 -->
+    <section class="slide" data-chapter="03 · 洞察">
+      <div class="deco deco--bear tl"></div>
+      <div class="slide-inner">
+        <div class="slide-title-bar"><h2>25 条原话 <span>→ 7 组主题</span></h2><p>保留访谈编号与关键短语，完整原话见上一页</p></div>
+        <div class="theme-grid">
+          <div class="theme-card"><b>分组 01</b><h4>沟通回复低效率</h4><p><span>E01</span> 消息来回慢<br><span>E02</span> 等回复，不知卖没卖<br><span>E03</span> 消息一发就沉大海<br><span>E04</span> 已读不回就拉黑<br><span>E17</span> 群里发消息没人理<br><span>E20</span> 讨价还价耗时间</p><small>需要即时反馈机制，让沟通不再滞后</small></div>
+          <div class="theme-card"><b>分组 02</b><h4>商品管理混乱，发布麻烦</h4><p><span>E05</span> 已售没标注、未售还留着<br><span>E06</span> 想把闲置汇总到一个地方<br><span>E18</span> 500 被砍到 250<br><span>E21</span> 填类别、写描述太麻烦<br><span>E23</span> 卖掉了却没下架</p><small>需要集中货架，统一管理上架 / 待售 / 已售</small></div>
+          <div class="theme-card"><b>分组 03</b><h4>物品交易信任不足</h4><p><span>E07</span> 转手卖家答不上瑕疵<br><span>E08</span> 最担心质量<br><span>E09</span> 想看 360° 视频展示<br><span>E24</span> 运费不该卖家随便设</p><small>需要可信展示，补充成色与瑕疵信息</small></div>
+          <div class="theme-card"><b>分组 04</b><h4>定价 / 比价困难</h4><p><span>E10</span> 想看成交价、包邮<br><span>E11</span> 总怕卖便宜了<br><span>E12</span> 贵的上闲鱼，便宜的进群<br><span>E13</span> 别压得太低<br><span>E22</span> 买家不愿承担运费</p><small>需要公开价格参考，打破信息孤岛</small></div>
+          <div class="theme-card"><b>分组 05</b><h4>交易缺保障</h4><p><span>E14</span> 纠纷要有客服介入<br><span>E25</span> 需要售后服务</p><small>需要交易留痕，约束跑单与毁约</small></div>
+          <div class="theme-card"><b>分组 06</b><h4>曝光引流难</h4><p><span>E15</span> 拍了一堆照没人鸟<br><span>E17</span> 群里发消息没人理</p><small>需要长效曝光渠道，摆脱刷屏</small></div>
+          <div class="theme-card"><b>分组 07</b><h4>时间长、价格高</h4><p><span>E16</span> 想「空投到家」<br><span>E19</span> 运费居然要 20 块<br><span>E24</span> 距离远就不想过去</p><small>需要标准化交付，缩短从成交到到手的等待</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 洞察总结+方法 -->
+    <section class="slide" data-chapter="03 · 洞察">
+      <div class="deco deco--sofa bl"></div>
+      <div class="slide-inner">
+        <div class="note-panel synthesis-summary" data-tab="SYNTHESIS">
+          <div class="summary-row"><b>共同模式</b><p>回复效率低，商品实际状态可能跟帖子描述不一致</p></div>
+          <div class="summary-row"><b>核心痛点</b><p>商品管理混乱，发布帖子麻烦</p></div>
+          <div class="summary-row"><b>用户需求</b><p>高效率的解决闲置物品或者快速找到需要的物品</p></div>
+          <div class="summary-row"><b>设计机会</b><p>对卖家发布的帖子做出要求（与实际情况相符）；对不同商品分类，方便买家快速定位；设置一些市场参考价；设置售后服务</p></div>
+          <div class="summary-row"><b>优先级与依据</b><p>高：沟通回复低效率、商品管理混乱、发布帖子麻烦<br>中：定价比价困难、快速流程中遇到时间长价格高的问题、售后问题<br>低：物品交易信任不足、交易缺保障</p></div>
+          <div class="summary-row"><b>待讨论</b><p></p></div>
+        </div>
+        <div class="subhead"><h3>方法校准</h3><span>Method · 15 条原话 → 5 组主题</span></div>
+        <p class="intro">先做一次小样本演练：把 15 条原话逐条编码，试贴到 5 组主题里，统一规则后再上全量数据。</p>
+        <div class="flow"><div>P01–P15<br><small>逐条编码</small></div><span>→</span><div>同主题贴进<br><small>同一列</small></div><span>→</span><div>5 组主题<br><small>命名上墙</small></div></div>
+        <p class="tagline">定价困惑　消息沉没　信任顾虑　交付成本　商品成色</p>
+        <p class="extracted">Rebuilt　方法演练示意，内容取自真实编码规则。</p>
+      </div>
+    </section>
+
+    <!-- 16 POV HMW 收敛 -->
+    <section class="slide" data-chapter="03 · 洞察">
+      <div class="deco deco--cat tl"></div>
+      <div class="slide-inner">
+        <div class="subhead"><h3>POV → HMW</h3><span>问题重述 · 功能优先级的裁判</span></div>
+        <div class="pov-list">
+          <div class="pov-item"><b>POV · 沟通回复低效率</b><p>从 E01–E04、E17、E20 的一簇原话看到：卖出闲置的同学在等待回复、反复催促与讨价还价上消耗大量时间精力——「感觉发的消息一发就沉大海了」。</p><em>→ HMW 我们如何让每一次询问与回复即时可见，沟通不再石沉大海？</em></div>
+          <div class="pov-item"><b>POV · 定价比价困难</b><p>从 E10–E13、E18、E22 的一簇原话看到：定价没有参照，只能凭感觉开价——「我说我的 500 块钱，已经是最低了，他上来问我 250 卖不卖」。</p><em>→ HMW 我们如何让成交价沉淀下来，成为下一次定价的参照？</em></div>
+          <div class="pov-item"><b>POV · 交易缺保障</b><p>从 E14、E25 的一簇原话看到：纠纷没有约束与兜底——「最好针对纠纷行为，可以有客服介入，就跟闲鱼的小法庭一样」。</p><em>→ HMW 我们如何给校内交易加上规则与兜底？</em></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 五大入口 -->
+    <section class="slide" data-chapter="04 · 落地">
+      <div class="slide-inner">
+        <div class="chapter-head"><div class="chapter-no">04</div><div><div class="kicker">Build</div><h2>闲鹅 2.0：五个入口，一条顺路</h2></div></div>
+        <p class="intro">依据洞察搭出产品骨架：五大模块覆盖「逛 → 搜 → 发 → 聊 → 管」全流程， AI 负责降低发布门槛，驿站自提负责解决交付。</p>
+        <div class="entry-grid">
+          <div class="entry"><b>🏠首页</b><p>闲置小市集</p><small>搜索 · 分类</small></div>
+          <div class="entry"><b>🧑‍🤝‍🧑广场</b><p>闲鹅广场</p><small>帖子 · 点赞收藏</small></div>
+          <div class="entry"><b>＋发布</b><p>AI 识别</p><small>标签 · 描述 · 定价</small></div>
+          <div class="entry"><b>💬消息</b><p>一对一沟通</p><small>联系卖家</small></div>
+          <div class="entry"><b>👤我的</b><p>订单 · 收藏</p><small>偏好档案</small></div>
+        </div>
+        <div class="build-showcase">
+          <figure class="phone-frame tall">
+            <div class="phone-bar"><span>闲置小市集在线 · 已连接</span></div>
+            <div class="phone-body">
+              <div class="ui-search">🔍 搜索闲置物品</div>
+              <div class="ui-label">推荐 最新发布 热门商品 ▽ 筛选</div>
+              <div class="ui-chips">📖教材书籍　📱电子数码　🎨绘画文体　👗服饰鞋包　🛏宿舍好物　🎀二次元周边</div>
+              <div class="listing">
+                <div class="listing-item"><span class="item-icon">🍟</span><div><b>食品零食，九成新，几乎无使用痕迹</b><small>¥5　电子数码·九成</small></div></div>
+                <div class="listing-item"><span class="item-icon">📏</span><div><b>开叉打版尺</b><small>¥5　教材书籍·九成</small></div></div>
+                <div class="listing-item"><span class="item-icon">🧸</span><div><b>手办摆件，闲置出</b><small>¥1314　生活用品·九成</small></div></div>
+                <div class="listing-item"><span class="item-icon">🧦</span><div><b>小女仆一只，不干活只吃东西</b><small>¥999　其他闲置·零成</small></div></div>
+              </div>
+              <div class="ui-tabbar">🏠首页 ▦广场 ＋发布 🔔消息 👤我的</div>
+            </div>
+            <figcaption class="frame-note">示意画面 · 原网页首页</figcaption>
+          </figure>
+          <div class="build-notes">
+            <div class="note-card yellow"><span class="pin"></span><b>首页 · 闲置小市集</b><p>推荐 / 最新 / 热门排序 + 分类图标筛选，让刷屏被结构化信息取代。</p></div>
+            <div class="note-card"><span class="pin"></span><b>五大模块 · 一条顺路</b><p>逛 → 搜 → 发 → 聊 → 管：把刷屏信息变成结构化货架，AI 降低发布门槛，驿站自提解决交付。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 发布页 -->
+    <section class="slide" data-chapter="04 · 落地">
+      <div class="deco deco--plant br"></div>
+      <div class="slide-inner">
+        <div class="subhead"><h3>发布 · AI 识别</h3><span>标签 · 描述 · 定价</span></div>
+        <div class="publish-layout">
+          <figure class="phone-frame small">
+            <div class="phone-bar"><span>← 发布闲置</span></div>
+            <div class="phone-body">
+              <div class="ui-label">🏷 出闲置（卖东西）🛍 收闲置（求购）</div>
+              <div class="ui-muted">拍拍你的闲置 第一张为封面 · 最多 4 张</div>
+              <div class="ui-upload">＋📷</div>
+              <div class="ui-muted">🤖 AI 识别 · 上传照片后自动识别 ↻ 重新识别</div>
+              <div class="ui-muted">AI 识别后自动生成标签，也可手动选择：从全部标签中选择（可搜索）</div>
+              <div class="ui-price">¥ 0.00</div>
+              <div class="ui-muted">描述一下物品的成色、购买时间、交易方式… ✨ AI 生成描述</div>
+              <div class="ui-chips">全新 九成新 八成新 有痕迹</div>
+              <div class="ui-chips">接受小刀 不接受小刀 线下面交 送到楼下</div>
+              <div class="ui-button">发布闲置</div>
+            </div>
+            <figcaption class="frame-note">示意画面 · 原网页发布页</figcaption>
+          </figure>
+          <div class="note-panel" data-tab="PUBLISH">
+            <h3>一句话记住这页</h3>
+            <p class="quote">出闲置 / 收闲置分类 + AI 拍照生成标签与描述，30 秒完成发布。</p>
+            <div class="feature-grid-mini">
+              <div class="feature"><span class="feature-emoji">🤖</span><h4>AI 识别，30 秒发布</h4><p>上传照片自动识别物品、生成标签与描述，也可手动修改；定价给出「闲鹅推荐价」做参照。</p></div>
+              <div class="feature"><span class="feature-emoji">📒</span><h4>偏好档案，相似用户匹配</h4><p>在线习惯与交易偏好进档案，为相似用户匹配做铺垫；回夏速度、常在线时段可选。</p></div>
+              <div class="feature"><span class="feature-emoji">📍</span><h4>东门驿站自提</h4><p>商品标注「东门驿站自提 / 送到楼下」，卖家备注位置会展示给买家，交易方式一目了然。</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19 迭代 01-02 -->
+    <section class="slide" data-chapter="05 · 迭代">
+      <div class="slide-inner">
+        <div class="chapter-head"><div class="chapter-no">05</div><div><div class="kicker">Test & Iterate</div><h2>真实上手之后：2.0 → 3.0</h2></div></div>
+        <p class="intro">2.0 上线给同学真实使用后，我们按反馈逐条修：左边是旧版本，右边是 3.0 新版本。 每一条改动都来自一个具体的吐槽。</p>
+        <div class="compare-grid">
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">← 我的编辑资料<br>○ 4 · 校园闲置用户<br><br>资料编辑功能开发中~<br><br>收藏<br>浏览记录</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">← 我的<br>✎ 编辑资料<br><br>昵称<br>给自己起个响亮的名字<br><br>性别保密 男 女<br><br>保存资料</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>01</b> 编辑资料上线——2.0 里还是「功能开发中」，3.0 可以直接改头像、昵称、性别与个性签名。</p></div>
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">消息列表<br><br>✉️ 还没有消息<br><br>去商品详情点「联系卖家」开始第一段对话吧</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">消息列表<br><br>✉️ 还没有消息<br><br>去商品详情点「联系卖家」开始第一段对话吧<br><br>🏠首页 ▦广场 ＋发布 🔔消息 👤我的</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>02</b> 把缺失的选项补齐——消息页空状态没退路，3.0 补上了完整底部导航。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20 迭代 03-04 -->
+    <section class="slide" data-chapter="05 · 迭代">
+      <div class="deco deco--fish bl"></div>
+      <div class="slide-inner">
+        <div class="compare-grid">
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">← 我的<br><br>我的订单 0 个进行中 ›<br><br>📁 偏好档案 匹配已开启<br><br>相似用户匹配<br>期望对方回复速度不限<br>对方常在线时段不限</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">← 我的<br><br>我的订单 2 个进行中 ›<br>收藏 ›<br>浏览记录 ›<br>客服反馈 ›<br>退出登录<br><br>🏠首页 ▦广场 ＋发布 🔔消息 👤我的</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>03</b> 我的页做减法——偏好档案、相似匹配等复杂设置收起，页面更清爽、退出登录更明确。</p></div>
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">闲鹅广场＋发帖<br><br>6 · 11/20 22:02<br>看看猫<br><br>❤ 点赞 · ⭐ 收藏 · 💬 1 评论<br><br>友善评论，让广场更有爱…　发送</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">闲鹅广场＋发帖<br><br>6 · 11/20 22:02<br>看看猫<br>🐈<br><br>❤ 点赞 · ⭐ 收藏 · 💬 1 评论<br><br>😊 友善评论，让广场更有爱…　发送</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>04</b> 广场更好逛——新增「我的点赞 / 我的收藏」、表情评论、图片点击放大。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21 迭代 05-06 -->
+    <section class="slide" data-chapter="05 · 迭代">
+      <div class="slide-inner">
+        <div class="compare-grid">
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">闲置小市集<br><br>🔍 搜索闲置物品<br><br>‖ 热门闲置<br><br>🍟<br>📏</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">闲置小市集<br><br>🔍 搜索闲置物品<br><br>推荐 最新发布 热门商品 ▽ 筛选<br><br>📖 教材　📱 数码　🎨 文体　👗 服饰　🛏 宿舍　🎀 周边<br><br>🍟　🧸</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>05</b> 分类移到首页——新增推荐 / 最新发布 / 热门商品与筛选，热门闲置不再一屏刷到底。</p></div>
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">← 商品详情<br><br>🍽<br><br>¥30.00 可小刀<br>盘子，爱情盘子</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">✕<br><br>🍽<br><br>Summer Romance Secret Comeback</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>06</b> 图片放大观看——详情页图片支持全屏查看，成色细节看得清再下单。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22 迭代 07-08 -->
+    <section class="slide" data-chapter="05 · 迭代">
+      <div class="deco deco--books br"></div>
+      <div class="slide-inner">
+        <div class="compare-grid">
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">← 发布闲置<br><br>＋📷<br><br>🤖 AI 识别 · 上传照片后自动识别<br><br>¥ 0.00<br><br>成色九成新</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">← 发布闲置<br><br>🏷 发布类型：出闲置（卖东西）· 收闲置（求购）<br><br>＋📷<br><br>🤖 AI 识别 · 上传照片后自动识别<br><br>📦 库存 1 卖出一件自动减一，0 件自动下架</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>07</b> 发布更完整——新增「出闲置 / 收闲置」类型与库存设置（卖出自动减、0 件自动下架）。</p></div>
+          <div class="compare-block"><div class="compare-pair">
+            <figure class="shot"><div class="shot-tag">2.0</div><div class="shot-inner">← 我的商品<br><br>¥20.00 可小刀 教材书藉 好物转让<br><br>交易方式 · 仅自提面交<br><br>下架商品</div><figcaption>旧版画面占位</figcaption></figure>
+            <figure class="shot"><div class="shot-tag new">3.0</div><div class="shot-inner">← 我的商品<br><br>¥20.00 可小刀 教材书藉 好物转让<br><br>📦 库存 1 件 可观察<br><br>交易方式 · 仅自提面交<br><br>下架商品<br>编辑商品</div><figcaption>新版画面占位</figcaption></figure>
+          </div><p class="change-note"><b>08</b> 库存可观察 + 可再编辑——详情展示库存件数；卖家可以随时重新编辑已发布的商品。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 23 下一步 -->
+    <section class="slide" data-chapter="06 · 下一步">
+      <div class="deco deco--plant tl"></div>
+      <div class="deco deco--bear br"></div>
+      <div class="slide-inner">
+        <div class="chapter-head"><div class="chapter-no">06</div><div><div class="kicker">What's Next</div><h2>下一程：信任、担保与更聪明的发布</h2></div></div>
+        <p class="intro">调研里出现频率最高、但我们还没来得及做完的事，排进了 3.1 的清单。</p>
+        <div class="next-grid">
+          <div class="next-card"><b>Next 01 · 假设①</b><h3>寝室点点跑腿代送</h3><p>校内代取快递互助 + 寝室点点配送：回应「空投到家」的期待，把拿到货的时间压到最短。</p></div>
+          <div class="next-card"><b>Next 02 · 假设②</b><h3>历史成交价参考定价</h3><p>发布闲置时自动展示本校同类商品历史成交价，让定价有依据——问卷里标注的核心卖点。</p></div>
+          <div class="next-card"><b>Next 03</b><h3>校内信用与担保</h3><p>学号轻认证 + 资金托管担保交易（参考 Gali 模式）：交易有规则约束，解决「交易风险有隐患」。</p></div>
+        </div>
+        <div class="ending">
+          <button class="back-link" data-goto="0">← 回到故事开头</button>
+          <p>闲鹅 · 校园二手闲置平台 — 湖北美院联合创作营课程项目 · 产品故事页</p>
+          <p class="small">问卷份数与访谈人数为调研计划目标值，最终以实际回收为准；2.0 → 3.0 对比截图为真实迭代记录。</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <button class="nav-arrow prev" id="prevBtn" aria-label="上一页">‹</button>
+  <button class="nav-arrow next" id="nextBtn" aria-label="下一页">›</button>
+
+  <div class="dots" id="dots"></div>
+
 </div>
 
-<!-- ===== 弹窗：联系 ===== -->
-<div class="modal" id="modal-contact">
-  <div class="modal-card" style="background:none; box-shadow:none; max-width:560px; padding:0;">
-    <button class="modal-close" data-close style="color:#fbf7ee;">✕</button>
-    <div class="contact-card">
-      <h3>CONTACT</h3>
-      <div class="cn">期 待 与 你 合 作</div>
-      <div class="row"><b>邮箱 EMAIL</b> 18162756912@163.com</div>
-      <div class="row"><b>电话 TEL</b> 18162756912</div>
-      <div class="row"><b>坐标 LOC</b> 湖北省武汉市 江岸区</div>
-      <div class="row"><b>籍贯 HOME</b> 湖北省武汉市</div>
-    </div>
-  </div>
-</div>
-
-<script>
-  // ===== 作品数据（7 件真实作品） =====
-  const WORKS = [
-    { t: "觅径游园 · 可视化展板", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w5-garden.png" },
-    { t: "恭城茶韵 · 风物篇", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w7-tea-h.png" },
-    { t: "恭城茶韵 · 工艺篇", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w6-tea-v.png" },
-    { t: "秋野拾趣 · 森林疗愈场景展板", c: "board", cl: "DISPLAY BOARD 展板设计", img: "works/w1-qy.jpg" },
-    { t: "UPSTREAM · 交互鱼群", c: "aicode", cl: "AI × CODE AI代码运用", img: "works/w2-upstream.png" },
-    { t: "武汉港 · 数据地图", c: "aicode", cl: "AI × CODE AI代码运用", img: "works/w3-map.png" },
-    { t: "海洋苏醒 · 实物拼贴装置", c: "exhibit", cl: "EXHIBIT MAKING 实物展品制作", img: "works/w4-ocean.png" },
-  ];
-
-  const grid = document.getElementById("work-grid");
-  function renderWorks(f) {
-    const list = f === "all" ? WORKS : WORKS.filter(w => w.c === f);
-    if (!list.length) {
-      grid.innerHTML = `<div class="work-empty">本分类作品整理中 · COMING SOON</div>`;
-      return;
-    }
-    grid.innerHTML = list.map(w => `
-      <div class="card">
-        <img src="${w.img}" alt="${w.t}" loading="lazy" />
-        <div class="info"><div class="t">${w.t}</div><div class="c">${w.cl}</div></div>
-      </div>`).join("");
-  }
-  renderWorks("all");
-
-  document.querySelectorAll("#work-tabs button").forEach(b => {
-    b.addEventListener("click", () => {
-      document.querySelectorAll("#work-tabs button").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      renderWorks(b.dataset.f);
-    });
-  });
-
-  // ===== 弹窗开关 =====
-  function openModal(id) {
-    document.querySelectorAll(".modal").forEach(m => m.classList.remove("show"));
-    const m = document.getElementById("modal-" + id);
-    if (m) m.classList.add("show");
-  }
-  document.querySelectorAll("[data-open]").forEach(el => {
-    el.addEventListener("click", e => {
-      if (el.tagName === "A") e.preventDefault();
-      openModal(el.dataset.open);
-    });
-  });
-  document.querySelectorAll("[data-close]").forEach(b => {
-    b.addEventListener("click", () => b.closest(".modal").classList.remove("show"));
-  });
-  document.querySelectorAll(".modal").forEach(m => {
-    m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); });
-  });
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") document.querySelectorAll(".modal").forEach(m => m.classList.remove("show"));
-  });
-
-  // ===== 封面：滚动驱动 · 分段级联翻书 =====
-  const cover = document.getElementById("cover");
-  const tilt = document.getElementById("cover-tilt");
-  const railFill = document.getElementById("rail-fill");
-  const railNum = document.getElementById("rail-num");
-  const hintFill = document.getElementById("hint-fill");
-  const scene = document.querySelector(".scene");
-
-  document.body.classList.add("lock");
-
-  // --- 构建分段书页 ---
-  const src = document.getElementById("cover-src");
-  const srcBack = cover.querySelector(".cover-back");
-
-  // 飞出物件移到独立屏幕空间图层（不随页旋转，保持可逆）
-  const flyLayer = document.createElement("div");
-  flyLayer.className = "fly-layer";
-  src.querySelectorAll(".flyer").forEach(f => flyLayer.appendChild(f));
-  cover.appendChild(flyLayer);
-
-  // 把整张封面切成 6 条竖向页带，每条带自己的正/背面与折角光影
-  const N = 6;
-  const W = 100 / N;
-  const leaves = [];
-  for (let i = 0; i < N; i++) {
-    const leaf = document.createElement("div");
-    leaf.className = "leaf";
-    leaf.style.left = (i * W) + "vw";
-    leaf.style.width = (W + 0.3) + "vw";
-    leaf.style.zIndex = 10 + i;
-
-    const front = src.cloneNode(true);
-    front.removeAttribute("id");
-    front.classList.remove("face");
-    front.classList.add("leaf-front");
-    front.querySelectorAll("[id]").forEach(n => n.removeAttribute("id"));
-    const ink = document.createElement("div");
-    ink.className = "leaf-ink";
-    ink.style.left = (-i * W) + "vw";
-    while (front.firstChild) ink.appendChild(front.firstChild);
-    front.appendChild(ink);
-
-    const back = srcBack.cloneNode(true);
-    back.classList.add("leaf-back");
-
-    const shade = document.createElement("div");
-    shade.className = "leaf-shade";
-
-    leaf.append(front, back, shade);
-    tilt.appendChild(leaf);
-    leaves.push({ leaf, shade });
-  }
-  src.remove();
-  srcBack.remove();
-
-  const coverInners = [...document.querySelectorAll(".cover-inner")];
-  const coverTops = [...document.querySelectorAll(".cover-top")];
-
-  // 漂浮尘埃
-  for (let i = 0; i < 16; i++) {
-    const d = document.createElement("span");
-    d.className = "dust" + (i % 3 === 0 ? " white" : "");
-    d.style.left = (3 + Math.random() * 94) + "%";
-    d.style.top = (8 + Math.random() * 84) + "%";
-    const s = 3 + Math.random() * 5;
-    d.style.width = d.style.height = s.toFixed(1) + "px";
-    d.style.animationDelay = (Math.random() * 7).toFixed(2) + "s";
-    d.style.animationDuration = (5 + Math.random() * 5).toFixed(2) + "s";
-    cover.appendChild(d);
-  }
-
-  let target = 0, cur = 0, done = false, rafId = null;
-  let mx = 0, my = 0;
-
-  const clamp01 = v => Math.min(1, Math.max(0, v));
-  // smoothstep：中间匀速、两端柔和，页带之间首尾衔接无停顿
-  const smooth = t => t * t * (3 - 2 * t);
-
-  const flyers = [...document.querySelectorAll(".flyer")].map(el => ({
-    el,
-    at: +el.dataset.at,
-    dx: +el.dataset.dx, dy: +el.dataset.dy,
-    rot: +el.dataset.rot, z: +el.dataset.z,
-  }));
-
-  window.addEventListener("mousemove", e => {
-    mx = e.clientX / window.innerWidth - 0.5;
-    my = e.clientY / window.innerHeight - 0.5;
-  });
-
-  function render() {
-    // 尾段加速：接近终点时插值加快，避免最后一段"翻不动"
-    const k = target > 0.98 && cur > 0.75 ? 0.16 : 0.055;
-    cur += (target - cur) * k;
-    if (Math.abs(target - cur) < 0.0004) cur = target;
-
-    // 预备段：镜头逼近 + 鼠标视差（随翻页渐弱）
-    const pre = clamp01(cur / 0.22);
-    tilt.style.transform =
-      `scale(${(1 + 0.07 * pre).toFixed(4)}) rotateX(${(-my * 6 * (1 - pre)).toFixed(2)}deg) rotateY(${(mx * 11 * (1 - pre)).toFixed(2)}deg)`;
-
-    // 级联翻页：6 条页带连续波浪折落
-    let flipSum = 0;
-    leaves.forEach((L, i) => {
-      const p = smooth(clamp01((cur - (0.06 + i * 0.042)) / 0.56));
-      flipSum += p;
-      L.leaf.style.transform =
-        `rotateY(${(-172 * p).toFixed(2)}deg) rotateX(${(Math.sin(p * Math.PI) * 3).toFixed(2)}deg)`;
-      L.shade.style.opacity = (Math.sin(p * Math.PI) * 0.38).toFixed(3);
-    });
-    const flip = flipSum / N;
-
-    // 收尾退场：折叠完成后，整叠纸页向后沉降、左移并淡出，自然过渡到洞洞板
-    const out = smooth(clamp01((cur - 0.86) / 0.14));
-    if (out > 0) {
-      leaves.forEach(L => {
-        L.leaf.style.opacity = (1 - out).toFixed(3);
-        L.leaf.style.transform =
-          `translate3d(${(-out * 16).toFixed(2)}vw, ${(out * 5).toFixed(2)}vh, ${(-out * 240).toFixed(1)}px) rotateY(-172deg)`;
-      });
-    }
-
-    // 封面内容视差上移
-    coverInners.forEach(el => {
-      el.style.transform = `translateY(${(-cur * 110).toFixed(1)}px)`;
-      el.style.opacity = (1 - clamp01(cur / 0.6) * 0.92).toFixed(3);
-    });
-    coverTops.forEach(el => { el.style.opacity = (1 - clamp01(cur / 0.3)).toFixed(3); });
-
-    // 飞出的物件：跟滚动进度可逆播放
-    for (const f of flyers) {
-      const t = clamp01((cur - f.at) / 0.3);
-      if (t === 0) { f.el.style.opacity = "0"; continue; }
-      const fade = t > 0.75 ? 1 - (t - 0.75) / 0.25 : 1;
-      const sway = Math.sin(t * Math.PI * 2.2 + f.rot) * 22;
-      f.el.style.opacity = fade.toFixed(3);
-      f.el.style.transform =
-        `translate(-50%,-50%) translate3d(${(f.dx * t + sway).toFixed(1)}px, ${(f.dy * t).toFixed(1)}px, ${f.z}px) rotate(${(f.rot * t).toFixed(1)}deg) scale(${(0.4 + 0.6 * t).toFixed(3)})`;
-    }
-
-    // 洞洞板推进聚焦
-    scene.style.transform = `scale(${(1.12 - 0.12 * flip).toFixed(4)})`;
-    scene.style.filter = `brightness(${(0.68 + 0.32 * flip).toFixed(3)}) saturate(${(0.88 + 0.12 * flip).toFixed(3)})`;
-
-    // 进度指示
-    railFill.style.height = (cur * 100).toFixed(1) + "%";
-    hintFill.style.width = (cur * 100).toFixed(1) + "%";
-    railNum.textContent = cur > 0.5 ? "002" : "001";
-
-    if (cur > 0.995) { finish(); return; }
-    rafId = requestAnimationFrame(render);
-  }
-
-  function startRender() {
-    if (rafId === null) rafId = requestAnimationFrame(render);
-  }
-
-  function finish() {
-    done = true;
-    cancelAnimationFrame(rafId); rafId = null;
-    cur = 1;
-    leaves.forEach(L => {
-      L.leaf.style.opacity = "0";
-      L.leaf.style.transform = "translate3d(-16vw, 5vh, -240px) rotateY(-172deg)";
-      L.shade.style.opacity = "0";
-    });
-    scene.style.transform = "scale(1)";
-    scene.style.filter = "none";
-    cover.classList.add("done");
-    document.body.classList.remove("lock");
-  }
-
-  // 从洞洞板向上滚动：倒放翻页动画回到封面
-  function reopen() {
-    if (!done) return;
-    done = false;
-    cover.classList.remove("done");
-    document.body.classList.add("lock");
-    target = 0.84;
-    startRender();
-  }
-
-  function onWheel(e) {
-    if (done) {
-      if (e.deltaY < 0 && !window.__routeActive) { e.preventDefault(); reopen(); }
-      return;
-    }
-    e.preventDefault();
-    target = clamp01(target + e.deltaY * 0.00055);
-    startRender();
-  }
-  let lastTouchY = null;
-  function onTouchMove(e) {
-    if (done) {
-      const y = e.touches[0].clientY;
-      if (lastTouchY !== null && y - lastTouchY > 30 && !window.__routeActive) reopen();
-      lastTouchY = y;
-      return;
-    }
-    if (e.touches.length !== 1) return;
-    e.preventDefault();
-    const y = e.touches[0].clientY;
-    if (lastTouchY !== null) target = clamp01(target + (lastTouchY - y) * 0.0018);
-    lastTouchY = y;
-    startRender();
-  }
-  window.addEventListener("wheel", onWheel, { passive: false });
-  window.addEventListener("touchmove", onTouchMove, { passive: false });
-  window.addEventListener("touchend", () => { lastTouchY = null; });
-
-  cover.addEventListener("click", () => { if (!done) { target = 1; startRender(); } });
-  document.addEventListener("keydown", e => {
-    if ((e.key === "Enter" || e.key === " ") && !done) { e.preventDefault(); target = 1; startRender(); }
-    if (e.key === "ArrowDown" && !done) { e.preventDefault(); target = clamp01(target + 0.22); startRender(); }
-    if (e.key === "ArrowUp" && done && !window.__routeActive) { e.preventDefault(); reopen(); }
-  });
-  startRender();
-</script>
-
-<!-- ===== 票根撕票 → 路线延伸 → 第二页 ===== -->
-<div id="route-layer">
-  <svg id="route-svg">
-    <defs>
-      <mask id="route-mask">
-        <path id="route-solid" d="M 0 0" stroke="#fff" stroke-width="6" fill="none" />
-      </mask>
-    </defs>
-    <path id="route-dashed" d="M 0 0" stroke="#26211a" stroke-width="3.5" stroke-dasharray="12 9" fill="none" mask="url(#route-mask)" />
-    <circle class="route-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
-    <circle class="route-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
-    <circle id="route-dot" r="10" fill="#f6b91d" stroke="#1d1812" stroke-width="3" />
-  </svg>
-</div>
-
-<section id="page2">
-  <div class="p2-head">
-    <div class="p2-stamp">STOP 02</div>
-    <h2>精选作品 · ON TOUR</h2>
-    <div class="p2-sub">SELECTED WORKS — 沿途展出</div>
-  </div>
-
-  <div class="p2-collage">
-    <!-- 竖排注记 -->
-    <div class="p2-cap-v" style="left:6px;top:30%">WORKS ON TOUR · 2026</div>
-    <div class="p2-cap-v" style="right:6px;top:48%">@LIU YUNXI</div>
-
-    <!-- 色块装饰 -->
-    <div class="p2-sw" style="left:7%;top:2%;background:#4a4a42;--rot:-8deg"></div>
-    <div class="p2-sw" style="left:76%;top:6%;background:#8a9178;--rot:6deg;width:30px;height:30px"></div>
-    <div class="p2-sw" style="left:15%;top:76%;background:#d98e5f;--rot:5deg;width:30px;height:30px"></div>
-    <div class="p2-sw" style="left:55%;top:84%;background:#f6b91d;--rot:-6deg;width:26px;height:26px"></div>
-
-    <!-- 01 秋野拾趣 · 展板（横 1.56:1） -->
-    <figure class="p2-slot" style="left:3%;top:6%;width:350px;height:245px;--rot:-2deg;z-index:2">
-      <img src="works/w1-qy.jpg" alt="秋野拾趣 · 森林疗愈场景展板" loading="lazy" />
-      <figcaption><b>01</b><span>DISPLAY BOARD 展板设计 · 秋野拾趣</span></figcaption>
-    </figure>
-
-    <!-- 02 UPSTREAM · 交互编程板（横 1.51:1） -->
-    <figure class="p2-slot" style="left:33%;top:3%;width:310px;height:227px;--rot:2deg;z-index:3">
-      <img src="works/w2-upstream.png" alt="UPSTREAM 交互鱼群" loading="lazy" />
-      <figcaption><b>02</b><span>INTERACTIVE 交互设计 · UPSTREAM</span></figcaption>
-    </figure>
-
-    <!-- 03 觅径游园 · 竖版信息图（竖 0.66:1） -->
-    <figure class="p2-slot" style="left:63%;top:5%;width:215px;height:348px;--rot:3deg;z-index:2">
-      <img src="works/w5-garden.png" alt="觅径游园 信息可视化" loading="lazy" />
-      <figcaption><b>03</b><span>INFO DESIGN 信息可视化 · 觅径游园</span></figcaption>
-    </figure>
-
-    <!-- 04 武汉港 · 超宽地图（横 1.99:1） -->
-    <figure class="p2-slot" style="left:36%;top:34%;width:300px;height:172px;--rot:-2deg;z-index:4">
-      <img src="works/w3-map.png" alt="武汉港口地图可视化" loading="lazy" />
-      <figcaption><b>04</b><span>DATA MAP 数据地图 · 武汉港</span></figcaption>
-    </figure>
-
-    <!-- 05 海洋拼贴 · 正方形（1:1，整图无裁切） -->
-    <figure class="p2-slot" style="left:6%;top:42%;width:212px;height:234px;--rot:2deg;z-index:2">
-      <img class="fit-contain" src="works/w4-ocean.png" alt="海洋主题拼贴" loading="lazy" />
-      <figcaption><b>05</b><span>COLLAGE 拼贴艺术 · 海洋苏醒</span></figcaption>
-    </figure>
-
-    <!-- 06 恭城茶韵 · 横版近方（1.04:1） -->
-    <figure class="p2-slot" style="left:34%;top:62%;width:240px;height:253px;--rot:-2deg;z-index:3">
-      <img src="works/w7-tea-h.png" alt="恭城茶韵 横版信息图" loading="lazy" />
-      <figcaption><b>06</b><span>INFO POSTER 信息海报 · 茶韵风物</span></figcaption>
-    </figure>
-
-    <!-- 07 恭城茶韵 · 竖版（0.57:1） -->
-    <figure class="p2-slot" style="left:62%;top:52%;width:200px;height:371px;--rot:2deg;z-index:2">
-      <img src="works/w6-tea-v.png" alt="恭城茶韵 竖版信息图" loading="lazy" />
-      <figcaption><b>07</b><span>INFO POSTER 信息海报 · 茶韵工艺</span></figcaption>
-    </figure>
-  </div>
-
-  <!-- 第二页内的路线延续段：从底部接续 → 穿过拼贴墙 → 终点站牌 -->
-  <div class="p2-route">
-    <svg id="p2-route-svg">
-      <defs>
-        <mask id="p2-route-mask">
-          <path id="p2-route-solid" d="M 0 0" stroke="#fff" stroke-width="6" fill="none" />
-        </mask>
-      </defs>
-      <path id="p2-route-dashed" d="M 0 0" stroke="#26211a" stroke-width="3.5" stroke-dasharray="12 9" fill="none" mask="url(#p2-route-mask)" />
-      <circle class="p2-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
-      <circle class="p2-wp" r="7" fill="#f3ecdc" stroke="#26211a" stroke-width="2.5" />
-      <circle id="p2-route-dot" r="10" fill="#f6b91d" stroke="#1d1812" stroke-width="3" />
-    </svg>
-    <div class="station-sign" id="station-sign">
-      <div class="s-pin">📍</div>
-      <div class="s-board">STOP 02 · ON TOUR</div>
-      <div class="s-pole"></div>
-    </div>
-  </div>
-
-</section>
-</div>
-
-<!-- ===== 作品大图灯箱 ===== -->
-<div class="lightbox" id="lightbox">
-  <button class="lb-close" id="lb-close">✕</button>
-  <div class="lb-card">
-    <div class="lb-imgwrap"><img id="lb-img" src="" alt="" /></div>
-    <div class="lb-info">
-      <div class="lb-no" id="lb-no"></div>
-      <h3 id="lb-title"></h3>
-      <div class="lb-cat" id="lb-cat"></div>
-      <p class="lb-desc" id="lb-desc"></p>
-      <div class="lb-foot">WORKS ON TOUR · @LIU YUNXI · 2026</div>
-    </div>
-  </div>
-</div>
-
-<script>
-(function () {
-  const ticket = document.getElementById("ticket");
-  const svg = document.getElementById("route-svg");
-  const solid = document.getElementById("route-solid");
-  const dashed = document.getElementById("route-dashed");
-  const dot = document.getElementById("route-dot");
-  const wps = document.querySelectorAll(".route-wp");
-  const sign = document.getElementById("station-sign");
-  const world = document.getElementById("world");
-
-  let state = "idle";   // idle | forward | arrived | reverse
-  let len = 0, pA = 0.25, pB = 0.6;
-
-  const easeInOut = p => p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-  const clamp01 = v => Math.max(0, Math.min(1, v));
-
-  function setCam(y) {
-    world.style.transform = y > 0 ? `translate3d(0, ${(-y).toFixed(1)}px, 0)` : "";
-  }
-
-  // e: 路线进度 0(票根) → 1(目的地)，虚线、圆点、镜头、途经点全部由它驱动
-  function setE(e) {
-    solid.style.strokeDashoffset = len * (1 - e);
-    const pt = solid.getPointAtLength(len * e);
-    dot.setAttribute("cx", pt.x);
-    dot.setAttribute("cy", pt.y);
-    const cam = easeInOut(clamp01((e - pA) / (pB - pA))) * window.innerHeight;
-    setCam(cam);
-    wps.forEach((el, i) => el.style.opacity = e >= 0.55 + i * 0.2 ? 1 : 0);
-  }
-
-  function buildRoute() {
-    const H = window.innerHeight, W = window.innerWidth;
-    const r = ticket.getBoundingClientRect();
-    const sx = r.left + r.width * 0.38;
-    const sy = r.top + r.height * 0.45;
-    // 路线沿右侧边缘下行，绕开作品卡片；终点落在作品墙右侧
-    solid.setAttribute("d",
-      `M ${sx} ${sy} ` +
-      `C ${sx + 70} ${sy + 180}, ${W * 0.84} ${H * 0.92}, ${W * 0.86} ${H * 1.10} ` +
-      `C ${W * 0.88} ${H * 1.28}, ${W * 0.93} ${H * 1.34}, ${W * 0.905} ${H * 1.40}`
-    );
-    dashed.setAttribute("d", solid.getAttribute("d"));
-    len = solid.getTotalLength();
-    solid.style.strokeDasharray = len;
-    solid.style.strokeDashoffset = len;
-
-    // 采样：相机起飞点（线头近屏底）与降落点（线头入第二屏深处），y 单调递增
-    const N = 400;
-    const ys = [];
-    for (let i = 0; i <= N; i++) ys.push(solid.getPointAtLength(len * i / N).y);
-    pA = 0; pB = 0;
-    for (let i = 0; i <= N; i++) {
-      if (!pA && ys[i] >= H * 0.86) pA = i / N;
-      if (ys[i] >= H * 1.34) { pB = i / N; break; }
-    }
-    if (!pA) pA = 0.25;
-    if (!pB || pB <= pA) pB = 1;
-
-    // 途经点：第二屏右侧下行段
-    wps.forEach((el, i) => {
-      const pt = solid.getPointAtLength(len * (0.55 + i * 0.2));
-      el.setAttribute("cx", pt.x);
-      el.setAttribute("cy", pt.y);
-      el.style.opacity = 0;
-    });
-    dot.style.opacity = "";
-  }
-
-  function animate(fromE, toE, dur, done) {
-    const t0 = performance.now();
-    (function frame(t) {
-      const p = Math.min(1, (t - t0) / dur);
-      setE(fromE + (toE - fromE) * easeInOut(p));
-      if (p < 1) requestAnimationFrame(frame); else done && done();
-    })(t0);
-  }
-
-  ticket.addEventListener("click", () => {
-    if (state !== "idle") return;
-    state = "forward";
-    window.__routeActive = true;
-    world.classList.add("routing");
-    buildRoute();
-    sign.classList.remove("pop");
-    ticket.classList.add("torn");
-    svg.classList.add("on");
-    animate(0, 1, 3200, () => {
-      world.classList.remove("routing");
-      sign.classList.add("pop");
-      state = "arrived";
-    });
-  });
-
-  // 到达后向上滚动 = 原路返回：虚线从下往上收回，镜头跟随升回洞洞板
-  function tryReverse() {
-    if (state !== "arrived") return;
-    state = "reverse";
-    world.classList.add("routing");
-    sign.classList.remove("pop");
-    animate(1, 0, 2600, () => {
-      svg.classList.remove("on");
-      ticket.classList.remove("torn");
-      setE(0);
-      setCam(0);
-      dot.style.opacity = "";
-      state = "idle";
-      window.__routeActive = false;
-      world.classList.remove("routing");
-    });
-  }
-
-  let wheelAcc = 0, touchAcc = 0, lastTY = null;
-  window.addEventListener("wheel", e => {
-    if (state !== "arrived") { wheelAcc = 0; return; }
-    if (e.deltaY < 0) {
-      wheelAcc += Math.abs(e.deltaY);
-      if (wheelAcc > 140) { wheelAcc = 0; tryReverse(); }
-    } else wheelAcc = 0;
-  }, { passive: true });
-  window.addEventListener("touchstart", e => { lastTY = e.touches[0].clientY; }, { passive: true });
-  window.addEventListener("touchmove", e => {
-    if (lastTY === null) return;
-    const y = e.touches[0].clientY;
-    if (state === "arrived") {
-      touchAcc += lastTY - y;
-      if (touchAcc > 60) { touchAcc = 0; tryReverse(); }
-    }
-    lastTY = y;
-  }, { passive: true });
-  window.addEventListener("keydown", e => {
-    if ((e.key === "ArrowUp" || e.key === "PageUp") && state === "arrived") tryReverse();
-  });
-})();
-</script>
-
-<script>
-(function () {
-  // 每件作品的大图信息（按图片路径匹配）
-  const INFO = {
-    "works/w1-qy.jpg": {
-      t: "秋野拾趣 · 森林疗愈场景展板",
-      cat: "DISPLAY BOARD 展板设计",
-      d: "以秋日森林疗愈为主题的交互场景设计展板。涵盖设计说明、游览路线、人群分析、疗愈导图与细节展示五个板块，将自然疗愈理念转译为可游览的游戏空间体验——从出生地出发，途经采集地、露营地与观景区，让参与者在低压力的漫步中收获平静与能量。"
-    },
-    "works/w2-upstream.png": {
-      t: "UPSTREAM · 交互鱼群",
-      cat: "AI × CODE AI代码运用",
-      d: "基于 p5.js 编写的交互式鱼群游动装置。观众的移动会持续扰动鱼群的巡游轨迹，鱼群在规避与汇聚之间不断重组队形，探讨人与自然之间相互牵引、相互塑造的动态关系。"
-    },
-    "works/w3-map.png": {
-      t: "武汉港 · 数据地图",
-      cat: "AI × CODE AI代码运用",
-      d: "以武汉港口为对象的数据可视化地图。整合港口水域、航线与城市空间信息，用图示语言呈现长江航运的时空脉络，让城市水运数据变得可读、可感。"
-    },
-    "works/w4-ocean.png": {
-      t: "海洋苏醒 · 实物拼贴装置",
-      cat: "EXHIBIT MAKING 实物展品制作",
-      d: "以海洋生态保护为主题的实物拼贴装置。综合多种材料手工裁剪、层叠与拼合，让沉睡的海洋在纸片的浪涌之间缓缓苏醒——展品的物理质感本身即是作品表达的一部分。"
-    },
-    "works/w5-garden.png": {
-      t: "觅径游园 · 可视化展板",
-      cat: "DISPLAY BOARD 展板设计",
-      d: "以园林游览路径为主题的信息可视化设计。将游园动线、景点关系与空间层次拆解为清晰的图示语言，读者可以顺着图面完成一次纸上的游园。"
-    },
-    "works/w6-tea-v.png": {
-      t: "恭城茶韵 · 工艺篇",
-      cat: "DISPLAY BOARD 展板设计",
-      d: "广西恭城油茶文化主题信息海报（工艺篇）。以打油茶的工序流程为线索，将传统技艺的步骤、器具与时间节奏组织成竖版可视化叙事。"
-    },
-    "works/w7-tea-h.png": {
-      t: "恭城茶韵 · 风物篇",
-      cat: "DISPLAY BOARD 展板设计",
-      d: "广西恭城油茶文化主题信息海报（风物篇）。梳理油茶背后的物产风物与地方生活方式，用插画与信息图形呈现一碗油茶里的地域记忆。"
-    }
-  };
-
-  const lb = document.getElementById("lightbox");
-  const lbImg = document.getElementById("lb-img");
-  const lbNo = document.getElementById("lb-no");
-  const lbTitle = document.getElementById("lb-title");
-  const lbCat = document.getElementById("lb-cat");
-  const lbDesc = document.getElementById("lb-desc");
-
-  function openLB(info, no, src) {
-    lbImg.src = src;
-    lbImg.alt = info.t;
-    lbNo.textContent = "NO. " + no;
-    lbTitle.textContent = info.t;
-    lbCat.textContent = info.cat;
-    lbDesc.textContent = info.d;
-    lb.classList.add("show");
-  }
-  function closeLB() { lb.classList.remove("show"); }
-
-  document.querySelectorAll("#page2 .p2-slot").forEach(fig => {
-    fig.style.cursor = "pointer";
-    fig.addEventListener("click", () => {
-      const img = fig.querySelector("img");
-      const no = fig.querySelector("figcaption b");
-      const info = INFO[img.getAttribute("src")];
-      if (!info) return;
-      openLB(info, no ? no.textContent : "01", img.getAttribute("src"));
-    });
-  });
-
-  document.getElementById("lb-close").addEventListener("click", closeLB);
-  lb.addEventListener("click", e => { if (e.target === lb) closeLB(); });
-  window.addEventListener("keydown", e => { if (e.key === "Escape") closeLB(); });
-})();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
